@@ -1,3 +1,5 @@
+%lang starknet
+
 from starkware.cairo.common.uint256 import Uint256
 
 struct Vector2:
