@@ -138,11 +138,39 @@ end
 func mint_batch{
         pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr,
         bitwise_ptr : BitwiseBuiltin*}(metadatas_len : felt, metadatas : Dust*) -> (
-        token_id_len : felt, token_id : Uint256*):
+        token_ids_len : felt, token_ids : Uint256*):
     alloc_locals
     let (local token_ids : Uint256*) = alloc()
     _mint_batch_loop(metadatas_len, metadatas, token_ids)
     return (metadatas_len, token_ids)
+end
+
+@external
+func mint_batch_random_on_border{
+        pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr,
+        bitwise_ptr : BitwiseBuiltin*}(space_size : felt, nb_tokens : felt) -> (
+        token_ids_len : felt, token_ids : Uint256*):
+    alloc_locals
+
+    let (local token_ids : Uint256*) = alloc()
+    _mint_random_on_border_loop(space_size, nb_tokens, token_ids)
+
+    return (nb_tokens, token_ids)
+end
+
+func _mint_random_on_border_loop{
+        pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr,
+        bitwise_ptr : BitwiseBuiltin*}(
+        space_size : felt, token_ids_len : felt, token_ids : Uint256*):
+    if token_ids_len == 0:
+        return ()
+    end
+
+    let (token_id) = mint_random_on_border(space_size)
+    assert [token_ids] = token_id
+
+    _mint_random_on_border_loop(space_size, token_ids_len - 1, token_ids + Uint256.SIZE)
+    return ()
 end
 
 @external

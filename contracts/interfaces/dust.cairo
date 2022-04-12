@@ -24,6 +24,9 @@ namespace dust:
             token_id_len : felt, token_id : Uint256*):
     end
 
+    func mint_batch_random_on_border(space_size : felt, nb_tokens : felt) -> (token_id : Uint256):
+    end
+
     func burn(token_id : Uint256):
     end
 

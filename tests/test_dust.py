@@ -88,10 +88,62 @@ async def test_mint_random_on_border(dust_factory):
 
     await assert_revert(dust.mint_random_on_border(SPACE_SIZE).invoke(caller_address=anyone.contract_address), reverted_with='Ownable: caller is not the owner')
 
-    # Mint 10 tokens
+    # Mint NB_TOKENS tokens
     for i in map(to_uint, range(NB_TOKENS)):
         execution_info = await dust.mint_random_on_border(SPACE_SIZE).invoke(caller_address=SPACE_CONTRACT)
         assert execution_info.result==(i,)
+
+    # Check balance of owner
+    execution_info = await dust.balanceOf(SPACE_CONTRACT).invoke()
+    assert execution_info.result==(to_uint(NB_TOKENS),)
+
+    # Check the owner of minted tokens
+    for i in map(to_uint, range(NB_TOKENS)):
+        execution_info = await dust.ownerOf(i).invoke()
+        assert execution_info.result==(SPACE_CONTRACT,)
+
+    # Check the metadata
+    all_positions = []
+    all_directions = []
+    for i in map(to_uint, range(NB_TOKENS)):
+        execution_info = await dust.metadata(i).invoke()
+        space_size, position, direction = execution_info.result.metadata
+        all_positions.append(position)
+        all_directions.append(direction)
+
+        assert space_size == SPACE_SIZE
+        (x, y) = position
+        assert x == 0 or x == SPACE_SIZE-1 or y == 0 or y == SPACE_SIZE-1 # mint should spawn on a border
+
+        (x, y) = direction
+        assert x in [-1 % MAX_FELT, 0, 1] # direction is -1, 0, 1
+        assert y in [-1 % MAX_FELT, 0, 1] # direction is -1, 0, 1
+
+    # Run pytest `--log-cli-level=INFO` to see those lines
+    logging.info('Generated {} different positions: {}'.format(len(set(all_positions)), set(all_positions)))
+    logging.info('Generated {} different directions: {}'.format(len(set(all_directions)), set(all_directions)))
+
+    # Make sure they are "randomly" generated === several are different
+    assert len(set(all_positions)) >= min(SPACE_SIZE,NB_TOKENS)/2 # max 4*(SPACE_SIZE-1) positions or NB_TOKENS
+    assert len(set(all_directions)) > 5 # max 9 directions
+    assert len(set(x for x, _ in all_positions)) > min(SPACE_SIZE,NB_TOKENS)/4  # Some position.x are different
+    assert len(set(y for _, y in all_positions)) > min(SPACE_SIZE,NB_TOKENS)/4  # Some position.y are different
+    assert len(set(x for x, _ in all_directions)) > 1 # Some direction.x are different
+    assert len(set(y for _, y in all_directions)) > 1 # Some direction.y are different
+
+
+@pytest.mark.asyncio
+async def test_mint_batch_random_on_border(dust_factory):
+    dust, anyone, _ = dust_factory
+
+    NB_TOKENS = 100 # High number for random testing, but not too big as unit tests are sloooooowwww
+    SPACE_SIZE = 50 
+
+    await assert_revert(dust.mint_batch_random_on_border(SPACE_SIZE, NB_TOKENS).invoke(caller_address=anyone.contract_address), reverted_with='Ownable: caller is not the owner')
+
+    # Mint NB_TOKENS tokens
+    execution_info = await dust.mint_batch_random_on_border(SPACE_SIZE, NB_TOKENS).invoke(caller_address=SPACE_CONTRACT)
+    assert execution_info.result==(list(map(to_uint, range(NB_TOKENS))),)
 
     # Check balance of owner
     execution_info = await dust.balanceOf(SPACE_CONTRACT).invoke()
