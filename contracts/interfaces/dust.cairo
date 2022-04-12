@@ -7,7 +7,7 @@ from openzeppelin.introspection.IERC165 import IERC165
 from contracts.models.dust import Dust
 
 @contract_interface
-namespace dust:
+namespace IDustContract:
     func name() -> (name : felt):
     end
 
