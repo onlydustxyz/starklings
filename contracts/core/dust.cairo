@@ -26,8 +26,14 @@ from contracts.models.dust import Dust, Vector2
 func nb_tokens() -> (nb_tokens : Uint256):
 end
 
+struct Metadata:
+    member space_size : felt
+    member position : felt
+    member direction : felt
+end
+
 @storage_var
-func token_metadatas(token_id : Uint256) -> (metadata : Dust):
+func token_metadatas(token_id : Uint256) -> (metadata : Metadata):
 end
 
 #
@@ -81,8 +87,9 @@ end
 @view
 func metadata{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         token_id : Uint256) -> (metadata : Dust):
-    let (metadata : Dust) = token_metadatas.read(token_id)
-    return (metadata=metadata)
+    let (metadata : Metadata) = token_metadatas.read(token_id)
+    let (dust : Dust) = _to_dust(metadata)
+    return (metadata=dust)
 end
 
 #
@@ -107,7 +114,7 @@ end
 @external
 func mint{
         pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr,
-        bitwise_ptr : BitwiseBuiltin*}(metadata : Dust) -> (token_id : Uint256):
+        bitwise_ptr : BitwiseBuiltin*}(dust : Dust) -> (token_id : Uint256):
     alloc_locals
     Ownable_only_owner()
 
@@ -121,6 +128,7 @@ func mint{
     nb_tokens.write(nb_tokens_inc)
 
     # Store metadata
+    let (metadata : Metadata) = _from_dust(dust)
     token_metadatas.write(token_id, metadata)
 
     return (token_id=token_id)
@@ -189,12 +197,14 @@ func move{pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr}(
     alloc_locals
     Ownable_only_owner()
 
-    let (current_metadata : Dust) = token_metadatas.read(token_id)
-    let (new_metadata : Dust) = _move(current_metadata)
+    let (current_metadata : Metadata) = token_metadatas.read(token_id)
+    let (current_dust : Dust) = _to_dust(current_metadata)
+    let (new_dust : Dust) = _move(current_dust)
 
+    let (new_metadata : Metadata) = _from_dust(new_dust)
     token_metadatas.write(token_id, new_metadata)
 
-    return (new_metadata)
+    return (new_dust)
 end
 
 func _mint_batch_loop{
@@ -369,4 +379,35 @@ func _generate_random_numbers{
     let (random, r5) = unsigned_div_rem(random, 2 ** 16 - 1)
 
     return (r1, r2, r3, r4, r5)
+end
+
+func _from_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(dust : Dust) -> (
+        metadata : Metadata):
+    alloc_locals
+
+    local metadata : Metadata
+    assert metadata.space_size = dust.space_size
+    assert metadata.position = dust.position.x * dust.space_size + dust.position.y
+    assert metadata.direction = (dust.direction.x + 1) * 3 + (dust.direction.y + 1)
+
+    return (metadata)
+end
+
+func _to_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        metadata : Metadata) -> (dust : Dust):
+    alloc_locals
+
+    local dust : Dust
+    assert dust.space_size = metadata.space_size
+
+    let (x, y) = unsigned_div_rem(metadata.position, metadata.space_size)
+    assert dust.position.x = x
+    assert dust.position.y = y
+
+    let (x, y) = unsigned_div_rem(metadata.direction, 3)
+
+    assert dust.direction.x = x - 1
+    assert dust.direction.y = y - 1
+
+    return (dust)
 end
