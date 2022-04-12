@@ -1,0 +1,10 @@
+# IDE
+.vscode
+
+# Python
+__pycache__
+
+# starknet 
+node.json
+*.deployments.txt
+artifacts
