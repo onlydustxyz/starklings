@@ -2,6 +2,7 @@
 #Copied from https://github.com/OpenZeppelin/cairo-contracts/blob/main/tests/utils.py
 from pathlib import Path
 import math
+import sys
 from starkware.crypto.signature.signature import private_to_stark_key, sign
 from starkware.starknet.public.abi import get_selector_from_name
 from starkware.starknet.compiler.compile import compile_starknet_files
@@ -24,10 +25,15 @@ _root = Path(__file__).parent.parent
 
 
 def contract_path(name):
-    if name.startswith("tests/"):
+    if name.startswith("tests/") and (_root/name).exists():
         return str(_root / name)
-    else:
+    elif (_root / "contracts" / name).exists():
         return str(_root / "contracts" / name)
+    else:
+        for p in map(Path, sys.path):
+            if (p / name).exists():
+                return str(p / name)
+    raise AttributeError('Cannot find file {}'.format(name))
 
 
 def str_to_felt(text):
