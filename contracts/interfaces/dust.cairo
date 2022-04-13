@@ -7,7 +7,7 @@ from openzeppelin.introspection.IERC165 import IERC165
 from contracts.models.dust import Dust
 
 @contract_interface
-namespace dust:
+namespace IDustContract:
     func name() -> (name : felt):
     end
 
@@ -21,7 +21,8 @@ namespace dust:
     end
 
     func mint_batch(metadatas_len : felt, metadatas : Dust*) -> (
-            token_id_len : felt, token_id : Uint256*):
+        token_id_len : felt, token_id : Uint256*
+    ):
     end
 
     func mint_batch_random_on_border(space_size : felt, nb_tokens : felt) -> (token_id : Uint256):
