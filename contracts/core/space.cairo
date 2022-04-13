@@ -36,9 +36,8 @@ end
 func grid_dust(x : felt, y : felt) -> (dust_id : Uint256):
 end
 
-# Nice to have: put this in-memory
 @storage_var
-func grid_moved_dust(x : felt, y : felt) -> (dust_id : Uint256):
+func next_turn_grid_dust(x : felt, y : felt) -> (dust_id : Uint256):
 end
 
 @storage_var
@@ -86,9 +85,9 @@ end
 @external
 func next_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
     Ownable_only_owner()
+    _spawn_dust()
     _move_dust(0, 0)
     _update_grid_dust(0, 0)
-    _spawn_dust()
     return ()
 end
 
@@ -118,7 +117,7 @@ func _spawn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     let (dust : Dust) = IDustContract.metadata(dust_contract_address, token_id)
 
     let (internal_dust_id : Uint256) = _to_internal_dust_id(token_id)
-    grid_dust.write(dust.position.x, dust.position.y, internal_dust_id)
+    next_turn_grid_dust.write(dust.position.x, dust.position.y, internal_dust_id)
     return ()
 end
 
@@ -171,9 +170,14 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
     let (local dust_contract_address) = dust_contract.read()
     let (local moved_dust : Dust) = IDustContract.move(dust_contract_address, token_id)
 
+    # As the dust position changed, we free its old position
+    next_turn_grid_dust.write(x, y, Uint256(0, 0))
+
     # Check collision
-    let (other_dust_id : Uint256) = grid_dust.read(moved_dust.position.x, moved_dust.position.y)
-    let (no_other_dust) = uint256_eq(other_dust_id, Uint256(0, 0))
+    let (local other_dust_id : Uint256) = next_turn_grid_dust.read(
+        moved_dust.position.x, moved_dust.position.y
+    )
+    let (local no_other_dust) = uint256_eq(other_dust_id, Uint256(0, 0))
 
     if no_other_dust == FALSE:
         # In case of collision, burn the current dust
@@ -184,7 +188,7 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
         tempvar range_check_ptr = range_check_ptr
     else:
         # No collision. Update the dust position in the grid
-        grid_moved_dust.write(moved_dust.position.x, moved_dust.position.y, dust_id)
+        next_turn_grid_dust.write(moved_dust.position.x, moved_dust.position.y, dust_id)
         tempvar syscall_ptr = syscall_ptr
         tempvar pedersen_ptr = pedersen_ptr
         tempvar range_check_ptr = range_check_ptr
@@ -211,8 +215,7 @@ func _update_grid_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_c
         return ()
     end
 
-    let (local dust_id : Uint256) = grid_moved_dust.read(x, y)
-    grid_moved_dust.write(x, y, Uint256(0, 0))
+    let (local dust_id : Uint256) = next_turn_grid_dust.read(x, y)
     grid_dust.write(x, y, dust_id)
 
     # process the next cell

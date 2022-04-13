@@ -11,22 +11,48 @@ from starkware.starknet.common.syscalls import (
     get_tx_info,
 )
 
+struct SeqEntry:
+    member r1 : felt
+    member r2 : felt
+    member r3 : felt
+    member r4 : felt
+    member r5 : felt
+end
+
+# ------------
+# STORAGE VARS
+# ------------
+
+@storage_var
+func sequence(idx : felt) -> (entry : SeqEntry):
+end
+
+@storage_var
+func counter() -> (count : felt):
+end
+
+# -----------
+# CONSTRUCTOR
+# -----------
+
+@constructor
+func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+    sequence.write(0, SeqEntry(1, 2, 0, 1, 0))
+    sequence.write(1, SeqEntry(1, 0, 0, 4, 0))
+    sequence.write(2, SeqEntry(1, 2, 5, 1, 0))
+    return ()
+end
+
+# -----
+# VIEWS
+# -----
+
 @view
 func generate_random_numbers{
     pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr, bitwise_ptr : BitwiseBuiltin*
 }(salt : felt) -> (r1, r2, r3, r4, r5):
-    let (random) = hash2{hash_ptr=pedersen_ptr}(salt, 12345)
-
-    # Make sure random is not too big
-    const ALL_ONES = 2 ** 128 - 1
-    let (random) = bitwise_and(ALL_ONES, random)
-
-    # Now let's split it as much as we need as this "random" will be the same for the whole transaction
-    let (random, r1) = unsigned_div_rem(random, 2 ** 16 - 1)
-    let (random, r2) = unsigned_div_rem(random, 2 ** 16 - 1)
-    let (random, r3) = unsigned_div_rem(random, 2 ** 16 - 1)
-    let (random, r4) = unsigned_div_rem(random, 2 ** 16 - 1)
-    let (random, r5) = unsigned_div_rem(random, 2 ** 16 - 1)
-
-    return (r1, r2, r3, r4, r5)
+    let (count) = counter.read()
+    counter.write(count + 1)
+    let (e : SeqEntry) = sequence.read(count)
+    return (e.r1, e.r2, e.r3, e.r4, e.r5)
 end

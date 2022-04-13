@@ -35,53 +35,31 @@ async def test_next_turn_no_ship(space_factory):
     # Assert grid is empty
     await assert_grid_dust(space, [])
 
-    # Next turn -----
+    # Next turn --------------------------------------------------
     await space.next_turn().invoke(caller_address=ADMIN)
 
-    execution_info = await dust.metadata(to_uint(0)).call()
-    _, (x, y), (dx, dy) = execution_info.result.metadata
-    assert x==5 and y==2
-    assert dx==0 and dy==1
+    await assert_dust_position(dust, 1, Vector2(0, 1), Vector2(0, 1))
+    await assert_grid_dust(space, [Dust(Vector2(0, 1), 1)])
 
-    # Assert grid is up to date
-    await assert_grid_dust(space, [Dust(Vector2(5, 2), 1)])
-
-    # Next turn -----
+    # Next turn --------------------------------------------------
     await space.next_turn().invoke(caller_address=ADMIN)
 
-    execution_info = await dust.metadata(to_uint(0)).call()
-    _, (x, y), (dx, dy) = execution_info.result.metadata
-    assert x==5 and y==3
-    assert dx==0 and dy==1
+    await assert_dust_position(dust, 1, Vector2(0, 2), Vector2(0, 1))
+    await assert_dust_position(dust, 2, Vector2(0, 4), Vector2(0, -1))
+    await assert_grid_dust(space, [Dust(Vector2(0, 2), 1), Dust(Vector2(0, 4), 2)])
 
-    execution_info = await dust.metadata(to_uint(1)).call()
-    _, (x, y), (dx, dy) = execution_info.result.metadata
-    assert x==5 and y==0
-    assert dx==-1 % MAX_FELT and dy==1
-
-    # Assert grid is up to date
-    await assert_grid_dust(space, [Dust(Vector2(5, 3), 1), Dust(Vector2(5, 0), 2)])
-
-    # Next turn -----
+    # Next turn --------------------------------------------------
     await space.next_turn().invoke(caller_address=ADMIN)
 
-    execution_info = await dust.metadata(to_uint(0)).call()
-    _, (x, y), (dx, dy) = execution_info.result.metadata
-    assert x==5 and y==4
-    assert dx==0 and dy==1
+    await assert_dust_position(dust, 1, Vector2(0, 3), Vector2(0, 1))
+    await assert_dust_position(dust, 2, Vector2(0, 3), Vector2(0, -1))
+    await assert_dust_position(dust, 3, Vector2(5, 1), Vector2(0, 1))
 
-    execution_info = await dust.metadata(to_uint(1)).call()
-    _, (x, y), (dx, dy) = execution_info.result.metadata
-    assert x==4 and y==1
-    assert dx==-1 % MAX_FELT and dy==1
+    # A collision occured, assert the dust was burnt
+    await assert_revert(dust.ownerOf(to_uint(1)).call(), reverted_with='ERC721: owner query for nonexistent token')
 
-    execution_info = await dust.metadata(to_uint(2)).call()
-    _, (x, y), (dx, dy) = execution_info.result.metadata
-    assert x==5 and y==0
-    assert dx==-1 % MAX_FELT and dy==-1 % MAX_FELT
+    await assert_grid_dust(space, [Dust(Vector2(0, 3), 1), Dust(Vector2(5, 1), 3)])
 
-    # Assert grid is up to date
-    await assert_grid_dust(space, [Dust(Vector2(5, 4), 1), Dust(Vector2(4, 1), 2), Dust(Vector2(5, 0), 3)])
 
 #
 # Helpers to assert the state of the entire grid
@@ -107,3 +85,11 @@ def get_expected_dust_id_at(position:Vector2, dusts:List[Dust]):
         if d.pos.x == position.x and d.pos.y == position.y:
             return d.id
     return 0
+
+async def assert_dust_position(dust, id:int, position:Vector2, direction:Vector2):
+    execution_info = await dust.metadata(to_uint(id-1)).call()
+    _, (px, py), (dx, dy) = execution_info.result.metadata
+    assert px == position.x
+    assert py == position.y
+    assert dx == direction.x % MAX_FELT
+    assert dy == direction.y % MAX_FELT
