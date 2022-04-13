@@ -14,12 +14,20 @@ from starkware.cairo.common.uint256 import (
     uint256_eq,
 )
 
+from starkware.cairo.common.bool import TRUE, FALSE
+from openzeppelin.access.ownable import Ownable_initializer, Ownable_only_owner
+
 from contracts.models.dust import Vector2, Dust
 from contracts.interfaces.dust import IDustContract
 
 # ------------
 # STORAGE VARS
 # ------------
+
+@storage_var
+func _initialized() -> (res : felt):
+end
+
 @storage_var
 func grid_size() -> (size : felt):
 end
@@ -28,6 +36,7 @@ end
 func grid_dust(x : felt, y : felt) -> (dust_id : Uint256):
 end
 
+# Nice to have: put this in-memory
 @storage_var
 func grid_moved_dust(x : felt, y : felt) -> (dust_id : Uint256):
 end
@@ -35,6 +44,10 @@ end
 @storage_var
 func dust_contract() -> (contract : felt):
 end
+
+# -----
+# VIEWS
+# -----
 
 @view
 func get_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
@@ -44,25 +57,51 @@ func get_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     return (dust_id)
 end
 
+# -----------
+# CONSTRUCTOR
+# -----------
+
 @constructor
-func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(owner : felt):
+    Ownable_initializer(owner=owner)
     return ()
 end
 
 @external
-func init{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+func initialize{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     dust_contract_address : felt, size : felt
 ):
+    Ownable_only_owner()
+    _only_not_initialized()
     dust_contract.write(dust_contract_address)
     grid_size.write(size)
     return ()
 end
 
+# ------------------
+# EXTERNAL FUNCTIONS
+# ------------------
+
+# This function must be invoked to process the next turn of the game.
 @external
 func next_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
-    _spawn_dust()
+    Ownable_only_owner()
     _move_dust(0, 0)
     _update_grid_dust(0, 0)
+    _spawn_dust()
+    return ()
+end
+
+# ------------------
+# INTERNAL FUNCTIONS
+# ------------------
+
+func _only_not_initialized{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+    let (initialized) = _initialized.read()
+    with_attr error_message("Initializable: contract already initialized"):
+        assert initialized = FALSE
+    end
+    _initialized.write(TRUE)
     return ()
 end
 
@@ -70,18 +109,36 @@ func _spawn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     alloc_locals
     let (size) = grid_size.read()
 
-    # TODO: randomize position and direction
-    local position : Vector2 = Vector2(1, 1)
-    let dust : Dust = Dust(space_size=size, position=position, direction=Vector2(1, 0))
-
     let (dust_contract_address) = dust_contract.read()
-    let (new_dust_id : Uint256) = IDustContract.mint(dust_contract_address, dust)
 
-    let (new_dust_id_inc : Uint256, _) = uint256_add(new_dust_id, Uint256(1, 0))
-    grid_dust.write(position.x, position.y, new_dust_id_inc)
+    # Create a new Dust at random position and with random direction
+    let (token_id : Uint256) = IDustContract.mint_random_on_border(dust_contract_address, size)
+
+    # Get created Dust metadata to retrieve its position
+    let (dust : Dust) = IDustContract.metadata(dust_contract_address, token_id)
+
+    let (internal_dust_id : Uint256) = _to_internal_dust_id(token_id)
+    grid_dust.write(dust.position.x, dust.position.y, internal_dust_id)
     return ()
 end
 
+# Returns internal id of dust - as stored in the grid - from its token id.
+func _to_internal_dust_id{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    token_id : Uint256
+) -> (internal_dust_id : Uint256):
+    let (internal_dust_id : Uint256, _) = uint256_add(token_id, Uint256(1, 0))
+    return (internal_dust_id)
+end
+
+# Returns token id of dust from its internal id.
+func _to_external_dust_id{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    internal_dust_id : Uint256
+) -> (token_id : Uint256):
+    let (token_id : Uint256) = uint256_sub(internal_dust_id, Uint256(1, 0))
+    return (token_id)
+end
+
+# Recursive function that goes through the entire grid and updates dusts position
 func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     x : felt, y : felt
 ):
@@ -92,7 +149,7 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
     if x == size:
         return ()
     end
-    # We reach the end of the column, let's go to the next one
+    # We reached the end of the column, let's go to the next one
     if y == size:
         _move_dust(x + 1, 0)
         return ()
@@ -102,25 +159,25 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
 
     # if there is no dust here, we go directly to the next cell
     let (no_dust) = uint256_eq(dust_id, Uint256(0, 0))
-    if no_dust == 1:
+    if no_dust == TRUE:
         _move_dust(x, y + 1)
         return ()
     end
 
     # Compute token_id in NFT contract
-    let (local dust_id_nft : Uint256) = uint256_sub(dust_id, Uint256(1, 0))
+    let (token_id : Uint256) = _to_external_dust_id(dust_id)
 
     # There is some dust here! Let's move it
     let (local dust_contract_address) = dust_contract.read()
-    let (local moved_dust : Dust) = IDustContract.move(dust_contract_address, dust_id_nft)
+    let (local moved_dust : Dust) = IDustContract.move(dust_contract_address, token_id)
 
     # Check collision
     let (other_dust_id : Uint256) = grid_dust.read(moved_dust.position.x, moved_dust.position.y)
     let (no_other_dust) = uint256_eq(other_dust_id, Uint256(0, 0))
 
-    if no_other_dust == 0:
+    if no_other_dust == FALSE:
         # In case of collision, burn the current dust
-        IDustContract.burn(dust_contract_address, dust_id_nft)
+        IDustContract.burn(dust_contract_address, token_id)
         # see https://www.cairo-lang.org/docs/how_cairo_works/builtins.html#revoked-implicit-arguments
         tempvar syscall_ptr = syscall_ptr
         tempvar pedersen_ptr = pedersen_ptr
@@ -148,7 +205,7 @@ func _update_grid_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_c
     if x == size:
         return ()
     end
-    # We reach the end of the column, let's go to the next one
+    # We reached the end of the column, let's go to the next one
     if y == size:
         _update_grid_dust(x + 1, 0)
         return ()

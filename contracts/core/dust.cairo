@@ -3,15 +3,8 @@
 from starkware.cairo.common.cairo_builtins import HashBuiltin, SignatureBuiltin, BitwiseBuiltin
 from starkware.cairo.common.alloc import alloc
 from starkware.cairo.common.math import unsigned_div_rem, assert_lt
-from starkware.cairo.common.bitwise import bitwise_and
-from starkware.cairo.common.hash import hash2
 from starkware.cairo.common.uint256 import Uint256, uint256_add
-from starkware.starknet.common.syscalls import (
-    get_block_number,
-    get_block_timestamp,
-    get_caller_address,
-    get_tx_info,
-)
+from starkware.starknet.common.syscalls import get_caller_address
 
 from openzeppelin.token.erc721.library import (
     ERC721_name,
@@ -31,6 +24,7 @@ from openzeppelin.introspection.ERC165 import ERC165_supports_interface
 from openzeppelin.access.ownable import Ownable_initializer, Ownable_only_owner
 
 from contracts.models.dust import Dust, Vector2
+from contracts.interfaces.rand import IRandom
 
 #
 # Storage
@@ -49,14 +43,21 @@ end
 func token_metadatas(token_id : Uint256) -> (metadata : Metadata):
 end
 
+@storage_var
+func rand_contract() -> (rand_contract : felt):
+end
+
 #
 # Constructor
 #
 
 @constructor
-func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(owner : felt):
+func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    owner : felt, rand_contract_address : felt
+):
     ERC721_initializer(name='Dust Non Fungible Token', symbol='DUST')
     Ownable_initializer(owner=owner)
+    rand_contract.write(rand_contract_address)
     return ()
 end
 
@@ -300,7 +301,11 @@ func _generate_random_metadata_on_border{
     local metadata : Dust
     assert metadata.space_size = space_size
 
-    let (r1, r2, r3, r4, r5) = _generate_random_numbers()
+    let (last_token_id) = nb_tokens.read()
+    let (rand_contract_address) = rand_contract.read()
+    let (r1, r2, r3, r4, r5) = IRandom.generate_random_numbers(
+        rand_contract_address, last_token_id.low
+    )
 
     let (direction : Vector2) = _generate_random_direction(r1, r2)
     assert metadata.direction = direction
@@ -371,36 +376,6 @@ func _set_in_range{pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check
     let range = max - min + 1
     let (_, value) = unsigned_div_rem(value, range)  # random in [0, max-min]
     return (value + min)  # random in [min, max]
-end
-
-# generate a pseudo random number
-func _generate_random_numbers{
-    pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr, bitwise_ptr : BitwiseBuiltin*
-}() -> (r1, r2, r3, r4, r5):
-    let (last_token_id) = nb_tokens.read()
-    let (random) = hash2{hash_ptr=pedersen_ptr}(last_token_id.low, 12345)
-
-    let (block_number) = get_block_number()
-    let (random) = hash2{hash_ptr=pedersen_ptr}(random, block_number + 98765)
-
-    let (block_timestamp) = get_block_timestamp()
-    let (random) = hash2{hash_ptr=pedersen_ptr}(random, block_timestamp + 55555)
-
-    let (tx_info) = get_tx_info()
-    let (random) = hash2{hash_ptr=pedersen_ptr}(random, tx_info.transaction_hash)
-
-    # Make sure random is not too big
-    const ALL_ONES = 2 ** 128 - 1
-    let (random) = bitwise_and(ALL_ONES, random)
-
-    # Now let's split it as much as we need as this "random" will be the same for the whole transaction
-    let (random, r1) = unsigned_div_rem(random, 2 ** 16 - 1)
-    let (random, r2) = unsigned_div_rem(random, 2 ** 16 - 1)
-    let (random, r3) = unsigned_div_rem(random, 2 ** 16 - 1)
-    let (random, r4) = unsigned_div_rem(random, 2 ** 16 - 1)
-    let (random, r5) = unsigned_div_rem(random, 2 ** 16 - 1)
-
-    return (r1, r2, r3, r4, r5)
 end
 
 func _from_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(dust : Dust) -> (
