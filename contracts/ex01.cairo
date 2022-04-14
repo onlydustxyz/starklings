@@ -8,19 +8,18 @@ from starkware.cairo.common.math import (assert_le)
 func dust(address: felt) -> (amount: felt):
 end
 
-@storage_var
-func star(address: felt, slot: felt) -> (size: felt):
-end
+# TODO
+# Create two storages `star` and `slot`
+# `star` will map an `address` and a `slot` to a `star`
+# `slot` will map an `address` to the next available `slot` this `address` can use
 
-@storage_var
-func slot(address: felt) -> (slot: felt):
-end
-
-
-@event
-func a_star_is_born(account: felt, slot: felt, size: felt):
-end
-
+# TODO
+# Create an event `a_star_is_born`
+# It will log:
+# - the `account` that issued the transaction 
+# - the `slot` where this `star` has been registered
+# - the size of the given `star`
+# https://starknet.io/documentation/events/
 
 @external
 func collect_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
@@ -33,23 +32,20 @@ func collect_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_
     return ()
 end
 
+# This external allow an user to create a `star` by destroying an amount of `dust`
+# The resulting star will have a `size` equal to the amount of `dust` used
 @external
 func light_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         dust_amount: felt):
-    let (address) = get_caller_address()
-
-    let (dust_reserve) = dust.read(address)
-    assert_le(dust_amount, dust_reserve)
-
-    dust.write(address, dust_reserve - dust_amount)
-
-    let (current_slot) = slot.read(address)
-    
-    star.write(address, current_slot, dust_amount)
-    
-    slot.write(address, current_slot + 1)
-    
-    a_star_is_born.emit(address, current_slot, dust_amount)
+    # TODO
+    # Get the caller address
+    # Get the amount on dust owned by the caller
+    # Make sure this amount is at least equal to `dust_amount`
+    # Get the caller next available `slot`
+    # Update the amount of dust owned by the caller
+    # Register the newly created star
+    # Increment the caller next available slot
+    # Emit an `a_star_is_born` even with appropiate valued
 
     return ()
 end
@@ -62,16 +58,5 @@ func view_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
     return (res)
 end
 
-@view
-func view_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(address: felt, slot: felt) -> (
-        size: felt):
-    let (res) = star.read(address, slot)
-    return (res)
-end
-
-@view
-func view_slot{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(address: felt) -> (
-        amount: felt):
-    let (res) = slot.read(address)
-    return (res)
-end
+#TODO
+# Write two views, for the `star` and `slot` storages

@@ -40,15 +40,15 @@ pip install -r requirements.txt # will install cairo-nile
 nile install # Will install all required dependencies to build/test/deploy starknet contracts
 ```
 
-# Get started
-This tutorial has 2 difficulty levels: basic, advanced.
+# What to do ?
 
-Please checkout the wanted branch to get started:
-
-```bash
-git switch basic
-# or
-git switch advanced
+Run:
+```
+pytest tests/test_ex00.py 
 ```
 
-_To be continued..._
+It return errors.  
+Edit the `contracts/ex00.cairo` file until all tests pass.  
+There are instructions as comments to help you.
+
+Repeat for all contracts. Have fun !
