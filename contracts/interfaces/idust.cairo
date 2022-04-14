@@ -2,9 +2,7 @@
 
 from starkware.cairo.common.uint256 import Uint256
 
-from openzeppelin.introspection.IERC165 import IERC165
-
-from contracts.models.dust import Dust
+from contracts.models.common import Dust
 
 @contract_interface
 namespace IDustContract:
