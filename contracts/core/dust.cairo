@@ -33,7 +33,7 @@ from contracts.interfaces.irand import IRandom
 # Storage
 #
 @storage_var
-func nb_tokens() -> (nb_tokens : Uint256):
+func token_count() -> (token_count : Uint256):
 end
 
 struct Metadata:
@@ -144,12 +144,12 @@ func mint{
 
     # Mint token
     let (caller) = get_caller_address()
-    let (local token_id : Uint256) = nb_tokens.read()
+    let (local token_id : Uint256) = token_count.read()
     ERC721_Enumerable_mint(caller, token_id)
 
     # Increase latest token id
-    let (nb_tokens_inc : Uint256, _) = uint256_add(token_id, Uint256(1, 0))
-    nb_tokens.write(nb_tokens_inc)
+    let (incremented_token_count : Uint256, _) = uint256_add(token_id, Uint256(1, 0))
+    token_count.write(incremented_token_count)
 
     # Store metadata
     let (metadata : Metadata) = _from_dust(dust)
@@ -179,13 +179,13 @@ end
 @external
 func mint_batch_random_on_border{
     pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr, bitwise_ptr : BitwiseBuiltin*
-}(space_size : felt, nb_tokens : felt) -> (token_ids_len : felt, token_ids : Uint256*):
+}(space_size : felt, token_count : felt) -> (token_ids_len : felt, token_ids : Uint256*):
     alloc_locals
 
     let (local token_ids : Uint256*) = alloc()
-    _mint_random_on_border_loop(space_size, nb_tokens, token_ids)
+    _mint_random_on_border_loop(space_size, token_count, token_ids)
 
-    return (nb_tokens, token_ids)
+    return (token_count, token_ids)
 end
 
 func _mint_random_on_border_loop{
@@ -305,7 +305,7 @@ func _generate_random_metadata_on_border{
     local metadata : Dust
     assert metadata.space_size = space_size
 
-    let (last_token_id) = nb_tokens.read()
+    let (last_token_id) = token_count.read()
     let (rand_contract_address) = rand_contract.read()
     let (r1, r2, r3, r4, r5) = IRandom.generate_random_numbers(
         rand_contract_address, last_token_id.low
