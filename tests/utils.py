@@ -1,5 +1,5 @@
 """Utilities for testing Cairo contracts."""
-#Copied from https://github.com/OpenZeppelin/cairo-contracts/blob/main/tests/utils.py
+# Copied from https://github.com/OpenZeppelin/cairo-contracts/blob/main/tests/utils.py
 from pathlib import Path
 import math
 import sys
@@ -19,6 +19,8 @@ TRUE = 1
 FALSE = 0
 
 TRANSACTION_VERSION = 0
+
+MAX_FELT = 2**251 + 17 * 2**192 + 1
 
 
 _root = Path(__file__).parent.parent
@@ -174,7 +176,8 @@ class Signer():
 
         (call_array, calldata) = from_call_to_call_array(calls)
 
-        message_hash = get_transaction_hash(account.contract_address, call_array, calldata, nonce, max_fee)
+        message_hash = get_transaction_hash(
+            account.contract_address, call_array, calldata, nonce, max_fee)
         sig_r, sig_s = self.sign(message_hash)
 
         return await account.__execute__(call_array, calldata, nonce).invoke(signature=[sig_r, sig_s])
@@ -190,6 +193,7 @@ def from_call_to_call_array(calls):
         call_array.append(entry)
         calldata.extend(call[2])
     return (call_array, calldata)
+
 
 def get_transaction_hash(account, call_array, calldata, nonce, max_fee):
     execute_calldata = [
