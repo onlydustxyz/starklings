@@ -9,7 +9,7 @@ from deploy import deploy_contract
 
 
 # The path to the contract source code.
-CONTRACT_FILE = os.path.join("contracts", "beginner", "ex00.cairo")
+CONTRACT_FILE = os.path.join("contracts", "ex00.cairo")
 
 
 @pytest.fixture
