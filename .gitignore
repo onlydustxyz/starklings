@@ -12,3 +12,6 @@ artifacts
 
 # nile
 127.0.0.1.*
+
+# Protostar
+build
