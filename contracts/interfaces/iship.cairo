@@ -1,6 +1,6 @@
 %lang starknet
 
-from contracts.models.dust import Vector2
+from contracts.models.common import Vector2
 
 @contract_interface
 namespace IShip:

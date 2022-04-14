@@ -20,9 +20,9 @@ from starkware.cairo.common.math_cmp import is_le
 from starkware.cairo.common.bool import TRUE, FALSE
 from openzeppelin.access.ownable import Ownable_initializer, Ownable_only_owner
 
-from contracts.models.dust import Vector2, Dust
-from contracts.interfaces.dust import IDustContract
-from contracts.interfaces.ship import IShip
+from contracts.models.common import Vector2, Dust
+from contracts.interfaces.idust import IDustContract
+from contracts.interfaces.iship import IShip
 
 # ------------
 # STORAGE VARS
