@@ -12,11 +12,14 @@ from openzeppelin.token.erc721.library import (
     ERC721_balanceOf,
     ERC721_ownerOf,
     ERC721_isApprovedForAll,
-    ERC721_initializer,
     ERC721_setApprovalForAll,
-    ERC721_safeTransferFrom,
-    ERC721_mint,
-    ERC721_burn,
+    ERC721_initializer,
+)
+from openzeppelin.token.erc721_enumerable.library import (
+    ERC721_Enumerable_initializer,
+    ERC721_Enumerable_safeTransferFrom,
+    ERC721_Enumerable_mint,
+    ERC721_Enumerable_burn,
 )
 
 from openzeppelin.introspection.ERC165 import ERC165_supports_interface
@@ -56,6 +59,7 @@ func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     owner : felt, rand_contract_address : felt
 ):
     ERC721_initializer(name='Dust Non Fungible Token', symbol='DUST')
+    ERC721_Enumerable_initializer()
     Ownable_initializer(owner=owner)
     rand_contract.write(rand_contract_address)
     return ()
@@ -127,7 +131,7 @@ func safeTransferFrom{pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_ch
     from_ : felt, to : felt, tokenId : Uint256
 ):
     let (data : felt*) = alloc()
-    ERC721_safeTransferFrom(from_, to, tokenId, 0, data)
+    ERC721_Enumerable_safeTransferFrom(from_, to, tokenId, 0, data)
     return ()
 end
 
@@ -141,7 +145,7 @@ func mint{
     # Mint token
     let (caller) = get_caller_address()
     let (local token_id : Uint256) = nb_tokens.read()
-    ERC721_mint(caller, token_id)
+    ERC721_Enumerable_mint(caller, token_id)
 
     # Increase latest token id
     let (nb_tokens_inc : Uint256, _) = uint256_add(token_id, Uint256(1, 0))
@@ -203,7 +207,7 @@ func burn{pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr}(tok
     Ownable_only_owner()
 
     # Mint token
-    ERC721_burn(token_id)
+    ERC721_Enumerable_burn(token_id)
 
     return ()
 end
