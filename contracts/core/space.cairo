@@ -61,6 +61,14 @@ end
 # -----
 
 @view
+func get_grid_size{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+    size : felt
+):
+    let (size) = grid_size.read()
+    return (size)
+end
+
+@view
 func get_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     x : felt, y : felt
 ) -> (dust_id : Uint256):
@@ -204,13 +212,18 @@ end
 
 @external
 func add_ship{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    ship_contract : felt
-):
+    x : felt, y : felt, ship_contract : felt
+) -> (position : Vector2):
     Ownable_only_owner()
-    let (position : Vector2) = get_first_empty_cell(0, 0)
+    let (position : Vector2) = get_first_empty_cell(x, y)
+
+    # Check that we actually found a free cell
+    assert_nn(position.x)
+    assert_nn(position.y)
+
     next_turn_grid_ship.write(position.x, position.y, ship_contract)
     grid_ship.write(position.x, position.y, ship_contract)
-    return ()
+    return (position=position)
 end
 
 # ------------------
@@ -294,6 +307,15 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
 
     # As the dust position changed, we free its old position
     next_turn_grid_dust.write(x, y, Uint256(0, 0))
+
+    # Check collision with ship
+    let (ship : felt) = grid_ship.read(moved_dust.position.x, moved_dust.position.y)
+    if ship != 0:
+        # transfer dust to the ship and process next cell
+        _ship_catches_dust(dust_id, ship)
+        _move_dust(x, y + 1)
+        return ()
+    end
 
     # Check collision
     let (local other_dust_id : Uint256) = next_turn_grid_dust.read(
@@ -396,15 +418,11 @@ func _move_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     end
 
     # Check collision with dust
-    let (dust_id : Uint256) = grid_dust.read(nx, ny)
+    let (dust_id : Uint256) = next_turn_grid_dust.read(nx, ny)
     let (no_dust) = uint256_eq(dust_id, Uint256(0, 0))
     if no_dust == FALSE:
         # transfer dust to the ship
-        let (contract_address) = get_contract_address()
-        let (dust_contract_address) = dust_contract.read()
-
-        let (token_id : Uint256) = _to_external_dust_id(dust_id)
-        IDustContract.safeTransferFrom(dust_contract_address, contract_address, ship, token_id)
+        _ship_catches_dust(dust_id, ship)
 
         # remove dust from the grid
         grid_dust.write(nx, ny, Uint256(0, 0))
@@ -420,7 +438,7 @@ func _move_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
         tempvar range_check_ptr = range_check_ptr
     end
 
-    # Update the dust position in the grid
+    # Update the ship position in the grid
     next_turn_grid_ship.write(x, y, 0)
     next_turn_grid_ship.write(nx, ny, ship)
 
@@ -449,5 +467,16 @@ func _update_grid_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_
 
     # process the next cell
     _update_grid_ships(x, y + 1)
+    return ()
+end
+
+func _ship_catches_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    dust_id : Uint256, ship : felt
+):
+    let (contract_address) = get_contract_address()
+    let (dust_contract_address) = dust_contract.read()
+
+    let (token_id : Uint256) = _to_external_dust_id(dust_id)
+    IDustContract.safeTransferFrom(dust_contract_address, contract_address, ship, token_id)
     return ()
 end

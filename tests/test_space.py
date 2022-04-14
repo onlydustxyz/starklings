@@ -36,6 +36,14 @@ async def test_get_first_non_empty_cell(space_factory):
     assert hi == 0
     assert ship == 0
 
+    execution_info = await space.get_first_non_empty_cell(2, 5).call()
+    (px, py), (lo, hi), ship = execution_info.result.cell
+    assert px == SPACE_SIZE
+    assert py == 0
+    assert lo == 0
+    assert hi == 0
+    assert ship == 0
+
     # Next turn --------------------------------------------------
     await space.next_turn().invoke(caller_address=ADMIN)
 
@@ -118,6 +126,70 @@ async def test_next_turn_no_ship(space_factory):
 
     await assert_grid_dust(space, 0, 0, [Dust(Vector2(0, 3), 1), Dust(Vector2(5, 1), 3)], [])
 
+
+@pytest.mark.asyncio
+async def test_add_ship_only_owner(starknet: Starknet, space_factory):
+    space, _ = space_factory
+    ship = await deploy_contract(starknet, 'ships/basic_ship.cairo')
+    await assert_revert(space.add_ship(0, 0, ship.contract_address).invoke(caller_address=ANYONE), reverted_with='Ownable: caller is not the owner')
+
+
+@pytest.mark.asyncio
+async def test_add_ship(starknet: Starknet, space_factory):
+    space, _ = space_factory
+    ship1 = await deploy_contract(starknet, 'ships/basic_ship.cairo')
+    ship2 = await deploy_contract(starknet, 'ships/basic_ship.cairo')
+
+    await space.add_ship(3, 3, ship1.contract_address).invoke(caller_address=ADMIN)
+    await assert_grid_dust(space, 0, 0, [], [Ship(Vector2(0, 0), ship1.contract_address)])
+
+    await space.add_ship(3, 3, ship2.contract_address).invoke(caller_address=ADMIN)
+    await assert_grid_dust(space, 0, 0, [], [Ship(Vector2(3, 4), ship2.contract_address)])
+
+
+@pytest.mark.asyncio
+async def test_next_turn_with_ship(starknet: Starknet, space_factory):
+    space, dust = space_factory
+    ship: StarknetContract = await deploy_contract(starknet, 'ships/basic_ship.cairo')
+    await space.add_ship(0, 3, ship.contract_address).invoke(caller_address=ADMIN)
+    ship_assertion = Ship(Vector2(0, 3), ship.contract_address)
+
+    # Assert grid is empty
+    await assert_grid_dust(space, 0, 0, [], [ship_assertion])
+
+    # Next turn --------------------------------------------------
+    await space.next_turn().invoke(caller_address=ADMIN)
+
+    await assert_dust_position(dust, 1, Vector2(0, 1), Vector2(0, 1))
+    await assert_grid_dust(space, 0, 0, [Dust(Vector2(0, 1), 1)], [ship_assertion])
+
+    # Next turn --------------------------------------------------
+    await space.next_turn().invoke(caller_address=ADMIN)
+
+    await assert_dust_position(dust, 1, Vector2(0, 2), Vector2(0, 1))
+    await assert_dust_position(dust, 2, Vector2(0, 4), Vector2(0, -1))
+    await assert_grid_dust(space, 0, 0, [Dust(Vector2(0, 2), 1), Dust(Vector2(0, 4), 2)], [ship_assertion])
+
+    # Assert the space owns the dusts
+    execution_info = await dust.ownerOf(to_uint(0)).call()
+    assert execution_info.result == (space.contract_address,)
+    execution_info = await dust.ownerOf(to_uint(1)).call()
+    assert execution_info.result == (space.contract_address,)
+
+    # Next turn --------------------------------------------------
+    await space.next_turn().invoke(caller_address=ADMIN)
+
+    await assert_dust_position(dust, 1, Vector2(0, 3), Vector2(0, 1))
+    await assert_dust_position(dust, 2, Vector2(0, 3), Vector2(0, -1))
+    await assert_dust_position(dust, 3, Vector2(5, 1), Vector2(0, 1))
+
+    # Assert the ship earned the dusts at position (0, 3)
+    execution_info = await dust.ownerOf(to_uint(0)).call()
+    assert execution_info.result == (ship.contract_address,)
+    execution_info = await dust.ownerOf(to_uint(1)).call()
+    assert execution_info.result == (ship.contract_address,)
+
+    await assert_grid_dust(space, 0, 0, [Dust(Vector2(5, 1), 3)], [ship_assertion])
 
 #
 # Helpers to assert the state of the entire grid
