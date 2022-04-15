@@ -52,3 +52,6 @@ Edit the `contracts/ex00.cairo` file until all tests pass.
 There are instructions as comments to help you.
 
 Repeat for all contracts. Have fun !
+
+Once you are done with all five exercises you can try a bonus one.
+Try to emit an event each time an user ranks change, and catch this event on the layer one. Then do whatever you want with it: emit another event, mint an NFT, do a firework. The objective is for you to learn how to do layer 2 -> layer 1 messaging. And if you are curious, maybe try messaging the other direction.
