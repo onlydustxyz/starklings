@@ -19,7 +19,7 @@ MAX_FELT = 2**251 + 17 * 2**192 + 1
 @pytest.fixture
 async def space_factory(starknet: Starknet) -> StarknetContract:
     rand = await deploy_contract(starknet, 'test/fake_rand.cairo')
-    space = await deploy_contract(starknet, 'core/space.cairo', constructor_calldata=[ADMIN])
+    space = await deploy_contract(starknet, 'core/space.cairo')
     dust = await deploy_contract(starknet, 'core/dust.cairo', constructor_calldata=[space.contract_address, rand.contract_address])
     await space.initialize(dust.contract_address, SPACE_SIZE).invoke(caller_address=ADMIN)
     return space, dust

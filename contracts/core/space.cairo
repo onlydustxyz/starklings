@@ -18,7 +18,6 @@ from starkware.cairo.common.math import assert_nn
 from starkware.cairo.common.math_cmp import is_le
 
 from starkware.cairo.common.bool import TRUE, FALSE
-from openzeppelin.access.ownable import Ownable_initializer, Ownable_only_owner
 
 from contracts.models.common import Vector2, Dust
 from contracts.interfaces.idust import IDustContract
@@ -175,8 +174,7 @@ end
 # -----------
 
 @constructor
-func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(owner : felt):
-    Ownable_initializer(owner=owner)
+func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
     return ()
 end
 
