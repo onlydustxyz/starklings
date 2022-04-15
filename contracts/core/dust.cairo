@@ -19,7 +19,7 @@ from openzeppelin.access.ownable import Ownable_initializer, Ownable_only_owner
 
 from contracts.models.common import Dust, Vector2
 from contracts.interfaces.irand import IRandom
-from contracts.core.library import MathUtils_random_in_range
+from contracts.core.library import MathUtils_random_in_range, MathUtils_random_direction
 
 #
 # Storage
@@ -295,28 +295,13 @@ func _generate_random_metadata_on_border{
     let (r1, r2, r3, r4, r5) = IRandom.generate_random_numbers(
         rand_contract_address, last_token_id.low)
 
-    let (direction : Vector2) = _generate_random_direction(r1, r2)
+    let (direction : Vector2) = MathUtils_random_direction(r1)
     assert metadata.direction = direction
 
     let (position : Vector2) = _generate_random_position_on_border(space_size, r3, r4, r5)
     assert metadata.position = position
 
     return (metadata=metadata)
-end
-
-# Generate a random direction x, y where x,y are wither -1, 0 or 1
-func _generate_random_direction{pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr}(
-        r1, r2) -> (direction : Vector2):
-    alloc_locals
-    local direction : Vector2
-
-    let (random) = MathUtils_random_in_range(r1, -1, 1)
-    assert direction.x = random
-
-    let (random) = MathUtils_random_in_range(r2, -1, 1)
-    assert direction.y = random
-
-    return (direction=direction)
 end
 
 # Generate a random position on a given border (top, left, right, bottom)
