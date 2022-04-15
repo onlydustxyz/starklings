@@ -2,7 +2,7 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.uint256 import Uint256
-from starkware.starknet.common.syscalls import get_block_timestamp
+from starkware.starknet.common.syscalls import get_block_timestamp, get_block_number
 
 from openzeppelin.introspection.ERC165 import ERC165_supports_interface, ERC165_register_interface
 
@@ -29,7 +29,8 @@ end
 func move{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
         new_direction : Vector2):
     let (block_timestamp) = get_block_timestamp()
-    let (random_direction) = MathUtils_random_direction(block_timestamp)
+    let (block_number) = get_block_number()
+    let (random_direction) = MathUtils_random_direction(block_timestamp, block_number)
 
     return (new_direction=random_direction)
 end

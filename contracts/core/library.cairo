@@ -35,14 +35,14 @@ end
 
 # generate a random direction
 func MathUtils_random_direction{pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr}(
-        seed : felt) -> (random_direction : Vector2):
+        seed1 : felt, seed2 : felt) -> (random_direction : Vector2):
     alloc_locals
     local random_direction : Vector2
 
-    let (random) = MathUtils_random_in_range(seed, -1, 1)
+    let (random) = MathUtils_random_in_range(seed1, -1, 1)
     assert random_direction.x = random
 
-    let (random) = MathUtils_random_in_range(seed + 1, -1, 1)
+    let (random) = MathUtils_random_in_range(seed2, -1, 1)
     assert random_direction.y = random
 
     return (random_direction=random_direction)

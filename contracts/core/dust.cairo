@@ -295,7 +295,7 @@ func _generate_random_metadata_on_border{
     let (r1, r2, r3, r4, r5) = IRandom.generate_random_numbers(
         rand_contract_address, last_token_id.low)
 
-    let (direction : Vector2) = MathUtils_random_direction(r1)
+    let (direction : Vector2) = MathUtils_random_direction(r1, r2)
     assert metadata.direction = direction
 
     let (position : Vector2) = _generate_random_position_on_border(space_size, r3, r4, r5)
