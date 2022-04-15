@@ -19,7 +19,7 @@ MAX_FELT = 2**251 + 17 * 2**192 + 1
 @pytest.fixture
 async def space_factory(starknet: Starknet) -> StarknetContract:
     rand = await deploy_contract(starknet, 'test/fake_rand.cairo')
-    space = await deploy_contract(starknet, 'core/space.cairo', constructor_calldata=[ADMIN])
+    space = await deploy_contract(starknet, 'core/space.cairo')
     dust = await deploy_contract(starknet, 'core/dust.cairo', constructor_calldata=[space.contract_address, rand.contract_address])
     await space.initialize(dust.contract_address, SPACE_SIZE).invoke(caller_address=ADMIN)
     return space, dust
@@ -89,10 +89,6 @@ async def test_get_first_empty_cell(space_factory):
     assert px == 0
     assert py == 2
 
-@pytest.mark.asyncio
-async def test_next_turn_only_owner(space_factory):
-    space, _ = space_factory
-    await assert_revert(space.next_turn().invoke(caller_address=ANYONE), reverted_with='Ownable: caller is not the owner')
 
 @pytest.mark.asyncio
 async def test_next_turn_no_ship(space_factory):
@@ -128,17 +124,10 @@ async def test_next_turn_no_ship(space_factory):
 
 
 @pytest.mark.asyncio
-async def test_add_ship_only_owner(starknet: Starknet, space_factory):
-    space, _ = space_factory
-    ship = await deploy_contract(starknet, 'ships/basic_ship.cairo')
-    await assert_revert(space.add_ship(0, 0, ship.contract_address).invoke(caller_address=ANYONE), reverted_with='Ownable: caller is not the owner')
-
-
-@pytest.mark.asyncio
 async def test_add_ship(starknet: Starknet, space_factory):
     space, _ = space_factory
-    ship1 = await deploy_contract(starknet, 'ships/basic_ship.cairo')
-    ship2 = await deploy_contract(starknet, 'ships/basic_ship.cairo')
+    ship1 = await deploy_contract(starknet, 'ships/static_ship.cairo')
+    ship2 = await deploy_contract(starknet, 'ships/static_ship.cairo')
 
     await space.add_ship(3, 3, ship1.contract_address).invoke(caller_address=ADMIN)
     await assert_grid_dust(space, 0, 0, [], [Ship(Vector2(0, 0), ship1.contract_address)])
@@ -150,7 +139,7 @@ async def test_add_ship(starknet: Starknet, space_factory):
 @pytest.mark.asyncio
 async def test_next_turn_with_ship(starknet: Starknet, space_factory):
     space, dust = space_factory
-    ship: StarknetContract = await deploy_contract(starknet, 'ships/basic_ship.cairo')
+    ship: StarknetContract = await deploy_contract(starknet, 'ships/static_ship.cairo')
     await space.add_ship(0, 3, ship.contract_address).invoke(caller_address=ADMIN)
     ship_assertion = Ship(Vector2(0, 3), ship.contract_address)
 

@@ -18,11 +18,11 @@ from starkware.cairo.common.math import assert_nn
 from starkware.cairo.common.math_cmp import is_le
 
 from starkware.cairo.common.bool import TRUE, FALSE
-from openzeppelin.access.ownable import Ownable_initializer, Ownable_only_owner
 
 from contracts.models.common import Vector2, Dust
 from contracts.interfaces.idust import IDustContract
 from contracts.interfaces.iship import IShip
+from contracts.core.library import MathUtils_set_in_range
 
 # ------------
 # STORAGE VARS
@@ -174,8 +174,7 @@ end
 # -----------
 
 @constructor
-func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(owner : felt):
-    Ownable_initializer(owner=owner)
+func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
     return ()
 end
 
@@ -183,7 +182,6 @@ end
 func initialize{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     dust_contract_address : felt, size : felt
 ):
-    Ownable_only_owner()
     _only_not_initialized()
     dust_contract.write(dust_contract_address)
     grid_size.write(size)
@@ -197,8 +195,6 @@ end
 # This function must be invoked to process the next turn of the game.
 @external
 func next_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
-    Ownable_only_owner()
-
     _spawn_dust()
 
     _move_dust(0, 0)
@@ -214,7 +210,6 @@ end
 func add_ship{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     x : felt, y : felt, ship_contract : felt
 ) -> (position : Vector2):
-    Ownable_only_owner()
     let (position : Vector2) = get_first_empty_cell(x, y)
 
     # Check that we actually found a free cell
@@ -393,29 +388,15 @@ func _move_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
 
     # Call ship contract
     let (local new_direction : Vector2) = IShip.move(ship)
-    local nx : felt = x + new_direction.x
-    local ny : felt = y + new_direction.y
+    let (dx) = MathUtils_set_in_range(new_direction.x, -1, 1)
+    let (dy) = MathUtils_set_in_range(new_direction.y, -1, 1)
 
-    # Check borders
-    if nx == -1:
-        nx = x
-    end
-    if nx == size:
-        nx = x
-    end
-    if ny == -1:
-        ny = y
-    end
-    if ny == size:
-        ny = y
-    end
+    # Compute new position and check borders
+    let (tmp_x) = MathUtils_set_in_range(x + dx, 0, size - 1)
+    let (tmp_y) = MathUtils_set_in_range(y + dy, 0, size - 1)
 
     # Check collision with other ship
-    let (other_ship : felt) = next_turn_ship_grid.read(nx, ny)
-    if other_ship != 0:
-        nx = x
-        ny = y
-    end
+    let (local nx, ny) = _handle_collision_with_other_ship(x, y, tmp_x, tmp_y)
 
     # Check collision with dust
     let (dust_id : Uint256) = dust_grid.read(nx, ny)
@@ -445,6 +426,16 @@ func _move_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     # process the next cell
     _move_ships(x, y + 1)
     return ()
+end
+
+func _handle_collision_with_other_ship{
+    syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
+}(old_x : felt, old_y : felt, new_x : felt, new_y : felt) -> (x : felt, y : felt):
+    let (other_ship : felt) = next_turn_ship_grid.read(new_x, new_y)
+    if other_ship != 0:
+        return (old_x, old_y)
+    end
+    return (new_x, new_y)
 end
 
 func _update_ship_grid{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
