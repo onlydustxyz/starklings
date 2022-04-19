@@ -64,6 +64,14 @@ end
 func dust_contract() -> (contract : felt):
 end
 
+@storage_var
+func current_dust_count() -> (count : felt):
+end
+
+@storage_var
+func max_dust_count() -> (count : felt):
+end
+
 # -----
 # VIEWS
 # -----
@@ -204,12 +212,13 @@ end
 
 @external
 func initialize{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    dust_contract_address : felt, size : felt, turn_count : felt
+    dust_contract_address : felt, size : felt, turn_count : felt, max_dust : felt
 ):
     _only_not_initialized()
     dust_contract.write(dust_contract_address)
     grid_size.write(size)
     max_turn_count.write(turn_count)
+    max_dust_count.write(max_dust)
     return ()
 end
 
@@ -266,7 +275,14 @@ end
 
 func _spawn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
     alloc_locals
-    let (size) = grid_size.read()
+    let (local size) = grid_size.read()
+    let (local dust_count) = current_dust_count.read()
+    let (max_dust) = max_dust_count.read()
+
+    # Check if we already reached the max amount of dust in the grid
+    if dust_count == max_dust:
+        return ()
+    end
 
     let (dust_contract_address) = dust_contract.read()
 
@@ -274,10 +290,17 @@ func _spawn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     let (token_id : Uint256) = IDustContract.mint_random_on_border(dust_contract_address, size)
 
     # Get created Dust metadata to retrieve its position
-    let (dust : Dust) = IDustContract.metadata(dust_contract_address, token_id)
+    let (local dust : Dust) = IDustContract.metadata(dust_contract_address, token_id)
 
+    # Check there is no dust at this position yet
+    let (other_dust_id) = next_turn_dust_grid.read(dust.position.x, dust.position.y)
+    let (no_dust_found) = uint256_eq(other_dust_id, Uint256(0, 0))
+    assert no_dust_found = TRUE
+
+    # Finally, add dust to the grid
     let (internal_dust_id : Uint256) = _to_internal_dust_id(token_id)
     next_turn_dust_grid.write(dust.position.x, dust.position.y, internal_dust_id)
+    current_dust_count.write(dust_count + 1)
     return ()
 end
 
@@ -351,6 +374,10 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
     if no_other_dust == FALSE:
         # In case of collision, burn the current dust
         IDustContract.burn(dust_contract_address, token_id)
+        let (dust_count) = current_dust_count.read()
+        assert_nn(dust_count)
+        current_dust_count.write(dust_count - 1)
+
         # see https://www.cairo-lang.org/docs/how_cairo_works/builtins.html#revoked-implicit-arguments
         tempvar syscall_ptr = syscall_ptr
         tempvar pedersen_ptr = pedersen_ptr
@@ -494,6 +521,10 @@ end
 func _ship_catches_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     dust_id : Uint256, ship : felt
 ):
+    let (dust_count) = current_dust_count.read()
+    assert_nn(dust_count)
+    current_dust_count.write(dust_count - 1)
+
     let (contract_address) = get_contract_address()
     let (dust_contract_address) = dust_contract.read()
 

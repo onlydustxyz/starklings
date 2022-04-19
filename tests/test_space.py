@@ -15,6 +15,7 @@ ADMIN = get_selector_from_name('admin')
 ANYONE = get_selector_from_name('anyone')
 SPACE_SIZE = 6
 MAX_TURN = 50
+MAX_DUST = 2
 MAX_FELT = 2**251 + 17 * 2**192 + 1
 
 @pytest.fixture
@@ -22,7 +23,7 @@ async def space_factory(starknet: Starknet) -> StarknetContract:
     rand = await deploy_contract(starknet, 'test/fake_rand.cairo')
     space = await deploy_contract(starknet, 'core/space.cairo')
     dust = await deploy_contract(starknet, 'core/dust.cairo', constructor_calldata=[space.contract_address, rand.contract_address])
-    await space.initialize(dust.contract_address, SPACE_SIZE, MAX_TURN).invoke(caller_address=ADMIN)
+    await space.initialize(dust.contract_address, SPACE_SIZE, MAX_TURN, MAX_DUST).invoke(caller_address=ADMIN)
     return space, dust
 
 @pytest.mark.asyncio
@@ -97,7 +98,7 @@ async def test_turn_count(starknet: Starknet):
     dust = await deploy_contract(starknet, 'core/dust.cairo', constructor_calldata=[space.contract_address, rand.contract_address])
 
     MAX_TURN = 2
-    await space.initialize(dust.contract_address, SPACE_SIZE, MAX_TURN).invoke(caller_address=ADMIN)
+    await space.initialize(dust.contract_address, SPACE_SIZE, MAX_TURN, MAX_DUST).invoke(caller_address=ADMIN)
 
     execution_info = await space.get_max_turn_count().call()
     assert execution_info.result.count == MAX_TURN
@@ -144,12 +145,19 @@ async def test_next_turn_no_ship(space_factory):
 
     await assert_dust_position(dust, 1, Vector2(0, 3), Vector2(0, 1))
     await assert_dust_position(dust, 2, Vector2(0, 3), Vector2(0, -1))
-    await assert_dust_position(dust, 3, Vector2(5, 1), Vector2(0, 1))
+    # MAX_DUST == 2 so no more dust has been spawned
 
     # A collision occured, assert the dust was burnt
     await assert_revert(dust.ownerOf(to_uint(1)).call(), reverted_with='ERC721: owner query for nonexistent token')
 
-    await assert_grid_dust(space, 0, 0, [Dust(Vector2(0, 3), 1), Dust(Vector2(5, 1), 3)], [])
+    await assert_grid_dust(space, 0, 0, [Dust(Vector2(0, 3), 1)], [])
+
+    # Next turn --------------------------------------------------
+    await space.next_turn().invoke(caller_address=ADMIN)
+
+    await assert_dust_position(dust, 3, Vector2(5, 1), Vector2(0, 1))
+
+    await assert_grid_dust(space, 0, 0, [Dust(Vector2(0, 4), 1), Dust(Vector2(5, 1), 3)], [])
 
 
 @pytest.mark.asyncio
@@ -199,13 +207,20 @@ async def test_next_turn_with_ship(starknet: Starknet, space_factory):
 
     await assert_dust_position(dust, 1, Vector2(0, 3), Vector2(0, 1))
     await assert_dust_position(dust, 2, Vector2(0, 3), Vector2(0, -1))
-    await assert_dust_position(dust, 3, Vector2(5, 1), Vector2(0, 1))
+    # MAX_DUST == 2 so no more dust has been spawned
 
     # Assert the ship earned the dusts at position (0, 3)
     execution_info = await dust.ownerOf(to_uint(0)).call()
     assert execution_info.result == (ship.contract_address,)
     execution_info = await dust.ownerOf(to_uint(1)).call()
     assert execution_info.result == (ship.contract_address,)
+
+    await assert_grid_dust(space, 0, 0, [], [ship_assertion])
+
+    # Next turn --------------------------------------------------
+    await space.next_turn().invoke(caller_address=ADMIN)
+
+    await assert_dust_position(dust, 3, Vector2(5, 1), Vector2(0, 1))
 
     await assert_grid_dust(space, 0, 0, [Dust(Vector2(5, 1), 3)], [ship_assertion])
 
