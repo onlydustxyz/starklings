@@ -76,7 +76,7 @@ Then, deploy the contracts:
 nile run scripts/deploy.py
 ```
 
-Keep the addresses of the contract, you'll need them later.
+Keep the addresses of the contracts, you'll need them later.
 
 ## Goal
 
@@ -87,10 +87,7 @@ Implement your ship to catch as much dust as possible.
 To add your ship, compile it and deploy it
 ```bash
 nile compile
-nile deploy my_ship_contract
-
-🚀 Deploying my_ship_contract
-🌕 artifacts/my_ship_contract.json successfully deployed to 0x07ec10eb0758f7b1bc5aed0d5b4d30db0ab3c087eba85d60858be46c1a5e4680
+nile deploy <my-ship-contract>
 ```
 
 Then, add the ship to the game's space
