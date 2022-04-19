@@ -8,16 +8,27 @@ from openzeppelin.introspection.ERC165 import ERC165_supports_interface, ERC165_
 
 from contracts.models.common import Vector2
 from contracts.core.library import MathUtils_random_direction
+from contracts.interfaces.irand import IRandom
 
 const IERC721_RECEIVER_ID = 0x150b7a02
+
+# ------------
+# STORAGE VARS
+# ------------
+
+@storage_var
+func random_contract() -> (random_contract : felt):
+end
 
 # -----------
 # CONSTRUCTOR
 # -----------
 
 @constructor
-func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        random_contract_address : felt):
     ERC165_register_interface(IERC721_RECEIVER_ID)
+    random_contract.write(random_contract_address)
     return ()
 end
 
@@ -28,9 +39,11 @@ end
 @external
 func move{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
         new_direction : Vector2):
+    let (random_contract_address) = random_contract.read()
     let (block_timestamp) = get_block_timestamp()
-    let (block_number) = get_block_number()
-    let (random_direction) = MathUtils_random_direction(block_timestamp, block_number)
+    let (r1, r2, _, _, _) = IRandom.generate_random_numbers(
+        random_contract_address, block_timestamp)
+    let (random_direction) = MathUtils_random_direction(r1, r2)
 
     return (new_direction=random_direction)
 end
