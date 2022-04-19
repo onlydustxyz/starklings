@@ -56,6 +56,13 @@ _To be continued..._
 
 # Advance workshop
 
+## First two easy exercise to better understand this workshop
+
+`contracts/ex` contrains two exercises with instructions on what to do.
+Run `pytest tests/test_ex00.py` and `pytest tests/test_ex01.py` and code until the tests pass.
+
+Those two contracts (at least our implementations of those) are used to power the game engine you will be interacting with later on.
+
 ## Initial configuration
 
 Once you have activated your virtual environment, install the required dependencies
