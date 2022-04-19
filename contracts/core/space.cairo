@@ -248,16 +248,25 @@ end
 @external
 func add_ship{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     x : felt, y : felt, ship_contract : felt
-) -> (position : Vector2):
-    let (position : Vector2) = get_first_empty_cell(x, y)
+):
+    alloc_locals
 
-    # Check that we actually found a free cell
-    assert_nn(position.x)
-    assert_nn(position.y)
+    # Check other ship
+    let (ship_at_position : felt) = ship_grid.read(x, y)
+    with_attr error_message("Space: cell is not free"):
+        assert ship_at_position = 0
+    end
 
-    next_turn_ship_grid.write(position.x, position.y, ship_contract)
-    ship_grid.write(position.x, position.y, ship_contract)
-    return (position=position)
+    # Check dust
+    let (dust_id : Uint256) = dust_grid.read(x, y)
+    let (no_dust_found) = uint256_eq(dust_id, Uint256(0, 0))
+    with_attr error_message("Space: cell is not free"):
+        assert no_dust_found = TRUE
+    end
+
+    next_turn_ship_grid.write(x, y, ship_contract)
+    ship_grid.write(x, y, ship_contract)
+    return ()
 end
 
 # ------------------

@@ -178,10 +178,9 @@ async def test_add_ship(starknet: Starknet, space_factory):
     ship2 = await deploy_contract(starknet, 'ships/static_ship.cairo')
 
     await space.add_ship(3, 3, ship1.contract_address).invoke(caller_address=ADMIN)
-    await assert_grid_dust(space, 0, 0, [], [Ship(Vector2(0, 0), ship1.contract_address)])
+    await assert_grid_dust(space, 0, 0, [], [Ship(Vector2(3, 3), ship1.contract_address)])
 
-    await space.add_ship(3, 3, ship2.contract_address).invoke(caller_address=ADMIN)
-    await assert_grid_dust(space, 0, 0, [], [Ship(Vector2(3, 4), ship2.contract_address)])
+    await assert_revert(space.add_ship(3, 3, ship2.contract_address).invoke(caller_address=ADMIN))
 
 
 @pytest.mark.asyncio
