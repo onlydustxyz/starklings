@@ -51,7 +51,7 @@ end
 @view
 func generate_random_numbers{
     pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr, bitwise_ptr : BitwiseBuiltin*
-}(salt : felt) -> (r1, r2, r3, r4, r5):
+}(seed : felt) -> (r1, r2, r3, r4, r5):
     let (count) = counter.read()
     counter.write(count + 1)
     let (e : SeqEntry) = sequence.read(count)

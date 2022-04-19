@@ -18,11 +18,11 @@ from starkware.starknet.common.syscalls import (
 @view
 func generate_random_numbers{
     pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr, bitwise_ptr : BitwiseBuiltin*
-}(salt : felt) -> (random):
+}(seed : felt) -> (random):
     # TODO
     # Return a "random" number
     # Sources of entropy you can use:
-    # - the `salt` parameter
+    # - the `seed` parameter
     # - the block number
     # - the block timestamp
     # - the transaction infos
