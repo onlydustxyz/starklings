@@ -40,6 +40,7 @@ func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     sequence.write(0, SeqEntry(1, 2, 0, 1, 0))
     sequence.write(1, SeqEntry(1, 0, 0, 4, 0))
     sequence.write(2, SeqEntry(1, 2, 5, 1, 0))
+    sequence.write(3, SeqEntry(1, 2, 5, 2, 0))
     return ()
 end
 

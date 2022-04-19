@@ -295,7 +295,10 @@ func _spawn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     # Check there is no dust at this position yet
     let (other_dust_id) = next_turn_dust_grid.read(dust.position.x, dust.position.y)
     let (no_dust_found) = uint256_eq(other_dust_id, Uint256(0, 0))
-    assert no_dust_found = TRUE
+    if no_dust_found == FALSE:
+        IDustContract.burn(dust_contract_address, token_id)
+        return ()
+    end
 
     # Finally, add dust to the grid
     let (internal_dust_id : Uint256) = _to_internal_dust_id(token_id)
