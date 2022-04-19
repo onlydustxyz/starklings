@@ -34,7 +34,7 @@ from openzeppelin.introspection.ERC165 import ERC165_supports_interface
 from openzeppelin.access.ownable import Ownable_initializer, Ownable_only_owner
 
 from contracts.models.common import Dust, Vector2
-from contracts.interfaces.rand import IRandom
+from contracts.interfaces.irand import IRandom
 
 #
 # Constructor
