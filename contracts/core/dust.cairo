@@ -10,8 +10,12 @@ from openzeppelin.token.erc721.library import (
     ERC721_name, ERC721_symbol, ERC721_balanceOf, ERC721_ownerOf, ERC721_isApprovedForAll,
     ERC721_setApprovalForAll, ERC721_initializer)
 from openzeppelin.token.erc721_enumerable.library import (
-    ERC721_Enumerable_initializer, ERC721_Enumerable_safeTransferFrom, ERC721_Enumerable_mint,
-    ERC721_Enumerable_burn)
+    ERC721_Enumerable_initializer,
+    ERC721_Enumerable_safeTransferFrom,
+    ERC721_Enumerable_mint,
+    ERC721_Enumerable_burn,
+    ERC721_Enumerable_totalSupply,
+)
 
 from openzeppelin.introspection.ERC165 import ERC165_supports_interface
 
@@ -24,9 +28,6 @@ from contracts.core.library import MathUtils_random_in_range, MathUtils_random_d
 #
 # Storage
 #
-@storage_var
-func token_count() -> (token_count : Uint256):
-end
 
 struct Metadata:
     member space_size : felt
@@ -129,12 +130,8 @@ func mint{
 
     # Mint token
     let (caller) = get_caller_address()
-    let (local token_id : Uint256) = token_count.read()
+    let (local token_id : Uint256) = ERC721_Enumerable_totalSupply()
     ERC721_Enumerable_mint(caller, token_id)
-
-    # Increase latest token id
-    let (incremented_token_count : Uint256, _) = uint256_add(token_id, Uint256(1, 0))
-    token_count.write(incremented_token_count)
 
     # Store metadata
     let (metadata : Metadata) = _from_dust(dust)
@@ -194,7 +191,7 @@ end
 func burn{pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr}(token_id : Uint256):
     Ownable_only_owner()
 
-    # Mint token
+    # Burn token
     ERC721_Enumerable_burn(token_id)
 
     return ()
@@ -290,7 +287,7 @@ func _generate_random_metadata_on_border{
     local metadata : Dust
     assert metadata.space_size = space_size
 
-    let (last_token_id) = token_count.read()
+    let (last_token_id) = ERC721_Enumerable_totalSupply()
     let (rand_contract_address) = rand_contract.read()
     let (r1, r2, r3, r4, r5) = IRandom.generate_random_numbers(
         rand_contract_address, last_token_id.low)
