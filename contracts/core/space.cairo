@@ -4,9 +4,17 @@
 from starkware.starknet.common.syscalls import get_contract_address
 from starkware.cairo.common.cairo_builtins import HashBuiltin, SignatureBuiltin
 from starkware.cairo.common.uint256 import (
-    Uint256, uint256_check, uint256_add, uint256_sub, uint256_mul, uint256_unsigned_div_rem,
-    uint256_le, uint256_lt, uint256_eq)
-from starkware.cairo.common.math import assert_nn
+    Uint256,
+    uint256_check,
+    uint256_add,
+    uint256_sub,
+    uint256_mul,
+    uint256_unsigned_div_rem,
+    uint256_le,
+    uint256_lt,
+    uint256_eq,
+)
+from starkware.cairo.common.math import assert_nn, assert_le
 from starkware.cairo.common.math_cmp import is_le
 
 from starkware.cairo.common.bool import TRUE, FALSE
@@ -22,6 +30,14 @@ from contracts.core.library import MathUtils_clamp_value
 
 @storage_var
 func _initialized() -> (res : felt):
+end
+
+@storage_var
+func max_turn_count() -> (count : felt):
+end
+
+@storage_var
+func current_turn() -> (num : felt):
 end
 
 @storage_var
@@ -53,22 +69,41 @@ end
 # -----
 
 @view
+func get_max_turn_count{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+    count : felt
+):
+    let (count) = max_turn_count.read()
+    return (count)
+end
+
+@view
+func get_current_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+    num : felt
+):
+    let (num) = current_turn.read()
+    return (num)
+end
+
+@view
 func get_grid_size{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
-        size : felt):
+    size : felt
+):
     let (size) = grid_size.read()
     return (size)
 end
 
 @view
 func get_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt) -> (dust_id : Uint256):
+    x : felt, y : felt
+) -> (dust_id : Uint256):
     let (dust_id : Uint256) = dust_grid.read(x, y)
     return (dust_id)
 end
 
 @view
 func get_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt) -> (ship : felt):
+    x : felt, y : felt
+) -> (ship : felt):
     let (ship : felt) = ship_grid.read(x, y)
     return (ship)
 end
@@ -81,7 +116,8 @@ end
 
 @view
 func get_first_non_empty_cell{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt) -> (cell : Cell):
+    x : felt, y : felt
+) -> (cell : Cell):
     alloc_locals
     assert_nn(x)
     assert_nn(y)
@@ -119,7 +155,8 @@ end
 
 @view
 func get_first_empty_cell{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt) -> (position : Vector2):
+    x : felt, y : felt
+) -> (position : Vector2):
     alloc_locals
     assert_nn(x)
     assert_nn(y)
@@ -167,10 +204,12 @@ end
 
 @external
 func initialize{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        dust_contract_address : felt, size : felt):
+    dust_contract_address : felt, size : felt, turn_count : felt
+):
     _only_not_initialized()
     dust_contract.write(dust_contract_address)
     grid_size.write(size)
+    max_turn_count.write(turn_count)
     return ()
 end
 
@@ -181,6 +220,11 @@ end
 # This function must be invoked to process the next turn of the game.
 @external
 func next_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+    let (turn) = current_turn.read()
+    let (max_turn) = max_turn_count.read()
+    assert_le(turn + 1, max_turn)
+    current_turn.write(turn + 1)
+
     _spawn_dust()
 
     _move_dust(0, 0)
@@ -194,7 +238,8 @@ end
 
 @external
 func add_ship{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt, ship_contract : felt) -> (position : Vector2):
+    x : felt, y : felt, ship_contract : felt
+) -> (position : Vector2):
     let (position : Vector2) = get_first_empty_cell(x, y)
 
     # Check that we actually found a free cell
@@ -238,21 +283,24 @@ end
 
 # Returns internal id of dust - as stored in the grid - from its token id.
 func _to_internal_dust_id{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        token_id : Uint256) -> (internal_dust_id : Uint256):
+    token_id : Uint256
+) -> (internal_dust_id : Uint256):
     let (internal_dust_id : Uint256, _) = uint256_add(token_id, Uint256(1, 0))
     return (internal_dust_id)
 end
 
 # Returns token id of dust from its internal id.
 func _to_external_dust_id{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        internal_dust_id : Uint256) -> (token_id : Uint256):
+    internal_dust_id : Uint256
+) -> (token_id : Uint256):
     let (token_id : Uint256) = uint256_sub(internal_dust_id, Uint256(1, 0))
     return (token_id)
 end
 
 # Recursive function that goes through the entire grid and updates dusts position
 func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt):
+    x : felt, y : felt
+):
     alloc_locals
     let (size) = grid_size.read()
 
@@ -296,7 +344,8 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
 
     # Check collision
     let (local other_dust_id : Uint256) = next_turn_dust_grid.read(
-        moved_dust.position.x, moved_dust.position.y)
+        moved_dust.position.x, moved_dust.position.y
+    )
     let (local no_other_dust) = uint256_eq(other_dust_id, Uint256(0, 0))
 
     if no_other_dust == FALSE:
@@ -320,7 +369,8 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
 end
 
 func _update_dust_grid{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt):
+    x : felt, y : felt
+):
     let (size) = grid_size.read()
 
     # We reached the last cell, this is the end
@@ -343,7 +393,8 @@ end
 
 # Recursive function that goes through the entire grid and updates ships position
 func _move_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt):
+    x : felt, y : felt
+):
     alloc_locals
     let (size) = grid_size.read()
 
@@ -408,8 +459,8 @@ func _move_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
 end
 
 func _handle_collision_with_other_ship{
-        syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        old_x : felt, old_y : felt, new_x : felt, new_y : felt) -> (x : felt, y : felt):
+    syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
+}(old_x : felt, old_y : felt, new_x : felt, new_y : felt) -> (x : felt, y : felt):
     let (other_ship : felt) = next_turn_ship_grid.read(new_x, new_y)
     if other_ship != 0:
         return (old_x, old_y)
@@ -418,7 +469,8 @@ func _handle_collision_with_other_ship{
 end
 
 func _update_ship_grid{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt):
+    x : felt, y : felt
+):
     let (size) = grid_size.read()
 
     # We reached the last cell, this is the end
@@ -440,7 +492,8 @@ func _update_ship_grid{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_c
 end
 
 func _ship_catches_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        dust_id : Uint256, ship : felt):
+    dust_id : Uint256, ship : felt
+):
     let (contract_address) = get_contract_address()
     let (dust_contract_address) = dust_contract.read()
 

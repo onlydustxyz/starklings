@@ -14,6 +14,7 @@ from utils import assert_revert, str_to_felt, to_uint
 ADMIN = get_selector_from_name('admin')
 ANYONE = get_selector_from_name('anyone')
 SPACE_SIZE = 6
+MAX_TURN = 50
 MAX_FELT = 2**251 + 17 * 2**192 + 1
 
 @pytest.fixture
@@ -21,7 +22,7 @@ async def space_factory(starknet: Starknet) -> StarknetContract:
     rand = await deploy_contract(starknet, 'test/fake_rand.cairo')
     space = await deploy_contract(starknet, 'core/space.cairo')
     dust = await deploy_contract(starknet, 'core/dust.cairo', constructor_calldata=[space.contract_address, rand.contract_address])
-    await space.initialize(dust.contract_address, SPACE_SIZE).invoke(caller_address=ADMIN)
+    await space.initialize(dust.contract_address, SPACE_SIZE, MAX_TURN).invoke(caller_address=ADMIN)
     return space, dust
 
 @pytest.mark.asyncio
@@ -89,6 +90,34 @@ async def test_get_first_empty_cell(space_factory):
     assert px == 0
     assert py == 2
 
+@pytest.mark.asyncio
+async def test_turn_count(starknet: Starknet):
+    rand = await deploy_contract(starknet, 'test/fake_rand.cairo')
+    space = await deploy_contract(starknet, 'core/space.cairo')
+    dust = await deploy_contract(starknet, 'core/dust.cairo', constructor_calldata=[space.contract_address, rand.contract_address])
+
+    MAX_TURN = 2
+    await space.initialize(dust.contract_address, SPACE_SIZE, MAX_TURN).invoke(caller_address=ADMIN)
+
+    execution_info = await space.get_max_turn_count().call()
+    assert execution_info.result.count == MAX_TURN
+    execution_info = await space.get_current_turn().call()
+    assert execution_info.result.num == 0
+
+    # Next turn --------------------------------------------------
+    await space.next_turn().invoke(caller_address=ADMIN)
+
+    execution_info = await space.get_current_turn().call()
+    assert execution_info.result.num == 1
+
+    # Next turn --------------------------------------------------
+    await space.next_turn().invoke(caller_address=ADMIN)
+
+    execution_info = await space.get_current_turn().call()
+    assert execution_info.result.num == 2
+
+    # Next turn --------------------------------------------------
+    await assert_revert(space.next_turn().invoke(caller_address=ADMIN))
 
 @pytest.mark.asyncio
 async def test_next_turn_no_ship(space_factory):
