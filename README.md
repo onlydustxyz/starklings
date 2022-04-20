@@ -33,9 +33,15 @@ conda activate onboarding
 ```
 
 # Initial configuration
+Create a new virtual environment
+```bash
+python3 -m venv env
+source env/bin/activate
+ ```
 
 Once you have activated your virtual environment, install the required dependencies
 ```bash
+python3 -m pip install --upgrade pip
 pip install -r requirements.txt # will install cairo-nile
 nile install # Will install all required dependencies to build/test/deploy starknet contracts
 ```
