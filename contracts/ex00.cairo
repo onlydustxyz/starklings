@@ -7,6 +7,7 @@ from starkware.starknet.common.syscalls import (get_caller_address)
 # Create a storage named `dust` that map an `address` to an `amount` 
 # https://starknet.io/documentation/contracts/#contracts_storage
 # https://www.cairo-lang.org/docs/hello_starknet/intro.html
+# https://www.cairo-lang.org/docs/hello_starknet/user_auth.html#storage-maps
 
 # This code block define an `external` function
 # It can be called by other contracts (wallet or other)
@@ -15,6 +16,7 @@ func collect_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_
         amount : felt):
     
     # Get the address of the account that issued the call
+    # https://www.cairo-lang.org/docs/hello_starknet/user_auth.html#getting-the-caller-address
     let (address) = get_caller_address()
 
     # Read the amount of dust this user own (it's read from the storage you have to create)

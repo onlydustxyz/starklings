@@ -10,7 +10,7 @@ end
 
 # TODO
 # Create two storages `star` and `slot`
-# `star` will map an `address` and a `slot` to a `star`
+# `star` will map an `address` and a `slot` to a `size`
 # `slot` will map an `address` to the next available `slot` this `address` can use
 
 # TODO
@@ -34,6 +34,8 @@ end
 
 # This external allow an user to create a `star` by destroying an amount of `dust`
 # The resulting star will have a `size` equal to the amount of `dust` used
+# By the way, here is some doc about implicit arguments. Worth reading.
+# https://starknet.io/docs/how_cairo_works/builtins.html
 @external
 func light_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         dust_amount: felt):
@@ -43,7 +45,7 @@ func light_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
     # Make sure this amount is at least equal to `dust_amount`
     # Get the caller next available `slot`
     # Update the amount of dust owned by the caller
-    # Register the newly created star
+    # Register the newly created star, with a size equal to `dust_amount`
     # Increment the caller next available slot
     # Emit an `a_star_is_born` even with appropiate valued
 
