@@ -18,29 +18,18 @@
 
 # Environment setup
 
-This repository uses [nile](https://github.com/OpenZeppelin/nile) as CLI tool.
+## Prerequisites
 
-First you need to install python3.8. You can install it using your favorite package manager, or install it in a virtual environment using [conda](https://conda.io/).
+- [Docker](https://docs.docker.com/get-docker/)
+- [VsCode](https://code.visualstudio.com/download)
 
-## Using conda
+## Installation
 
-Install conda following the instructions on [the website](https://docs.conda.io/en/latest/miniconda.html)
+Inside Vscode, open the command prompt with `CMD + Maj + P` and run `Remote-Containers: Reopen in Container`.
 
-Then create a dedicated virtual environment and activate it
+This will create a docker dev container, with the project dependencies installed and the minimal set of VsCode extensions needed to feel at ease coding in this environment.
 
-```bash
-conda create -n onboarding python=3.8
-conda activate onboarding
-```
-
-## Not using conda
-
-If you don't use Conda, you need to create a virtualenv and activate it this way:
-
-```bash
-python3 -m venv env
-source env/bin/activate
-```
+> Once the dev container is created, you can open terminals inside VsCode and the commands will be executed inside the container. Your git preferences are also replicated so you can keep your usual dev workflow.
 
 # How to use this repo
 
@@ -51,10 +40,8 @@ Please checkout the wanted branch to get started:
 ```bash
 git switch basic
 # or
-git switch advanced
+git switch main
 ```
-
-_To be continued..._
 
 # Advance workshop
 
@@ -64,15 +51,6 @@ _To be continued..._
 Run `pytest tests/test_ex00.py` and `pytest tests/test_ex01.py` and code until the tests pass.
 
 Those two contracts (at least our implementations of those) are used to power the game engine you will be interacting with later on.
-
-## Initial configuration
-
-Once you have activated your virtual environment, install the required dependencies
-
-```bash
-pip install -r requirements.txt # will install cairo-nile
-nile install # Will install all required dependencies to build/test/deploy starknet contracts
-```
 
 ## Deploy
 
