@@ -25,6 +25,13 @@
 
 ## Installation
 
+First clone the repo and open VsCode:
+
+```bash
+git clone git@github.com:onlydustxyz/starknet-onboarding.git
+code starknet-onboarding
+```
+
 Inside Vscode, open the command prompt with `CMD + Maj + P` and run `Remote-Containers: Reopen in Container`.
 
 This will create a docker dev container, with the project dependencies installed and the minimal set of VsCode extensions needed to feel at ease coding in this environment.
