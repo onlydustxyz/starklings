@@ -40,26 +40,18 @@ This will create a docker dev container, with the project dependencies installed
 
 # How to use this repo
 
-This tutorial has 2 difficulty levels: basic, advanced.
+## Tutorial
 
-Please checkout the wanted branch to get started:
+This repo has 2 difficulty levels: beginner, advanced, and then a final exercise.
 
-```bash
-git switch basic
-# or
-git switch main
-```
+`contracts<beginner/advanced>/ex` contrains exercises with instructions on what to do.
+Run `pytest tests/test_<beginner/advanced>_ex00.py` and `pytest tests/test_<beginner/advanced>_ex00.py` and code until the tests pass.
 
-# Advance workshop
+Repeat for all contracts. Have fun !
 
-## First two easy exercise to better understand this workshop
+## Final execise
 
-`contracts/ex` contrains two exercises with instructions on what to do.
-Run `pytest tests/test_ex00.py` and `pytest tests/test_ex01.py` and code until the tests pass.
-
-Those two contracts (at least our implementations of those) are used to power the game engine you will be interacting with later on.
-
-## Deploy
+### Deploy
 
 First, start a local node:
 

@@ -8,20 +8,18 @@ from starkware.starknet.public.abi import get_selector_from_name
 
 from fixtures import *
 from deploy import deploy_contract
-from utils import assert_revert, str_to_felt, to_uint
+from utils import assert_revert, str_to_felt, to_uint, MAX_FELT
 
 SPACE_CONTRACT = get_selector_from_name('Space')
 
 
 @pytest.fixture
 async def dust_factory(starknet: Starknet) -> StarknetContract:
-    dust = await deploy_contract(starknet, 'ex/ex00.cairo', constructor_calldata=[SPACE_CONTRACT])
+    dust = await deploy_contract(starknet, 'ex/advanced/ex00.cairo', constructor_calldata=[SPACE_CONTRACT])
     account1 = await deploy_contract(starknet, 'openzeppelin/token/erc721/utils/ERC721_Holder.cairo')
     account2 = await deploy_contract(starknet, 'openzeppelin/token/erc721/utils/ERC721_Holder.cairo')
 
     return dust, account1, account2
-
-MAX_FELT = 2**251 + 17 * 2**192 + 1
 
 #
 # Constructor
