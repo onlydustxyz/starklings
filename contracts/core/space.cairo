@@ -11,7 +11,7 @@ from starkware.cairo.common.math_cmp import is_le
 
 from starkware.cairo.common.bool import TRUE, FALSE
 
-from contracts.models.common import Vector2, Dust
+from contracts.models.common import Vector2, Dust, Cell
 from contracts.interfaces.idust import IDustContract
 from contracts.interfaces.iship import IShip
 from contracts.core.library import MathUtils_clamp_value
@@ -101,12 +101,6 @@ func get_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
         x : felt, y : felt) -> (ship : felt):
     let (ship : felt) = ship_grid.read(x, y)
     return (ship)
-end
-
-struct Cell:
-    member position : Vector2
-    member dust_id : Uint256
-    member ship : felt
 end
 
 @view
