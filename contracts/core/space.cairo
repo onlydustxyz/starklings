@@ -346,7 +346,7 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
     let (ship : felt) = ship_grid.read(moved_dust.position.x, moved_dust.position.y)
     if ship != 0:
         # transfer dust to the ship and process next cell
-        _ship_catches_dust(dust_id, ship)
+        _catch_dust(dust_id, ship)
         _move_dust(x, y + 1)
         return ()
     end
@@ -443,7 +443,7 @@ func _move_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     let (no_dust_found) = uint256_eq(dust_id, Uint256(0, 0))
     if no_dust_found == FALSE:
         # transfer dust to the ship
-        _ship_catches_dust(dust_id, ship)
+        _catch_dust(dust_id, ship)
 
         # remove dust from the grid
         dust_grid.write(nx, ny, Uint256(0, 0))
@@ -500,7 +500,7 @@ func _update_ship_grid{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_c
     return ()
 end
 
-func _ship_catches_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+func _catch_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         dust_id : Uint256, ship : felt):
     let (dust_count) = current_dust_count.read()
     assert_nn(dust_count)
