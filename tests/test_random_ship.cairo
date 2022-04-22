@@ -25,7 +25,7 @@ func test_ship{syscall_ptr : felt*, range_check_ptr}():
         turn_count=10,
         max_dust=10)
     ISpace.add_ship(
-        contract_address=space_address, x=0, y=0, ship_contract=random_move_ship_address)
+        contract_address=space_address, x=1, y=1, ship_contract=random_move_ship_address)
 
     ISpace.next_turn(contract_address=space_address)
     ISpace.next_turn(contract_address=space_address)
