@@ -6,8 +6,9 @@ from starkware.cairo.common.cairo_builtins import HashBuiltin, SignatureBuiltin
 from starkware.cairo.common.uint256 import (
     Uint256, uint256_check, uint256_add, uint256_sub, uint256_mul, uint256_unsigned_div_rem,
     uint256_le, uint256_lt, uint256_eq)
-from starkware.cairo.common.math import assert_nn, assert_le
+from starkware.cairo.common.math import assert_nn, assert_le, unsigned_div_rem
 from starkware.cairo.common.math_cmp import is_le
+from starkware.cairo.common.alloc import alloc
 
 from starkware.cairo.common.bool import TRUE, FALSE
 
@@ -224,7 +225,7 @@ func next_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
 
     _move_dust(0, 0)
     _update_dust_grid(0, 0)
-
+    
     _move_ships(0, 0)
     _update_ship_grid(0, 0)
 
@@ -433,9 +434,11 @@ func _move_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
         _move_ships(x, y + 1)
         return ()
     end
+    
+    let (grid_state_len, grid_state) = get_grid_state()
 
     # Call ship contract
-    let (local new_direction : Vector2) = IShip.move(ship)
+    let (local new_direction : Vector2) = IShip.move(ship, grid_state_len, grid_state)
     let (dx) = MathUtils_clamp_value(new_direction.x, -1, 1)
     let (dy) = MathUtils_clamp_value(new_direction.y, -1, 1)
 
@@ -520,4 +523,28 @@ func _catch_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     let (token_id : Uint256) = _to_external_dust_id(dust_id)
     IDustContract.safeTransferFrom(dust_contract_address, contract_address, ship, token_id)
     return ()
+end
+
+@view
+func get_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (grid_state_len: felt, grid_state: Cell*):
+    alloc_locals
+
+    let (local grid_state : Cell*) = alloc()
+    
+    let (grid_state_len) = _rec_fill_grid_state(0, grid_state, 0)
+    
+    return (grid_state_len, grid_state)
+end
+
+func _rec_fill_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(grid_state_len: felt, grid_state: Cell*, index: felt) -> (len: felt):
+    let (size) = grid_size.read()
+    if size * size == index:
+        return (grid_state_len)
+    end
+    
+    let (x, y) = unsigned_div_rem(index, size)
+    let (cell) = grid.read(Vector2(x=x, y=y))
+
+    assert grid_state[grid_state_len] = cell
+    return _rec_fill_grid_state(grid_state_len + 1, grid_state, index + 1)
 end
