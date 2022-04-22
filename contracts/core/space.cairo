@@ -531,20 +531,20 @@ func get_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_chec
 
     let (local grid_state : Cell*) = alloc()
     
-    let (grid_state_len) = _rec_fill_grid_state(0, grid_state, 0)
+    let (grid_state_len) = _rec_fill_grid_state(0, grid_state)
     
     return (grid_state_len, grid_state)
 end
 
-func _rec_fill_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(grid_state_len: felt, grid_state: Cell*, index: felt) -> (len: felt):
+func _rec_fill_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(grid_state_len: felt, grid_state: Cell*) -> (len: felt):
     let (size) = grid_size.read()
-    if size * size == index:
+    if size * size == grid_state_len:
         return (grid_state_len)
     end
     
-    let (x, y) = unsigned_div_rem(index, size)
+    let (x, y) = unsigned_div_rem(grid_state_len, size)
     let (cell) = grid.read(Vector2(x=x, y=y))
 
     assert grid_state[grid_state_len] = cell
-    return _rec_fill_grid_state(grid_state_len + 1, grid_state, index + 1)
+    return _rec_fill_grid_state(grid_state_len + 1, grid_state)
 end
