@@ -31,19 +31,19 @@ async def test_get_first_non_empty_cell(space_factory):
     space, dust = space_factory
 
     execution_info = await space.get_first_non_empty_cell(0, 0).call()
-    (px, py), (lo, hi), ship = execution_info.result.cell
-    assert px == SPACE_SIZE
-    assert py == 0
-    assert lo == 0
-    assert hi == 0
+    (position_x, position_y), (dust_id_low, dust_id_high), ship = execution_info.result.cell
+    assert position_x == SPACE_SIZE
+    assert position_y == 0
+    assert dust_id_low == 0
+    assert dust_id_high == 0
     assert ship == 0
 
     execution_info = await space.get_first_non_empty_cell(2, 5).call()
-    (px, py), (lo, hi), ship = execution_info.result.cell
-    assert px == SPACE_SIZE
-    assert py == 0
-    assert lo == 0
-    assert hi == 0
+    (position_x, position_y), (dust_id_low, dust_id_high), ship = execution_info.result.cell
+    assert position_x == SPACE_SIZE
+    assert position_y == 0
+    assert dust_id_low == 0
+    assert dust_id_high == 0
     assert ship == 0
 
     # Next turn --------------------------------------------------
@@ -52,19 +52,19 @@ async def test_get_first_non_empty_cell(space_factory):
     await assert_dust_state(dust, 1, Vector2(0, 1), Vector2(0, 1))
 
     execution_info = await space.get_first_non_empty_cell(0, 0).call()
-    (px, py), (lo, hi), ship = execution_info.result.cell
-    assert px == 0
-    assert py == 1
-    assert lo == 1
-    assert hi == 0
+    (position_x, position_y), (dust_id_low, dust_id_high), ship = execution_info.result.cell
+    assert position_x == 0
+    assert position_y == 1
+    assert dust_id_low == 1
+    assert dust_id_high == 0
     assert ship == 0
 
-    execution_info = await space.get_first_non_empty_cell(px, py+1).call()
-    (px, py), (lo, hi), ship = execution_info.result.cell
-    assert px == SPACE_SIZE
-    assert py == 0
-    assert lo == 0
-    assert hi == 0
+    execution_info = await space.get_first_non_empty_cell(position_x, position_y+1).call()
+    (position_x, position_y), (dust_id_low, dust_id_high), ship = execution_info.result.cell
+    assert position_x == SPACE_SIZE
+    assert position_y == 0
+    assert dust_id_low == 0
+    assert dust_id_high == 0
     assert ship == 0
 
 @pytest.mark.asyncio
@@ -72,9 +72,9 @@ async def test_get_first_empty_cell(space_factory):
     space, dust = space_factory
 
     execution_info = await space.get_first_empty_cell(0, 0).call()
-    (px, py) = execution_info.result.position
-    assert px == 0
-    assert py == 0
+    (position_x, position_y) = execution_info.result.position
+    assert position_x == 0
+    assert position_y == 0
 
     # Next turn --------------------------------------------------
     await space.next_turn().invoke(caller_address=ADMIN)
@@ -82,14 +82,14 @@ async def test_get_first_empty_cell(space_factory):
     await assert_dust_state(dust, 1, Vector2(0, 1), Vector2(0, 1))
 
     execution_info = await space.get_first_empty_cell(0, 0).call()
-    (px, py) = execution_info.result.position
-    assert px == 0
-    assert py == 0
+    (position_x, position_y) = execution_info.result.position
+    assert position_x == 0
+    assert position_y == 0
 
     execution_info = await space.get_first_empty_cell(0, 1).call()
-    (px, py) = execution_info.result.position
-    assert px == 0
-    assert py == 2
+    (position_x, position_y) = execution_info.result.position
+    assert position_x == 0
+    assert position_y == 2
 
 @pytest.mark.asyncio
 async def test_turn_count(starknet: Starknet):
