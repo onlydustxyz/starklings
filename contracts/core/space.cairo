@@ -38,14 +38,6 @@ func grid_size() -> (size : felt):
 end
 
 @storage_var
-func dust_grid(x : felt, y : felt) -> (dust_id : Uint256):
-end
-
-@storage_var
-func next_turn_dust_grid(x : felt, y : felt) -> (dust_id : Uint256):
-end
-
-@storage_var
 func grid(position : Vector2) -> (cell : Cell):
 end
 
@@ -93,16 +85,15 @@ end
 @view
 func get_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         x : felt, y : felt) -> (dust_id : Uint256):
-    let (dust_id : Uint256) = dust_grid.read(x, y)
-    return (dust_id)
+    let (cell : Cell) = grid.read(Vector2(x, y))
+    return (dust_id=cell.dust_id)
 end
 
 @view
 func get_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         x : felt, y : felt) -> (ship : felt):
     let (cell : Cell) = grid.read(Vector2(x, y))
-    let ship : felt = cell.ship
-    return (ship)
+    return (ship=cell.ship)
 end
 
 @view
@@ -132,7 +123,7 @@ func get_first_non_empty_cell{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, 
     end
 
     # If there is some dust, return it
-    let (local dust_id : Uint256) = dust_grid.read(x, y)
+    let dust_id : Uint256 = get_dust_at(x, y)
     let (no_dust_found) = uint256_eq(dust_id, Uint256(0, 0))
     if no_dust_found == FALSE:
         return (Cell(Vector2(x, y), dust_id, 0))
@@ -171,7 +162,7 @@ func get_first_empty_cell{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, rang
     end
 
     # If there is some dust, go to next cell
-    let (local dust_id : Uint256) = dust_grid.read(x, y)
+    let (local dust_id : Uint256) = get_dust_at(x, y)
     let (no_dust_found) = uint256_eq(dust_id, Uint256(0, 0))
     if no_dust_found == FALSE:
         let (res : Vector2) = get_first_empty_cell(x, y + 1)
@@ -237,7 +228,7 @@ func add_ship{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}
     end
 
     # Check dust
-    let (dust_id : Uint256) = dust_grid.read(x, y)
+    let (dust_id : Uint256) = get_dust_at(x, y)
     let (no_dust_found) = uint256_eq(dust_id, Uint256(0, 0))
     with_attr error_message("Space: cell is not free"):
         assert no_dust_found = TRUE
@@ -281,7 +272,7 @@ func _spawn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     let (local dust : Dust) = IDustContract.metadata(dust_contract_address, token_id)
 
     # Check there is no dust at this position yet
-    let (other_dust_id) = next_turn_dust_grid.read(dust.position.x, dust.position.y)
+    let (other_dust_id) = _get_next_turn_dust_at(dust.position.x, dust.position.y)
     let (no_dust_found) = uint256_eq(other_dust_id, Uint256(0, 0))
     if no_dust_found == FALSE:
         IDustContract.burn(dust_contract_address, token_id)
@@ -290,7 +281,7 @@ func _spawn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
 
     # Finally, add dust to the grid
     let (internal_dust_id : Uint256) = _to_internal_dust_id(token_id)
-    next_turn_dust_grid.write(dust.position.x, dust.position.y, internal_dust_id)
+    _set_next_turn_dust_at(dust.position.x, dust.position.y, internal_dust_id)
     current_dust_count.write(dust_count + 1)
     return ()
 end
@@ -325,7 +316,7 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
         return ()
     end
 
-    let (local dust_id : Uint256) = dust_grid.read(x, y)
+    let (local dust_id : Uint256) = get_dust_at(x, y)
 
     # if there is no dust here, we go directly to the next cell
     let (no_dust_found) = uint256_eq(dust_id, Uint256(0, 0))
@@ -342,7 +333,7 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
     let (local moved_dust : Dust) = IDustContract.move(dust_contract_address, token_id)
 
     # As the dust position changed, we free its old position
-    next_turn_dust_grid.write(x, y, Uint256(0, 0))
+    _set_next_turn_dust_at(x, y, Uint256(0, 0))
 
     # Check collision with ship
     let (ship : felt) = get_ship_at(moved_dust.position.x, moved_dust.position.y)
@@ -354,7 +345,7 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
     end
 
     # Check collision
-    let (local other_dust_id : Uint256) = next_turn_dust_grid.read(
+    let (local other_dust_id : Uint256) = _get_next_turn_dust_at(
         moved_dust.position.x, moved_dust.position.y)
     let (local no_other_dust) = uint256_eq(other_dust_id, Uint256(0, 0))
 
@@ -371,7 +362,7 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
         tempvar range_check_ptr = range_check_ptr
     else:
         # No collision. Update the dust position in the grid
-        next_turn_dust_grid.write(moved_dust.position.x, moved_dust.position.y, dust_id)
+        _set_next_turn_dust_at(moved_dust.position.x, moved_dust.position.y, dust_id)
         tempvar syscall_ptr = syscall_ptr
         tempvar pedersen_ptr = pedersen_ptr
         tempvar range_check_ptr = range_check_ptr
@@ -396,8 +387,8 @@ func _update_dust_grid{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_c
         return ()
     end
 
-    let (dust_id : Uint256) = next_turn_dust_grid.read(x, y)
-    dust_grid.write(x, y, dust_id)
+    let (dust_id : Uint256) = _get_next_turn_dust_at(x, y)
+    _set_dust_at(x, y, dust_id)
 
     # process the next cell
     _update_dust_grid(x, y + 1)
@@ -443,15 +434,15 @@ func _move_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     let (local nx, ny) = _handle_collision_with_other_ship(x, y, tmp_x, tmp_y)
 
     # Check collision with dust
-    let (dust_id : Uint256) = dust_grid.read(nx, ny)
+    let (dust_id : Uint256) = get_dust_at(nx, ny)
     let (no_dust_found) = uint256_eq(dust_id, Uint256(0, 0))
     if no_dust_found == FALSE:
         # transfer dust to the ship
         _catch_dust(dust_id, ship)
 
         # remove dust from the grid
-        dust_grid.write(nx, ny, Uint256(0, 0))
-        next_turn_dust_grid.write(nx, ny, Uint256(0, 0))
+        _set_dust_at(nx, ny, Uint256(0, 0))
+        _set_next_turn_dust_at(nx, ny, Uint256(0, 0))
 
         # see https://www.cairo-lang.org/docs/how_cairo_works/builtins.html#revoked-implicit-arguments
         tempvar syscall_ptr = syscall_ptr
@@ -547,8 +538,13 @@ end
 func _get_next_turn_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         x : felt, y : felt) -> (ship : felt):
     let (cell : Cell) = next_grid.read(Vector2(x, y))
-    let ship : felt = cell.ship
-    return (ship)
+    return (ship=cell.ship)
+end
+
+func _get_next_turn_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        x : felt, y : felt) -> (dust_id : Uint256):
+    let (cell : Cell) = next_grid.read(Vector2(x, y))
+    return (dust_id=cell.dust_id)
 end
 
 func _set_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
@@ -562,5 +558,19 @@ func _set_next_turn_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, ra
         x : felt, y : felt, ship : felt):
     let position = Vector2(x, y)
     next_grid.write(position, Cell(position, Uint256(0, 0), ship))
+    return ()
+end
+
+func _set_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        x : felt, y : felt, dust_id : Uint256):
+    let position = Vector2(x, y)
+    grid.write(position, Cell(position, dust_id, 0))
+    return ()
+end
+
+func _set_next_turn_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        x : felt, y : felt, dust_id : Uint256):
+    let position = Vector2(x, y)
+    next_grid.write(position, Cell(position, dust_id, 0))
     return ()
 end
