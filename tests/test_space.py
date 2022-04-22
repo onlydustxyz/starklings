@@ -156,19 +156,19 @@ async def test_next_turn_no_ship(space_factory):
     await space.next_turn().invoke(caller_address=ADMIN)
 
     await assert_dust_state(dust, 1, Vector2(0, 4), Vector2(0, 1))
-    # a new dust was spawned
-    await assert_dust_state(dust, 3, Vector2(5, 1), Vector2(0, 1))
+    # a new dust was spawned, with the id of the burnt token
+    await assert_dust_state(dust, 2, Vector2(5, 1), Vector2(0, 1))
 
-    await assert_grid_state(space, [Dust(Vector2(0, 4), 1), Dust(Vector2(5, 1), 3)], [])
+    await assert_grid_state(space, [Dust(Vector2(0, 4), 1), Dust(Vector2(5, 1), 2)], [])
 
     # Next turn --------------------------------------------------
     await space.next_turn().invoke(caller_address=ADMIN)
 
     await assert_dust_state(dust, 1, Vector2(0, 5), Vector2(0, 1))
-    await assert_dust_state(dust, 3, Vector2(5, 2), Vector2(0, 1))
+    await assert_dust_state(dust, 2, Vector2(5, 2), Vector2(0, 1))
     # no new dust was spawned, because it would have been at the same position (5,2)
 
-    await assert_grid_state(space, [Dust(Vector2(0, 5), 1), Dust(Vector2(5, 2), 3)], [])
+    await assert_grid_state(space, [Dust(Vector2(0, 5), 1), Dust(Vector2(5, 2), 2)], [])
 
 
 @pytest.mark.asyncio
