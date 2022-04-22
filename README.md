@@ -20,23 +20,16 @@
 
 ## Prerequisites
 
-- [Docker](https://docs.docker.com/get-docker/)
-- [VsCode](https://code.visualstudio.com/download)
+- [Protostar](https://docs.swmansion.com/protostar/docs/tutorials/installation)
+- [Python <=3.8](https://www.python.org/downloads/)
 
 ## Installation
 
-First clone the repo and open VsCode:
-
-```bash
-git clone git@github.com:onlydustxyz/starknet-onboarding.git
-code starknet-onboarding
-```
-
-Inside Vscode, open the command prompt with `CMD + Maj + P` and run `Remote-Containers: Reopen in Container`.
-
-This will create a docker dev container, with the project dependencies installed and the minimal set of VsCode extensions needed to feel at ease coding in this environment.
-
-> Once the dev container is created, you can open terminals inside VsCode and the commands will be executed inside the container. Your git preferences are also replicated so you can keep your usual dev workflow.
+- `protostar install`
+- `python -m venv env`
+- `source env/bin/activate`
+- `pip install -r requirements.txt`
+- `nile install`
 
 # How to use this repo
 
@@ -93,6 +86,8 @@ nile invoke <space-contract-address> next_turn
 ```
 
 ## Testing
+
+- `make test`
 
 Coding your ship logic can be tricky, we suggest you use tests to check your code.
 
