@@ -50,15 +50,7 @@ func grid(position : Vector2) -> (cell : Cell):
 end
 
 @storage_var
-func ship_grid(x : felt, y : felt) -> (ship : felt):
-end
-
-@storage_var
 func next_grid(position : Vector2) -> (cell : Cell):
-end
-
-@storage_var
-func next_turn_ship_grid(x : felt, y : felt) -> (ship : felt):
 end
 
 @storage_var
@@ -108,7 +100,8 @@ end
 @view
 func get_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         x : felt, y : felt) -> (ship : felt):
-    let (ship : felt) = ship_grid.read(x, y)
+    let (cell : Cell) = grid.read(Vector2(x, y))
+    let ship : felt = cell.ship
     return (ship)
 end
 
@@ -133,7 +126,7 @@ func get_first_non_empty_cell{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, 
     end
 
     # If there is a ship, return it
-    let (ship_at_position : felt) = ship_grid.read(x, y)
+    let (ship_at_position : felt) = get_ship_at(x, y)
     if ship_at_position != 0:
         return (Cell(Vector2(x, y), Uint256(0, 0), ship_at_position))
     end
@@ -171,7 +164,7 @@ func get_first_empty_cell{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, rang
     end
 
     # If there is a ship, go to next cell
-    let (ship_at_position : felt) = ship_grid.read(x, y)
+    let (ship_at_position : felt) = get_ship_at(x, y)
     if ship_at_position != 0:
         let (res : Vector2) = get_first_empty_cell(x, y + 1)
         return (res)
@@ -225,7 +218,7 @@ func next_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
 
     _move_dust(0, 0)
     _update_dust_grid(0, 0)
-    
+
     _move_ships(0, 0)
     _update_ship_grid(0, 0)
 
@@ -238,7 +231,7 @@ func add_ship{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}
     alloc_locals
 
     # Check other ship
-    let (ship_at_position : felt) = ship_grid.read(x, y)
+    let (ship_at_position : felt) = get_ship_at(x, y)
     with_attr error_message("Space: cell is not free"):
         assert ship_at_position = 0
     end
@@ -250,8 +243,8 @@ func add_ship{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}
         assert no_dust_found = TRUE
     end
 
-    next_turn_ship_grid.write(x, y, ship_contract)
-    ship_grid.write(x, y, ship_contract)
+    _set_next_turn_ship_at(x, y, ship_contract)
+    _set_ship_at(x, y, ship_contract)
     return ()
 end
 
@@ -352,7 +345,7 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
     next_turn_dust_grid.write(x, y, Uint256(0, 0))
 
     # Check collision with ship
-    let (ship : felt) = ship_grid.read(moved_dust.position.x, moved_dust.position.y)
+    let (ship : felt) = get_ship_at(moved_dust.position.x, moved_dust.position.y)
     if ship != 0:
         # transfer dust to the ship and process next cell
         _catch_dust(dust_id, ship)
@@ -427,14 +420,14 @@ func _move_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
         return ()
     end
 
-    let (local ship : felt) = ship_grid.read(x, y)
+    let (local ship : felt) = get_ship_at(x, y)
 
     # if there is no ship here, we go directly to the next cell
     if ship == 0:
         _move_ships(x, y + 1)
         return ()
     end
-    
+
     let (grid_state_len, grid_state) = get_grid_state()
 
     # Call ship contract
@@ -471,8 +464,8 @@ func _move_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     end
 
     # Update the dust position in the grid
-    next_turn_ship_grid.write(x, y, 0)
-    next_turn_ship_grid.write(nx, ny, ship)
+    _set_next_turn_ship_at(x, y, 0)
+    _set_next_turn_ship_at(nx, ny, ship)
 
     # process the next cell
     _move_ships(x, y + 1)
@@ -482,7 +475,7 @@ end
 func _handle_collision_with_other_ship{
         syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         old_x : felt, old_y : felt, new_x : felt, new_y : felt) -> (x : felt, y : felt):
-    let (other_ship : felt) = next_turn_ship_grid.read(new_x, new_y)
+    let (other_ship : felt) = _get_next_turn_ship_at(new_x, new_y)
     if other_ship != 0:
         return (old_x, old_y)
     end
@@ -503,8 +496,8 @@ func _update_ship_grid{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_c
         return ()
     end
 
-    let (ship : felt) = next_turn_ship_grid.read(x, y)
-    ship_grid.write(x, y, ship)
+    let (ship : felt) = _get_next_turn_ship_at(x, y)
+    _set_ship_at(x, y, ship)
 
     # process the next cell
     _update_ship_grid(x, y + 1)
@@ -526,25 +519,48 @@ func _catch_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
 end
 
 @view
-func get_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (grid_state_len: felt, grid_state: Cell*):
+func get_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+        grid_state_len : felt, grid_state : Cell*):
     alloc_locals
 
     let (local grid_state : Cell*) = alloc()
-    
+
     let (grid_state_len) = _rec_fill_grid_state(0, grid_state)
-    
+
     return (grid_state_len, grid_state)
 end
 
-func _rec_fill_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(grid_state_len: felt, grid_state: Cell*) -> (len: felt):
+func _rec_fill_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        grid_state_len : felt, grid_state : Cell*) -> (len : felt):
     let (size) = grid_size.read()
     if size * size == grid_state_len:
         return (grid_state_len)
     end
-    
+
     let (x, y) = unsigned_div_rem(grid_state_len, size)
     let (cell) = grid.read(Vector2(x=x, y=y))
 
     assert grid_state[grid_state_len] = cell
     return _rec_fill_grid_state(grid_state_len + 1, grid_state)
+end
+
+func _get_next_turn_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        x : felt, y : felt) -> (ship : felt):
+    let (cell : Cell) = next_grid.read(Vector2(x, y))
+    let ship : felt = cell.ship
+    return (ship)
+end
+
+func _set_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        x : felt, y : felt, ship : felt):
+    let position = Vector2(x, y)
+    grid.write(position, Cell(position, Uint256(0, 0), ship))
+    return ()
+end
+
+func _set_next_turn_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        x : felt, y : felt, ship : felt):
+    let position = Vector2(x, y)
+    next_grid.write(position, Cell(position, Uint256(0, 0), ship))
+    return ()
 end
