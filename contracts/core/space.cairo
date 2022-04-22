@@ -45,7 +45,15 @@ func next_turn_dust_grid(x : felt, y : felt) -> (dust_id : Uint256):
 end
 
 @storage_var
+func grid(position : Vector2) -> (cell : Cell):
+end
+
+@storage_var
 func ship_grid(x : felt, y : felt) -> (ship : felt):
+end
+
+@storage_var
+func next_grid(position : Vector2) -> (cell : Cell):
 end
 
 @storage_var
