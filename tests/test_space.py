@@ -264,21 +264,21 @@ async def assert_grid_state(space, dusts:List[Dust], ships:List[Ship]):
                 assert_ship_in_list(Vector2(position_x, position_y), ship, ships)
 
 def assert_dust_id_in_list(position:Vector2, dust_id_low:int, dusts:List[Dust]):
-    for d in dusts:
-        if d.position.x == position.x and d.position.y == position.y:
-            assert dust_id_low == d.id, 'Expected dust {id}, at position ({x}, {y}). Got {res}'.format(id=dust_id_low, x=position.x, y=position.y, res=d.id)
-            dusts.remove(d)
+    for dust in dusts:
+        if dust.position.x == position.x and dust.position.y == position.y:
+            assert dust_id_low == dust.id, 'Expected dust {id}, at position ({x}, {y}). Got {res}'.format(id=dust_id_low, x=position.x, y=position.y, res=dust.id)
+            dusts.remove(dust)
 
 def assert_ship_in_list(position:Vector2, ship:int, ships:List[Ship]):
-    for s in ships:
-        if s.position.x == position.x and s.position.y == position.y:
-            assert ship == s.id, 'Expected ship {id}, at position ({x}, {y}). Got {res}'.format(id=ship, x=position.x, y=position.y, res=s.id)
-            ships.remove(s)
+    for ship in ships:
+        if ship.position.x == position.x and ship.position.y == position.y:
+            assert ship == ship.id, 'Expected ship {id}, at position ({x}, {y}). Got {res}'.format(id=ship, x=position.x, y=position.y, res=ship.id)
+            ships.remove(ship)
 
 async def assert_dust_state(dust, id:int, position:Vector2, direction:Vector2):
     execution_info = await dust.metadata(to_uint(id-1)).call()
-    _, (px, py), (dx, dy) = execution_info.result.metadata
-    assert px == position.x
-    assert py == position.y
-    assert dx == direction.x % MAX_FELT
-    assert dy == direction.y % MAX_FELT
+    _, (position_x, position_y), (direction_x, direction_y) = execution_info.result.metadata
+    assert position_x == position.x
+    assert position_y == position.y
+    assert direction_x == direction.x % MAX_FELT
+    assert direction_y == direction.y % MAX_FELT
