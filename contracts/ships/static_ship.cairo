@@ -30,15 +30,14 @@ end
 
 @view
 func supportsInterface{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    interfaceId : felt
-) -> (success : felt):
+        interfaceId : felt) -> (success : felt):
     let (success) = ERC165_supports_interface(interfaceId)
     return (success)
 end
 
 @view
 func onERC721Received(
-    operator : felt, from_ : felt, tokenId : Uint256, data_len : felt, data : felt*
-) -> (selector : felt):
+        operator : felt, from_ : felt, tokenId : Uint256, data_len : felt, data : felt*) -> (
+        selector : felt):
     return (IERC721_RECEIVER_ID)
 end
