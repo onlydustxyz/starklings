@@ -10,12 +10,8 @@ from openzeppelin.token.erc721.library import (
     ERC721_name, ERC721_symbol, ERC721_balanceOf, ERC721_ownerOf, ERC721_isApprovedForAll,
     ERC721_setApprovalForAll, ERC721_initializer)
 from openzeppelin.token.erc721_enumerable.library import (
-    ERC721_Enumerable_initializer,
-    ERC721_Enumerable_safeTransferFrom,
-    ERC721_Enumerable_mint,
-    ERC721_Enumerable_burn,
-    ERC721_Enumerable_totalSupply,
-)
+    ERC721_Enumerable_initializer, ERC721_Enumerable_safeTransferFrom, ERC721_Enumerable_mint,
+    ERC721_Enumerable_burn, ERC721_Enumerable_totalSupply)
 
 from openzeppelin.introspection.ERC165 import ERC165_supports_interface
 
