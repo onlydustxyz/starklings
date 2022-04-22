@@ -242,11 +242,11 @@ class Vector2(NamedTuple):
     y: int
 
 class Dust(NamedTuple):
-    pos: Vector2
+    position: Vector2
     id: int
 
 class Ship(NamedTuple):
-    pos: Vector2
+    position: Vector2
     id: int
 
 async def assert_grid_state(space, dusts:List[Dust], ships:List[Ship]):
@@ -265,13 +265,13 @@ async def assert_grid_state(space, dusts:List[Dust], ships:List[Ship]):
 
 def assert_dust_id_in_list(position:Vector2, dust_id_low:int, dusts:List[Dust]):
     for d in dusts:
-        if d.pos.x == position.x and d.pos.y == position.y:
+        if d.position.x == position.x and d.position.y == position.y:
             assert dust_id_low == d.id, 'Expected dust {id}, at position ({x}, {y}). Got {res}'.format(id=dust_id_low, x=position.x, y=position.y, res=d.id)
             dusts.remove(d)
 
 def assert_ship_in_list(position:Vector2, ship:int, ships:List[Ship]):
     for s in ships:
-        if s.pos.x == position.x and s.pos.y == position.y:
+        if s.position.x == position.x and s.position.y == position.y:
             assert ship == s.id, 'Expected ship {id}, at position ({x}, {y}). Got {res}'.format(id=ship, x=position.x, y=position.y, res=s.id)
             ships.remove(s)
 
