@@ -14,7 +14,7 @@ SPACE_CONTRACT = get_selector_from_name('Space')
 
 @pytest.fixture
 async def rand_factory(starknet: Starknet) -> StarknetContract:
-    rand = await deploy_contract(starknet, 'ex/advanced/ex01.cairo')
+    rand = await deploy_contract(starknet, 'advanced/ex01.cairo')
     account1 = await deploy_contract(starknet, 'openzeppelin/token/erc721/utils/ERC721_Holder.cairo')
     account2 = await deploy_contract(starknet, 'openzeppelin/token/erc721/utils/ERC721_Holder.cairo')
 

@@ -15,7 +15,7 @@ SPACE_CONTRACT = get_selector_from_name('Space')
 
 @pytest.fixture
 async def dust_factory(starknet: Starknet) -> StarknetContract:
-    dust = await deploy_contract(starknet, 'ex/advanced/ex00.cairo', constructor_calldata=[SPACE_CONTRACT])
+    dust = await deploy_contract(starknet, 'advanced/ex00.cairo', constructor_calldata=[SPACE_CONTRACT])
     account1 = await deploy_contract(starknet, 'openzeppelin/token/erc721/utils/ERC721_Holder.cairo')
     account2 = await deploy_contract(starknet, 'openzeppelin/token/erc721/utils/ERC721_Holder.cairo')
 
