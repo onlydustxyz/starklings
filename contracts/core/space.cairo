@@ -17,15 +17,6 @@ from contracts.interfaces.idust import IDustContract
 from contracts.interfaces.iship import IShip
 from contracts.core.library import MathUtils_clamp_value
 
-# -------
-# STRUCTS
-# -------
-
-struct CellContent:
-    member dust_id : Uint256
-    member ship : felt
-end
-
 # ------------
 # STORAGE VARS
 # ------------
@@ -47,11 +38,11 @@ func grid_size() -> (size : felt):
 end
 
 @storage_var
-func grid(position : Vector2) -> (cell : CellContent):
+func grid(position : Vector2) -> (cell : Cell):
 end
 
 @storage_var
-func next_grid(position : Vector2) -> (cell : CellContent):
+func next_grid(position : Vector2) -> (cell : Cell):
 end
 
 @storage_var
@@ -94,92 +85,15 @@ end
 @view
 func get_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         x : felt, y : felt) -> (dust_id : Uint256):
-    let (cell : CellContent) = grid.read(Vector2(x, y))
+    let (cell : Cell) = grid.read(Vector2(x, y))
     return (dust_id=cell.dust_id)
 end
 
 @view
 func get_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         x : felt, y : felt) -> (ship : felt):
-    let (cell : CellContent) = grid.read(Vector2(x, y))
+    let (cell : Cell) = grid.read(Vector2(x, y))
     return (ship=cell.ship)
-end
-
-@view
-func get_first_non_empty_cell{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt) -> (cell : Cell):
-    alloc_locals
-    assert_nn(x)
-    assert_nn(y)
-    let (size) = grid_size.read()
-
-    let (x_limit_reached) = is_le(size, x)  # x >= size
-    if x_limit_reached == TRUE:
-        # We reached the last cell, this is the end
-        return (Cell(Vector2(x, y), Uint256(0, 0), 0))
-    end
-    let (y_limit_reached) = is_le(size, y)  # y >= size
-    if y_limit_reached == TRUE:
-        # We reached the end of the column, let's go to the next one
-        let (res : Cell) = get_first_non_empty_cell(x + 1, 0)
-        return (res)
-    end
-
-    # If there is a ship, return it
-    let (ship_at_position : felt) = get_ship_at(x, y)
-    if ship_at_position != 0:
-        return (Cell(Vector2(x, y), Uint256(0, 0), ship_at_position))
-    end
-
-    # If there is some dust, return it
-    let dust_id : Uint256 = get_dust_at(x, y)
-    let (no_dust_found) = uint256_eq(dust_id, Uint256(0, 0))
-    if no_dust_found == FALSE:
-        return (Cell(Vector2(x, y), dust_id, 0))
-    end
-
-    # Process the next cell
-    let (res : Cell) = get_first_non_empty_cell(x, y + 1)
-    return (res)
-end
-
-@view
-func get_first_empty_cell{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt) -> (position : Vector2):
-    alloc_locals
-    assert_nn(x)
-    assert_nn(y)
-    let (size) = grid_size.read()
-
-    # We reached the last cell, this is the end
-    let (x_limit_reached) = is_le(size, x)  # x >= size
-    if x_limit_reached == TRUE:
-        return (Vector2(-1, -1))
-    end
-    # We reached the end of the column, let's go to the next one
-    let (y_limit_reached) = is_le(size, y)  # y >= size
-    if y_limit_reached == TRUE:
-        let (res : Vector2) = get_first_empty_cell(x + 1, 0)
-        return (res)
-    end
-
-    # If there is a ship, go to next cell
-    let (ship_at_position : felt) = get_ship_at(x, y)
-    if ship_at_position != 0:
-        let (res : Vector2) = get_first_empty_cell(x, y + 1)
-        return (res)
-    end
-
-    # If there is some dust, go to next cell
-    let (local dust_id : Uint256) = get_dust_at(x, y)
-    let (no_dust_found) = uint256_eq(dust_id, Uint256(0, 0))
-    if no_dust_found == FALSE:
-        let (res : Vector2) = get_first_empty_cell(x, y + 1)
-        return (res)
-    end
-
-    # There is nothing here, return the current cell position
-    return (Vector2(x, y))
 end
 
 @view
@@ -406,7 +320,7 @@ func _update_grid{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_
         return ()
     end
 
-    let (cell : CellContent) = next_grid.read(Vector2(x, y))
+    let (cell : Cell) = next_grid.read(Vector2(x, y))
     grid.write(Vector2(x, y), cell)
 
     # process the next cell
@@ -514,48 +428,48 @@ func _rec_fill_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, rang
     end
 
     let (y, x) = unsigned_div_rem(grid_state_len, size)
-    let (cell : CellContent) = grid.read(Vector2(x=x, y=y))
+    let (cell : Cell) = grid.read(Vector2(x=x, y=y))
 
-    assert grid_state[grid_state_len] = Cell(Vector2(x, y), cell.dust_id, cell.ship)
+    assert grid_state[grid_state_len] = Cell(cell.dust_id, cell.ship)
     return _rec_fill_grid_state(grid_state_len + 1, grid_state)
 end
 
 func _get_next_turn_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         x : felt, y : felt) -> (ship : felt):
-    let (cell : CellContent) = next_grid.read(Vector2(x, y))
+    let (cell : Cell) = next_grid.read(Vector2(x, y))
     return (ship=cell.ship)
 end
 
 func _get_next_turn_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         x : felt, y : felt) -> (dust_id : Uint256):
-    let (cell : CellContent) = next_grid.read(Vector2(x, y))
+    let (cell : Cell) = next_grid.read(Vector2(x, y))
     return (dust_id=cell.dust_id)
 end
 
 func _set_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         x : felt, y : felt, ship : felt):
     let position = Vector2(x, y)
-    grid.write(position, CellContent(Uint256(0, 0), ship))
+    grid.write(position, Cell(Uint256(0, 0), ship))
     return ()
 end
 
 func _set_next_turn_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         x : felt, y : felt, ship : felt):
     let position = Vector2(x, y)
-    next_grid.write(position, CellContent(Uint256(0, 0), ship))
+    next_grid.write(position, Cell(Uint256(0, 0), ship))
     return ()
 end
 
 func _set_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         x : felt, y : felt, dust_id : Uint256):
     let position = Vector2(x, y)
-    grid.write(position, CellContent(dust_id, 0))
+    grid.write(position, Cell(dust_id, 0))
     return ()
 end
 
 func _set_next_turn_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         x : felt, y : felt, dust_id : Uint256):
     let position = Vector2(x, y)
-    next_grid.write(position, CellContent(dust_id, 0))
+    next_grid.write(position, Cell(dust_id, 0))
     return ()
 end

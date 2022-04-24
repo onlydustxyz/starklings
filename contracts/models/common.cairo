@@ -14,7 +14,6 @@ struct Dust:
 end
 
 struct Cell:
-    member position : Vector2
     member dust_id : Uint256
     member ship : felt
 end
