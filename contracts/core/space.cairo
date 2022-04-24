@@ -182,6 +182,18 @@ func get_first_empty_cell{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, rang
     return (Vector2(x, y))
 end
 
+@view
+func get_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+        grid_state_len : felt, grid_state : Cell*):
+    alloc_locals
+
+    let (local grid_state : Cell*) = alloc()
+
+    let (grid_state_len) = _rec_fill_grid_state(0, grid_state)
+
+    return (grid_state_len, grid_state)
+end
+
 # -----------
 # CONSTRUCTOR
 # -----------
@@ -494,18 +506,6 @@ func _catch_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     return ()
 end
 
-@view
-func get_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
-        grid_state_len : felt, grid_state : Cell*):
-    alloc_locals
-
-    let (local grid_state : Cell*) = alloc()
-
-    let (grid_state_len) = _rec_fill_grid_state(0, grid_state)
-
-    return (grid_state_len, grid_state)
-end
-
 func _rec_fill_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         grid_state_len : felt, grid_state : Cell*) -> (len : felt):
     let (size) = grid_size.read()
@@ -513,7 +513,7 @@ func _rec_fill_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, rang
         return (grid_state_len)
     end
 
-    let (x, y) = unsigned_div_rem(grid_state_len, size)
+    let (y, x) = unsigned_div_rem(grid_state_len, size)
     let (cell : CellContent) = grid.read(Vector2(x=x, y=y))
 
     assert grid_state[grid_state_len] = Cell(Vector2(x, y), cell.dust_id, cell.ship)
