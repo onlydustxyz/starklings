@@ -76,6 +76,11 @@ end
 func ship_player_(ship_address: felt) -> (res : felt):
 end
 
+# Player scores
+@storage_var
+func player_score_(player_address: felt) -> (res : felt):
+end
+
 # -----
 # VIEWS
 # -----
@@ -167,6 +172,14 @@ func ship_player{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
 ) -> (ship_player : felt):
     let (ship_player) = ship_player_.read(ship_adress)
     return (ship_player)
+end
+
+@view
+func player_score{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    player_adress: felt
+) -> (player_score : felt):
+    let (player_score) = player_score_.read(player_adress)
+    return (player_score)
 end
 
 # -----
@@ -277,6 +290,26 @@ end
 # -----
 # INTERNAL FUNCTIONS
 # -----
+
+func _increase_score{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    player_address: felt, points: felt
+):
+    let (current_score) = player_score_.read(player_address)
+    tempvar new_score
+    assert new_score = current_score + points
+    player_score_.write(player_address, new_score)
+    return ()
+end
+
+func _decrease_score{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    player_address: felt, points: felt
+):
+    let (current_score) = player_score_.read(player_address)
+    tempvar new_score
+    assert new_score = current_score - points
+    player_score_.write(player_address, new_score)
+    return ()
+end
 
 func _only_tournament_open{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
 ):
