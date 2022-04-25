@@ -7,7 +7,7 @@ def run(nre : NileRuntimeEnvironment):
 
     print("Compiling contracts…")
 
-    nre.compile(["contracts/tournament/RankedSeason.cairo"])
+    nre.compile(["contracts/tournament/Tournament.cairo"])
 
     print("Deploying contracts…")
 
@@ -16,7 +16,7 @@ def run(nre : NileRuntimeEnvironment):
     season_name = str(str_to_felt("StarkNet Hackathon AMS"))
     reward_token_address = "0x00746683a9dd511d66aaa7ecd2c6d8019c11105061a18cf63a82ab5d2bcbfc1d"
     params = [owner, season_id, season_name, reward_token_address]
-    address, abi = nre.deploy("RankedSeason", params, alias="ranked_season")
+    address, abi = nre.deploy("Tournament", params, alias="tournament")
     print(f"ABI: {abi},\nContract address: {address}")
 
 # Auxiliary functions
