@@ -1,21 +1,11 @@
 %lang starknet
 
-from contracts.models.common import Cell
+from contracts.models.common import ShipInit
 
 @contract_interface
 namespace ISpace:
-    func initialize(rand_contract_address, size, turn_count, max_dust) -> ():
-    end
-
-    func add_ship(x, y, ship_contract):
-    end
-
-    func next_turn() -> ():
-    end
-    
-    func play_game() -> ():
-    end
-
-    func get_grid_state() -> (grid_state_len : felt, grid_state : Cell*):
+    func play_game(
+            rand_contract_address : felt, size : felt, turn_count : felt, max_dust : felt,
+            ships_len : felt, ships : ShipInit*) -> ():
     end
 end
