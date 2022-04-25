@@ -4,8 +4,8 @@
     <a href="http://makeapullrequest.com">
       <img alt="pull requests welcome badge" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat">
     </a>
-    <a href="https://twitter.com/intent/follow?screen_name=Magicdust_gg">
-        <img src="https://img.shields.io/twitter/follow/Magicdust_gg?style=social&logo=twitter"
+    <a href="https://twitter.com/intent/follow?screen_name=onlydust_xyz">
+        <img src="https://img.shields.io/twitter/follow/onlydust_xyz?style=social&logo=twitter"
             alt="follow on Twitter"></a>
     <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"
             alt="License"></a>
