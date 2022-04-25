@@ -17,7 +17,14 @@ func test_tournament{syscall_ptr : felt*, range_check_ptr}():
     %{ 
         ids.tournament_address = deploy_contract(
             "./contracts/tournament/Tournament.cairo", 
-            [1, 2, 3, ids.only_dust_token_address]
+            [
+                42, # Owner
+                2, # Tournament Id
+                3, # Tournament Name
+                ids.only_dust_token_address, # ERC20 token address of the reward
+                2, # Ships per battle
+                8  # Maximum Ships per tournament
+            ]
         ).contract_address 
     %}
     %{ mock_call(ids.only_dust_token_address, "balanceOf", [100, 0]) %}
@@ -26,14 +33,20 @@ func test_tournament{syscall_ptr : felt*, range_check_ptr}():
     assert reward_total_amount.high = 0
 
     %{ stop_expecting_revert = expect_revert(error_message="Ownable: caller is not the owner") %}
-    ITournament.open_tournament(tournament_address)
+    ITournament.open_tournament_registration(tournament_address)
     %{ stop_expecting_revert() %}   
 
     # Changes caller address to owner
-    %{ start_prank(1) %}
-    ITournament.open_tournament(tournament_address)
+    %{ start_prank(42) %}
+    ITournament.open_tournament_registration(tournament_address)
     let (is_open) = ITournament.is_tournament_open(tournament_address)
-    assert is_open = FALSE
+    assert is_open = TRUE
     %{ stop_prank() %}
+
+    # Player 1 registers ship 1
+    %{ start_prank(1) %}
+    ITournament.register(tournament_address, 1)
+    %{ stop_prank() %}
+
     return ()
 end
