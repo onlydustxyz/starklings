@@ -1,4 +1,4 @@
 cairo-lang
 cairo-nile
 openzeppelin-cairo-contracts
-
+marshmallow-dataclass==8.5.3
