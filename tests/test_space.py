@@ -112,7 +112,7 @@ async def test_add_ship(starknet: Starknet, space_factory):
     ship2 = await deploy_contract(starknet, 'ships/static_ship.cairo')
 
     await space.add_ship(3, 3, ship1.contract_address).invoke(caller_address=ADMIN)
-    await assert_grid_state(space, [Cell(Vector2(3, 3), 0, ship1.contract_address)])
+    await assert_grid_state(space, [Cell(Vector2(3, 3), 0, 1)])
 
     await assert_revert(space.add_ship(3, 3, ship2.contract_address).invoke(caller_address=ADMIN))
 
@@ -122,7 +122,7 @@ async def test_next_turn_with_ship(starknet: Starknet, space_factory):
     space, dust = space_factory
     ship: StarknetContract = await deploy_contract(starknet, 'ships/static_ship.cairo')
     await space.add_ship(0, 3, ship.contract_address).invoke(caller_address=ADMIN)
-    ship_assertion = Cell(Vector2(0, 3), 0, ship.contract_address)
+    ship_assertion = Cell(Vector2(0, 3), 0, 1)
 
     # Assert grid is empty
     await assert_grid_state(space, [ship_assertion])
@@ -178,7 +178,7 @@ class Vector2(NamedTuple):
 class Cell(NamedTuple):
     position: Vector2
     dust_id: int
-    ship: int
+    ship_id: int
 
 
 async def assert_grid_state(space, cells: List[Cell]):
@@ -188,7 +188,7 @@ async def assert_grid_state(space, cells: List[Cell]):
         index_in_state = SPACE_SIZE * cell.position.y + cell.position.x
         cell_in_state = grid_state[index_in_state]
         assert cell.dust_id == cell_in_state.dust_id.low
-        assert cell.ship == cell_in_state.ship
+        assert cell.ship_id == cell_in_state.ship_id
 
 async def assert_dust_state(dust, id:int, position:Vector2, direction:Vector2):
     execution_info = await dust.metadata(to_uint(id)).call()

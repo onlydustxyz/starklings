@@ -15,5 +15,5 @@ end
 
 struct Cell:
     member dust_id : Uint256
-    member ship : felt
+    member ship_id : felt
 end
