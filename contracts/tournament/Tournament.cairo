@@ -175,6 +175,7 @@ end
 # EXTERNAL FUNCTIONS
 # -----
 
+# Open tournament registration
 @external
 func open_tournament_registration{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
 ) -> (success: felt):
@@ -183,6 +184,7 @@ func open_tournament_registration{syscall_ptr : felt*, pedersen_ptr : HashBuilti
     return (TRUE)
 end
 
+# Close tournament registration
 @external
 func close_tournament_registration{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
 ) -> (success: felt):
@@ -191,6 +193,8 @@ func close_tournament_registration{syscall_ptr : felt*, pedersen_ptr : HashBuilt
     return (TRUE)
 end
 
+# Register a ship for the caller address
+# @param ship_address: the address of the ship smart contract
 @external
 func register{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     ship_address: felt
