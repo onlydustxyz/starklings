@@ -44,7 +44,7 @@ func test_move_towards_single_dust_above{
 
         from helpers import empty_grid, store_grid, dust_cell, ship_cell
         grid = empty_grid(10)
-        grid[0][5] = dust_cell(1)
+        grid[0][5] = dust_cell()
         grid[3][5] = ship_cell(ids.SHIP_ID)
         store_grid(grid, ids, segments, memory)
     %}
@@ -71,7 +71,7 @@ func test_move_towards_single_dust_below{
 
         from helpers import empty_grid, store_grid, dust_cell, ship_cell
         grid = empty_grid(10)
-        grid[5][5] = dust_cell(1)
+        grid[5][5] = dust_cell()
         grid[3][5] = ship_cell(ids.SHIP_ID)
         store_grid(grid, ids, segments, memory)
     %}
@@ -98,7 +98,7 @@ func test_move_towards_single_dust_on_the_left{
 
         from helpers import empty_grid, store_grid, dust_cell, ship_cell
         grid = empty_grid(10)
-        grid[3][1] = dust_cell(1)
+        grid[3][1] = dust_cell()
         grid[3][5] = ship_cell(ids.SHIP_ID)
         store_grid(grid, ids, segments, memory)
     %}
@@ -125,7 +125,7 @@ func test_move_towards_single_dust_on_the_right{
 
         from helpers import empty_grid, store_grid, dust_cell, ship_cell
         grid = empty_grid(10)
-        grid[3][7] = dust_cell(1)
+        grid[3][7] = dust_cell()
         grid[3][5] = ship_cell(ids.SHIP_ID)
         store_grid(grid, ids, segments, memory)
     %}
@@ -152,7 +152,7 @@ func test_move_towards_single_dust_on_top_left{
 
         from helpers import empty_grid, store_grid, dust_cell, ship_cell
         grid = empty_grid(10)
-        grid[0][0] = dust_cell(1)
+        grid[0][0] = dust_cell()
         grid[3][5] = ship_cell(ids.SHIP_ID)
         store_grid(grid, ids, segments, memory)
     %}
@@ -179,7 +179,7 @@ func test_move_towards_single_dust_on_top_right{
 
         from helpers import empty_grid, store_grid, dust_cell, ship_cell
         grid = empty_grid(10)
-        grid[0][7] = dust_cell(1)
+        grid[0][7] = dust_cell()
         grid[3][5] = ship_cell(ids.SHIP_ID)
         store_grid(grid, ids, segments, memory)
     %}
@@ -206,7 +206,7 @@ func test_move_towards_single_dust_on_bottom_left{
 
         from helpers import empty_grid, store_grid, dust_cell, ship_cell
         grid = empty_grid(10)
-        grid[7][0] = dust_cell(1)
+        grid[7][0] = dust_cell()
         grid[3][5] = ship_cell(ids.SHIP_ID)
         store_grid(grid, ids, segments, memory)
     %}
@@ -233,7 +233,7 @@ func test_move_towards_single_dust_on_bottom_right{
 
         from helpers import empty_grid, store_grid, dust_cell, ship_cell
         grid = empty_grid(10)
-        grid[7][9] = dust_cell(1)
+        grid[7][9] = dust_cell()
         grid[3][5] = ship_cell(ids.SHIP_ID)
         store_grid(grid, ids, segments, memory)
     %}
@@ -260,11 +260,11 @@ func test_move_towards_nearest_dust{
 
         from helpers import empty_grid, store_grid, dust_cell, ship_cell
         grid = empty_grid(10) 
-        grid[0][1] = dust_cell(1)
-        grid[2][2] = dust_cell(2)
-        grid[4][3] = dust_cell(3)
-        grid[3][9] = dust_cell(4)
-        grid[5][5] = dust_cell(5)
+        grid[0][1] = dust_cell()
+        grid[2][2] = dust_cell()
+        grid[4][3] = dust_cell()
+        grid[3][9] = dust_cell()
+        grid[5][5] = dust_cell()
 
         grid[1][7] = ship_cell(ids.SHIP_ID)
 
