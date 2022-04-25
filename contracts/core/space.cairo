@@ -51,7 +51,7 @@ func ship(id : felt) -> (contract_address : felt):
 end
 
 @storage_var
-func dust_generation_seed() -> (count : felt):
+func dust_generation_seed() -> (seed : felt):
 end
 
 @storage_var
