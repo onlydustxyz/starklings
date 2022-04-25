@@ -373,7 +373,7 @@ func _move_ships{
 
     # Call ship contract
     let (ship_contract) = ship.read(ship_id)
-    let (local new_direction : Vector2) = IShip.move(ship_contract, grid_state_len, grid_state)
+    let (local new_direction : Vector2) = IShip.move(ship_contract, grid_state_len, grid_state, ship_id)
     let (direction_x) = MathUtils_clamp_value(new_direction.x, -1, 1)
     let (direction_y) = MathUtils_clamp_value(new_direction.y, -1, 1)
 
