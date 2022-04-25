@@ -13,18 +13,16 @@ func test_ship{syscall_ptr : felt*, range_check_ptr}():
 
     local space_address : felt
     local rand_address : felt
-    local dust_address : felt
     local random_move_ship_address : felt
 
     # We deploy contract and put its address into a local variable. Second argument is calldata array
-    %{ ids.space_address = deploy_contract("./contracts/core/space.cairo", []).contract_address %}
     %{ ids.rand_address = deploy_contract("./contracts/test/fake_rand.cairo", []).contract_address %}
-    %{ ids.dust_address = deploy_contract("./contracts/core/dust.cairo", [ids.space_address, ids.rand_address]).contract_address %}
+    %{ ids.space_address = deploy_contract("./contracts/core/space.cairo", [ids.rand_address]).contract_address %}
     %{ ids.random_move_ship_address = deploy_contract("./contracts/ships/random_move_ship.cairo", [ids.rand_address]).contract_address %}
 
     ISpace.initialize(
         contract_address=space_address,
-        dust_contract_address=dust_address,
+        rand_contract_address=rand_address,
         size=5,
         turn_count=10,
         max_dust=10)
@@ -36,7 +34,7 @@ func test_ship{syscall_ptr : felt*, range_check_ptr}():
 
     let ship_cell : Cell = grid_state[8]  # x=3, y=1
     assert_eq(ship_cell.dust.present, 0)
-    assert_eq(ship_cell.ship_id, random_move_ship_address)
+    assert_eq(ship_cell.ship_id, 1)
 
     ISpace.next_turn(contract_address=space_address)
 
