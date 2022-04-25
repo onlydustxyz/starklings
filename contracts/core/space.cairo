@@ -108,6 +108,38 @@ func get_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_chec
     return (grid_state_len, grid_state)
 end
 
+# ------
+# EVENTS
+# ------
+
+@event
+func dust_spawned(space_contract_address: felt, dust_id: Uint256, position: Vector2):
+end
+
+@event
+func dust_destroyed(space_contract_address: felt, dust_id: Uint256, position: Vector2):
+end
+
+@event
+func dust_moved(space_contract_address: felt, dust_id: Uint256, previous_position: Vector2, position: Vector2):
+end
+
+@event
+func ship_added(space_contract_address: felt, ship_id: felt, position: Vector2):
+end
+
+@event
+func ship_moved(space_contract_address: felt, ship_id: felt, previous_position: Vector2, position: Vector2):
+end
+
+@event
+func score_changed(space_contract_address: felt, ship_id: felt, score: felt):
+end
+
+@event
+func match_finished(space_contract_address: felt, winner_ship_id: felt):
+end
+
 # -----------
 # CONSTRUCTOR
 # -----------
@@ -169,6 +201,10 @@ func add_ship{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}
 
     _set_next_turn_ship_at(x, y, ship_contract)
     _set_ship_at(x, y, ship_contract)
+    
+    let (space_contract_address) = get_contract_address()
+    # TODO: When each ship have it's unique identifier inside space, use this instead of `0`
+    ship_added.emit(space_contract_address, 0, Vector2(x, y))
     return ()
 end
 
@@ -215,6 +251,10 @@ func _spawn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     # Finally, add dust to the grid
     _set_next_turn_dust_at(dust.position.x, dust.position.y, token_id)
     current_dust_count.write(dust_count + 1)
+    
+    let (contract_address) = get_contract_address()
+    dust_spawned.emit(contract_address, token_id, dust.position)
+
     return ()
 end
 
@@ -273,10 +313,7 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
 
     if no_other_dust == FALSE:
         # In case of collision, burn the current dust
-        IDustContract.burn(dust_contract_address, dust_id)
-        let (dust_count) = current_dust_count.read()
-        assert_nn(dust_count)
-        current_dust_count.write(dust_count - 1)
+        _burn_dust(dust_id)
 
         # see https://www.cairo-lang.org/docs/how_cairo_works/builtins.html#revoked-implicit-arguments
         tempvar syscall_ptr = syscall_ptr
@@ -285,6 +322,10 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
     else:
         # No collision. Update the dust position in the grid
         _set_next_turn_dust_at(moved_dust.position.x, moved_dust.position.y, dust_id)
+
+        let (space_contract_address) = get_contract_address()
+        dust_moved.emit(space_contract_address, dust_id, Vector2(x, y), moved_dust.position)
+
         tempvar syscall_ptr = syscall_ptr
         tempvar pedersen_ptr = pedersen_ptr
         tempvar range_check_ptr = range_check_ptr
@@ -345,26 +386,30 @@ func _move_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
 
     # Call ship contract
     let (local new_direction : Vector2) = IShip.move(ship, grid_state_len, grid_state)
-    let (dx) = MathUtils_clamp_value(new_direction.x, -1, 1)
-    let (dy) = MathUtils_clamp_value(new_direction.y, -1, 1)
+    let (direction_x) = MathUtils_clamp_value(new_direction.x, -1, 1)
+    let (direction_y) = MathUtils_clamp_value(new_direction.y, -1, 1)
 
     # Compute new position and check borders
-    let (tmp_x) = MathUtils_clamp_value(x + dx, 0, size - 1)
-    let (tmp_y) = MathUtils_clamp_value(y + dy, 0, size - 1)
+    let (candidate_x) = MathUtils_clamp_value(x + direction_x, 0, size - 1)
+    let (candidate_y) = MathUtils_clamp_value(y + direction_y, 0, size - 1)
 
     # Check collision with other ship
-    let (local nx, ny) = _handle_collision_with_other_ship(x, y, tmp_x, tmp_y)
+    let (local new_x, new_y) = _handle_collision_with_other_ship(x, y, candidate_x, candidate_y)
+
+    let (space_contract_address) = get_contract_address()
+    # TODO: When ship have unique ID, use this instead of `0`
+    ship_moved.emit(space_contract_address, 0, Vector2(x, y), Vector2(new_x, new_y))
 
     # Check collision with dust
-    let dust_id : Uint256 = get_dust_at(nx, ny)
+    let dust_id : Uint256 = get_dust_at(new_x, new_y)
     let (no_dust_found) = uint256_eq(dust_id, Uint256(0, 0))
     if no_dust_found == FALSE:
         # transfer dust to the ship
         _catch_dust(dust_id, ship)
 
         # remove dust from the grid
-        _set_dust_at(nx, ny, Uint256(0, 0))
-        _set_next_turn_dust_at(nx, ny, Uint256(0, 0))
+        _set_dust_at(new_x, new_y, Uint256(0, 0))
+        _set_next_turn_dust_at(new_x, new_y, Uint256(0, 0))
 
         # see https://www.cairo-lang.org/docs/how_cairo_works/builtins.html#revoked-implicit-arguments
         tempvar syscall_ptr = syscall_ptr
@@ -378,7 +423,7 @@ func _move_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
 
     # Update the dust position in the grid
     _set_next_turn_ship_at(x, y, 0)
-    _set_next_turn_ship_at(nx, ny, ship)
+    _set_next_turn_ship_at(new_x, new_y, ship)
 
     # process the next cell
     _move_ships(x, y + 1)
@@ -401,10 +446,30 @@ func _catch_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     assert_nn(dust_count)
     current_dust_count.write(dust_count - 1)
 
-    let (contract_address) = get_contract_address()
+    let (space_contract_address) = get_contract_address()
     let (dust_contract_address) = dust_contract.read()
 
-    IDustContract.safeTransferFrom(dust_contract_address, contract_address, ship, dust_id)
+    IDustContract.safeTransferFrom(dust_contract_address, space_contract_address, ship, dust_id)
+    
+    # Emit event so the front can remove it from the grid
+    let (dust) = IDustContract.metadata(dust_contract_address, dust_id)
+    dust_destroyed.emit(space_contract_address, dust_id, dust.position)
+    
+    return ()
+end
+
+func _burn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(dust_id: Uint256):
+    let (space_contract_address) = get_contract_address()
+    let (dust_contract_address) = dust_contract.read()
+    
+    let (dust) = IDustContract.metadata(dust_contract_address, dust_id)
+    IDustContract.burn(dust_contract_address, dust_id)
+    let (dust_count) = current_dust_count.read()
+    assert_nn(dust_count)
+    current_dust_count.write(dust_count - 1)
+    
+    dust_destroyed.emit(space_contract_address, dust_id, dust.position)
+    
     return ()
 end
 
