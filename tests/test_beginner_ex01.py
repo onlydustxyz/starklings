@@ -23,6 +23,7 @@ async def dust_factory(starknet: Starknet) -> StarknetContract:
 
 
 @pytest.mark.asyncio
+@pytest.mark.workshop
 async def test_collect_dust(dust_factory):
     contract, a, _ = dust_factory
 
@@ -33,6 +34,7 @@ async def test_collect_dust(dust_factory):
 
 
 @pytest.mark.asyncio
+@pytest.mark.workshop
 async def test_light_star(dust_factory):
     contract, a, _ = dust_factory
 
