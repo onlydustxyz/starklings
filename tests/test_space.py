@@ -52,7 +52,8 @@ async def test_turn_count(starknet: Starknet):
     assert execution_info.result.num == 2
 
     # Next turn --------------------------------------------------
-    await assert_revert(space.next_turn().invoke(caller_address=ADMIN))
+    execution_info = await space.next_turn().invoke(caller_address=ADMIN)
+    assert execution_info.result.is_finished == 1
 
 @pytest.mark.asyncio
 async def test_next_turn_no_ship(space_factory):

@@ -156,10 +156,17 @@ end
 
 # This function must be invoked to process the next turn of the game.
 @external
-func next_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+func next_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (is_finished: felt):
+    alloc_locals
+
     let (turn) = current_turn.read()
     let (max_turn) = max_turn_count.read()
-    assert_le(turn + 1, max_turn)
+
+    let (local still_palying) = is_le(turn + 1, max_turn)
+    if still_palying == 0:
+        return (1)
+    end
+
     current_turn.write(turn + 1)
 
     _spawn_dust()
@@ -171,7 +178,7 @@ func next_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
     end
     _update_grid(0, 0)
 
-    return ()
+    return (0)
 end
 
 @external
