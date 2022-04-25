@@ -3,7 +3,7 @@ name: Tests
 on: [push]
 
 jobs:
-  tests:
+  python-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -17,3 +17,17 @@ jobs:
           nile install
       - name: Run unit tests
         run: pytest tests
+  protostar-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install protostar
+        run: |
+          curl -L https://raw.githubusercontent.com/software-mansion/protostar/master/install.sh | bash
+      - name: Update env variables
+        run: |
+          source /home/runner/.bashrc | bash
+      - name: Install protostar dependencies
+        run: /home/runner/.protostar/dist/protostar/protostar install
+      - name: Run protostar tests
+        run: /home/runner/.protostar/dist/protostar/protostar test ./tests --cairo-path lib/cairo_contracts/src
