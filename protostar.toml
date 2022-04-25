@@ -20,3 +20,6 @@ static_ship = [
 only_dust = [
     "./contracts/token/OnlyDust.cairo",
 ]
+ranked_season = [
+    "./contracts/tournament/RankedSeason.cairo",
+]
