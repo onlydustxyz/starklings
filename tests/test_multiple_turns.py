@@ -9,7 +9,7 @@ from deploy import deploy_contract
 
 ADMIN = get_selector_from_name('admin')
 SPACE_SIZE = 5
-MAX_TURN = 20
+MAX_TURN = 10
 MAX_DUST = 100
 MAX_FELT = 2**251 + 17 * 2**192 + 1
 
@@ -22,8 +22,8 @@ async def space_factory(starknet: Starknet) -> StarknetContract:
 async def test_multiple_turns(starknet: Starknet, space_factory):
     space = space_factory
 
-    rand = await deploy_contract(starknet, 'test/fake_rand.cairo')
-    ship = await deploy_contract(starknet, 'ships/random_move_ship.cairo', constructor_calldata=[rand.contract_address])
+    rand = await deploy_contract(starknet, 'core/rand.cairo')
+    ship = await deploy_contract(starknet, 'ships/basic_ship.cairo')
 
     await space.play_game(
         rand.contract_address, 
@@ -32,8 +32,5 @@ async def test_multiple_turns(starknet: Starknet, space_factory):
         MAX_DUST, 
         [
             (ship.contract_address, (1, 3)),
-            (ship.contract_address, (2, 3)),
-            (ship.contract_address, (3, 3)),
-            (ship.contract_address, (4, 3)),
             (ship.contract_address, (5, 3))
         ]).invoke(caller_address=ADMIN)
