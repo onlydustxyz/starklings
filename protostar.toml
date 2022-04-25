@@ -14,6 +14,9 @@ rand = [
 static_ship = [
     "./contracts/ships/static_ship.cairo",
 ]
+basic_ship = [
+    "./contracts/ships/basic_ship.cairo",
+]
 only_dust = [
     "./contracts/token/OnlyDust.cairo",
 ]

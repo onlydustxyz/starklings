@@ -1,8 +1,6 @@
-from utils import to_uint
-
-def dust_cell(dust_id): return [to_uint(dust_id), 0]
-def ship_cell(ship_id): return [to_uint(0), ship_id]
-def empty_cell(): return [to_uint(0), 0]
+def dust_cell(): return [(1, (0,0)), 0]
+def ship_cell(ship_id): return [(0, (0,0)), ship_id]
+def empty_cell(): return [(0, (0,0)), 0]
 
 def empty_grid(grid_size):
     return [[empty_cell() for _ in range(grid_size)] for _ in range(grid_size)]
@@ -16,13 +14,15 @@ def store_grid(grid, ids, segments, memory):
     ids.grid = grid_ptr = segments.add()
     for i in range(len(flat_grid)):
         dust, ship = flat_grid[i]
-        memory[grid_ptr + 3*i] = dust[0]
-        memory[grid_ptr + 3*i + 1] = dust[1]
-        memory[grid_ptr + 3*i + 2] = ship
+        present, direction = dust
+        memory[grid_ptr + 4*i] = present
+        memory[grid_ptr + 4*i + 1] = direction[0]
+        memory[grid_ptr + 4*i + 2] = direction[1]
+        memory[grid_ptr + 4*i + 3] = ship
 
 def display(cell):
     dust, ship = cell
-    return '*' if dust[0] > 0 else str(ship) if ship > 0 else ' '
+    return '*' if dust[0] == 1 else str(ship) if ship > 0 else ' '
 
 def print_grid(grid):
     grid_len = len(grid)

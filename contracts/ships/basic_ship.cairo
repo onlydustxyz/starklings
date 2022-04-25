@@ -1,7 +1,6 @@
 %lang starknet
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
-from starkware.cairo.common.uint256 import Uint256, uint256_eq
 from starkware.cairo.common.math import unsigned_div_rem, assert_nn, sqrt, assert_le
 
 from starkware.cairo.common.math_cmp import is_le, is_nn
@@ -65,7 +64,7 @@ func _find_ship_loop{
         return (position=Vector2(-1, -1))  # Not found
     end
 
-    let current_ship_id = [current_grid].ship
+    let current_ship_id = [current_grid].ship_id
     if current_ship_id == ship_id:
         return _to_position(grid_len - current_grid_len)  # Found
     end
@@ -90,32 +89,32 @@ func _find_nearest_dust_loop{
         return (position=nearest_dust)  # End of the grid
     end
 
-    local new_nearest_dust : Vector2
-
-    let (dust_here) = _check_if_dust_in_cell(current_grid)
-    if dust_here == 1:
-        let (current_dust) = _to_position(grid_len - current_grid_len)
-        let (nearest_dust) = _keep_nearest(from_, nearest_dust, current_dust)
-
-        assert new_nearest_dust = nearest_dust
-    else:
-        assert new_nearest_dust = nearest_dust
-    end
+    let (nearest_dust) = _try_select_nearest_dust(
+        current_grid_len, current_grid, from_, nearest_dust)
 
     # Keep searching
     return _find_nearest_dust_loop(
-        current_grid_len - 1, current_grid + Cell.SIZE, from_, new_nearest_dust)
+        current_grid_len - 1, current_grid + Cell.SIZE, from_, nearest_dust)
 end
 
-func _check_if_dust_in_cell{
+func _try_select_nearest_dust{
         syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr, grid_len : felt,
-        grid : Cell*, self : felt}(current_grid : Cell*) -> (exists : felt):
-    let dust = [current_grid].dust_id
-    let (no_dust) = uint256_eq(dust, Uint256(0, 0))
-    return (exists=1 - no_dust)
+        grid : Cell*, self : felt}(
+        current_grid_len : felt, current_grid : Cell*, from_ : Vector2, nearest_dust : Vector2) -> (
+        new_nearest_dust : Vector2):
+    if [current_grid].dust.present == 0:
+        # No dust in current cell, keep the previous one
+        return (new_nearest_dust=nearest_dust)
+    end
+
+    # Compare distances and pick the nearest one
+    let (current_dust) = _to_position(grid_len - current_grid_len)
+    let (nearest_dust) = _select_nearest_dust(from_, nearest_dust, current_dust)
+
+    return (new_nearest_dust=nearest_dust)
 end
 
-func _keep_nearest{
+func _select_nearest_dust{
         syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr, grid_len : felt,
         grid : Cell*, self : felt}(
         from_ : Vector2, nearest_dust : Vector2, candidate_dust : Vector2) -> (position : Vector2):
