@@ -7,9 +7,16 @@ def run(nre : NileRuntimeEnvironment):
 
     print("Compiling contracts…")
 
-    nre.compile(["contracts/tournament/Tournament.cairo"])
+    nre.compile(
+        [
+            "contracts/tournament/Tournament.cairo",
+            "contracts/core/rand.cairo"
+        ]
+    )
 
     print("Deploying contracts…")
+    
+    rand, _ = nre.deploy("rand", [])
 
     owner = "0x2fe83d7f898b275ca82ccaf6146b49f4827fb1b1415d3973d714874588b313d"
     season_id = "1"
@@ -18,7 +25,7 @@ def run(nre : NileRuntimeEnvironment):
     boarding_pass_token_address = "0x00348f5537be66815eb7de63295fcb5d8b8b2ffe09bb712af4966db7cbb04a95"
     ships_per_battle = "2"
     max_players = "16"
-    params = [owner, season_id, season_name, reward_token_address, boarding_pass_token_address, ships_per_battle, max_players]
+    params = [owner, season_id, season_name, reward_token_address, boarding_pass_token_address, rand, ships_per_battle, max_players]
     address, abi = nre.deploy("Tournament", params, alias="tournament")
     print(f"ABI: {abi},\nContract address: {address}")
 

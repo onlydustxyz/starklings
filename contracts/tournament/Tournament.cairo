@@ -41,6 +41,11 @@ end
 func boarding_pass_token_address_() -> (res : felt):
 end
 
+# Random generator contract address
+@storage_var
+func rand_contract_address_() -> (res : felt):
+end
+
 # Whether or not registration are open
 @storage_var
 func is_tournament_open_() -> (res : felt):
@@ -100,6 +105,13 @@ func boarding_pass_token_address{syscall_ptr : felt*, pedersen_ptr : HashBuiltin
 ) -> (boarding_pass_token_address : felt):
     let (boarding_pass_token_address) = boarding_pass_token_address_.read()
     return (boarding_pass_token_address)
+end
+
+@view
+func rand_contract_address{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+) -> (rand_contract_address : felt):
+    let (rand_contract_address) = rand_contract_address_.read()
+    return (rand_contract_address)
 end
 
 @view
@@ -172,6 +184,7 @@ func constructor{
         tournament_name: felt,
         reward_token_address: felt,
         boarding_pass_token_address: felt,
+        rand_contract_address: felt,
         ships_per_battle: felt,
         max_ships_per_tournament: felt
     ):
@@ -180,6 +193,7 @@ func constructor{
     tournament_name_.write(tournament_name)
     reward_token_address_.write(reward_token_address)
     boarding_pass_token_address_.write(boarding_pass_token_address)
+    rand_contract_address_.write(rand_contract_address)
     ships_per_battle_.write(ships_per_battle)
     max_ships_per_tournament_.write(max_ships_per_tournament)
     player_count_.write(0)
@@ -205,6 +219,14 @@ func close_tournament_registration{syscall_ptr : felt*, pedersen_ptr : HashBuilt
 ) -> (success: felt):
     Ownable_only_owner()
     _only_tournament_open()
+    return (TRUE)
+end
+
+
+# Start the tournament
+@external
+func start{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (success: felt):
+    # TODO: implement start function
     return (TRUE)
 end
 

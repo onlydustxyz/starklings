@@ -8,12 +8,15 @@ from starkware.starknet.common.syscalls import get_contract_address, get_caller_
 
 const ONLY_DUST_TOKEN_ADDRESS = 0x3fe90a1958bb8468fb1b62970747d8a00c435ef96cda708ae8de3d07f1bb56b
 const BOARDING_TOKEN_ADDRESS = 0x00348f5537be66815eb7de63295fcb5d8b8b2ffe09bb712af4966db7cbb04a95
+const RAND_ADDRESS = 0x00348f5537be66815eb7de63295fcb5d8b8b2ffe09bb712af4966db7cbb04a91
 
 @external
 func test_tournament{syscall_ptr : felt*, range_check_ptr}():
     alloc_locals
     tempvar only_dust_token_address = ONLY_DUST_TOKEN_ADDRESS
     tempvar boarding_pass_token_address = BOARDING_TOKEN_ADDRESS
+    tempvar rand_address = RAND_ADDRESS
+
     local tournament_address : felt
     %{ 
         ids.tournament_address = deploy_contract(
@@ -23,7 +26,8 @@ func test_tournament{syscall_ptr : felt*, range_check_ptr}():
                 2, # Tournament Id
                 3, # Tournament Name
                 ids.only_dust_token_address, # ERC20 token address of the reward
-                ids.boarding_pass_token_address, #ERC721 token address for access control
+                ids.boarding_pass_token_address, # ERC721 token address for access control
+                ids.rand_address, # Random generator contract address
                 2, # Ships per battle
                 8  # Maximum Ships per tournament
             ]
