@@ -38,5 +38,13 @@ func test_ship{syscall_ptr : felt*, range_check_ptr}():
     assert_eq(ship_cell.dust_id.low, 0)
     assert_eq(ship_cell.ship, random_move_ship_address)
 
+    ISpace.next_turn(contract_address=space_address)
+
+    let (grid_state_len, grid_state) = ISpace.get_grid_state(contract_address=space_address)
+
+    let dust_cell : Cell = grid_state[5]  # x=0, y=1
+    assert_eq(dust_cell.dust_id.low, 1)
+    assert_eq(dust_cell.ship, 0)
+
     return ()
 end
