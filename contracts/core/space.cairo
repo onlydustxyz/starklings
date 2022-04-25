@@ -50,11 +50,11 @@ func max_dust_count() -> (count : felt):
 end
 
 @storage_var
-func ship_counter() -> (id: felt):
+func ship_counter() -> (id : felt):
 end
 
 @storage_var
-func ship(id: felt) -> (contract_address: felt):
+func ship(id : felt) -> (contract_address : felt):
 end
 
 # -----
@@ -69,6 +69,13 @@ func get_max_turn_count{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_
 end
 
 @view
+func get_max_dust_count{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+        count : felt):
+    let (count) = max_dust_count.read()
+    return (count)
+end
+
+@view
 func get_current_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
         num : felt):
     let (num) = current_turn.read()
@@ -79,6 +86,12 @@ end
 func get_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
         grid_state_len : felt, grid_state : Cell*):
     return _get_grid_state()
+end
+
+@view
+func get_grid_size{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+        size : felt):
+    return _get_grid_size()
 end
 
 # ------
@@ -178,12 +191,12 @@ func add_ship{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}
     with_attr error_message("Space: cell is not free"):
         assert no_dust_found = TRUE
     end
-    
+
     # Register the ship contract under a new id
     let (last_ship_id) = ship_counter.read()
     let new_id = last_ship_id + 1
     ship.write(new_id, ship_contract)
-    
+
     # Put the ship on grids
     _set_next_turn_ship_at(x, y, new_id)
     _set_ship_at(x, y, new_id)
@@ -373,7 +386,8 @@ func _move_ships{
 
     # Call ship contract
     let (ship_contract) = ship.read(ship_id)
-    let (local new_direction : Vector2) = IShip.move(ship_contract, grid_state_len, grid_state, ship_id)
+    let (local new_direction : Vector2) = IShip.move(
+        ship_contract, grid_state_len, grid_state, ship_id)
     let (direction_x) = MathUtils_clamp_value(new_direction.x, -1, 1)
     let (direction_y) = MathUtils_clamp_value(new_direction.y, -1, 1)
 
