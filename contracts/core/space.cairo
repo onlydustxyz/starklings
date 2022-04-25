@@ -35,10 +35,6 @@ func current_turn() -> (num : felt):
 end
 
 @storage_var
-func dust_contract() -> (contract : felt):
-end
-
-@storage_var
 func current_dust_count() -> (count : felt):
 end
 
@@ -63,7 +59,7 @@ func rand_contract() -> (rand_contract : felt):
 end
 
 @storage_var
-func scores(ship : felt) -> (score : felt):
+func scores(ship_id : felt) -> (score : felt):
 end
 
 # -----
@@ -101,6 +97,13 @@ end
 func get_grid_size{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
         size : felt):
     return _get_grid_size()
+end
+
+@view
+func get_score{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(ship_id : felt) -> (
+        score : felt):
+    let (score) = scores.read(ship_id)
+    return (score=score)
 end
 
 # ------
@@ -150,9 +153,9 @@ end
 
 @external
 func initialize{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        dust_contract_address : felt, size : felt, turn_count : felt, max_dust : felt):
+        rand_contract_address : felt, size : felt, turn_count : felt, max_dust : felt):
     _only_not_initialized()
-    dust_contract.write(dust_contract_address)
+    rand_contract.write(rand_contract_address)
     grid_size.write(size)
     max_turn_count.write(turn_count)
     max_dust_count.write(max_dust)
@@ -247,8 +250,6 @@ func _spawn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
         return ()
     end
 
-    let (dust_contract_address) = dust_contract.read()
-
     # Create a new Dust at random position on a border and with random direction
     let (local dust : Dust, position : Vector2) = _generate_random_dust_on_border()
 
@@ -294,8 +295,7 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
     end
 
     # There is some dust here! Let's move it
-    let (local dust_contract_address) = dust_contract.read()
-    let (local new_position : Vector2) = _compute_new_dust_position(dust, Vector2(x, y)) #TODO
+    let (local new_position : Vector2) = _compute_new_dust_position(dust, Vector2(x, y))
 
     # As the dust position changed, we free its old position
     _clear_next_turn_dust_at(x, y)
@@ -442,15 +442,15 @@ func _handle_collision_with_other_ship{
 end
 
 func _catch_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        dust : Dust, position : Vector2, ship : felt):
+        dust : Dust, position : Vector2, ship_id : felt):
     assert dust.present = TRUE
 
     let (dust_count) = current_dust_count.read()
     assert_nn(dust_count)
     current_dust_count.write(dust_count - 1)
 
-    let (current_score) = scores.read(ship)
-    scores.write(ship, current_score + 1)
+    let (current_score) = scores.read(ship_id)
+    scores.write(ship_id, current_score + 1)
 
     # Emit event so the front can remove it from the grid
     let (contract_address) = get_contract_address()
