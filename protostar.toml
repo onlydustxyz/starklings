@@ -8,9 +8,6 @@ libs_path = "lib"
 space = [
     "./contracts/core/space.cairo",
 ]
-dust = [
-    "./contracts/core/dust.cairo",
-]
 rand = [
     "./contracts/core/rand.cairo",
 ]

@@ -5,12 +5,16 @@ from starkware.cairo.common.math import unsigned_div_rem, assert_lt
 from starkware.cairo.common.bitwise import bitwise_and
 from starkware.cairo.common.hash import hash2
 from starkware.starknet.common.syscalls import (
-    get_block_number, get_block_timestamp, get_caller_address, get_tx_info)
+    get_block_number,
+    get_block_timestamp,
+    get_caller_address,
+    get_tx_info,
+)
 
 @view
 func generate_random_numbers{
-        pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr,
-        bitwise_ptr : BitwiseBuiltin*}(seed : felt) -> (r1, r2, r3, r4, r5):
+    pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr, bitwise_ptr : BitwiseBuiltin*
+}(seed : felt) -> (r1, r2, r3, r4, r5):
     let (random) = hash2{hash_ptr=pedersen_ptr}(seed, 12345)
 
     let (block_number) = get_block_number()

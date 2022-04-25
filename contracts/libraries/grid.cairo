@@ -1,9 +1,7 @@
 %lang starknet
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin, SignatureBuiltin
-from starkware.cairo.common.uint256 import (
-    Uint256, uint256_check, uint256_add, uint256_sub, uint256_mul, uint256_unsigned_div_rem,
-    uint256_le, uint256_lt, uint256_eq)
+from starkware.cairo.common.bool import TRUE, FALSE
 from contracts.models.common import Vector2, Dust, Cell
 from starkware.cairo.common.alloc import alloc
 from starkware.cairo.common.math import unsigned_div_rem
@@ -27,9 +25,9 @@ func _get_grid_size{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_chec
 end
 
 func _get_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt) -> (dust_id : Uint256):
+        x : felt, y : felt) -> (dust : Dust):
     let (cell : Cell) = grid.read(Vector2(x, y))
-    return (dust_id=cell.dust_id)
+    return (dust=cell.dust)
 end
 
 func _get_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
@@ -45,36 +43,50 @@ func _get_next_turn_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, ra
 end
 
 func _get_next_turn_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt) -> (dust_id : Uint256):
+        x : felt, y : felt) -> (dust : Dust):
     let (cell : Cell) = next_grid.read(Vector2(x, y))
-    return (dust_id=cell.dust_id)
+    return (dust=cell.dust)
 end
 
 func _set_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         x : felt, y : felt, ship_id : felt):
     let position = Vector2(x, y)
-    grid.write(position, Cell(Uint256(0, 0), ship_id))
+    grid.write(position, Cell(Dust(FALSE, Vector2(0,0)), ship_id))
     return ()
 end
 
 func _set_next_turn_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         x : felt, y : felt, ship_id : felt):
     let position = Vector2(x, y)
-    next_grid.write(position, Cell(Uint256(0, 0), ship_id))
+    next_grid.write(position, Cell(Dust(FALSE, Vector2(0,0)), ship_id))
     return ()
 end
 
 func _set_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt, dust_id : Uint256):
+        x : felt, y : felt, dust : Dust):
     let position = Vector2(x, y)
-    grid.write(position, Cell(dust_id, 0))
+    grid.write(position, Cell(dust, 0))
+    return ()
+end
+
+func _clear_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        x : felt, y : felt):
+    let position = Vector2(x, y)
+    grid.write(position, Cell(Dust(FALSE, Vector2(0,0)), 0))
     return ()
 end
 
 func _set_next_turn_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt, dust_id : Uint256):
+        x : felt, y : felt, dust : Dust):
     let position = Vector2(x, y)
-    next_grid.write(position, Cell(dust_id, 0))
+    next_grid.write(position, Cell(dust, 0))
+    return ()
+end
+
+func _clear_next_turn_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        x : felt, y : felt):
+    let position = Vector2(x, y)
+    next_grid.write(position, Cell(Dust(FALSE, Vector2(0,0)), 0))
     return ()
 end
 
@@ -99,6 +111,6 @@ func _rec_fill_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, rang
     let (y, x) = unsigned_div_rem(grid_state_len, size)
     let (cell : Cell) = grid.read(Vector2(x=x, y=y))
 
-    assert grid_state[grid_state_len] = Cell(cell.dust_id, cell.ship_id)
+    assert grid_state[grid_state_len] = Cell(cell.dust, cell.ship_id)
     return _rec_fill_grid_state(grid_state_len + 1, grid_state)
 end

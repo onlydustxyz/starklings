@@ -2,10 +2,7 @@
 %lang starknet
 
 from starkware.starknet.common.syscalls import get_contract_address
-from starkware.cairo.common.cairo_builtins import HashBuiltin, SignatureBuiltin
-from starkware.cairo.common.uint256 import (
-    Uint256, uint256_check, uint256_add, uint256_sub, uint256_mul, uint256_unsigned_div_rem,
-    uint256_le, uint256_lt, uint256_eq)
+from starkware.cairo.common.cairo_builtins import HashBuiltin, SignatureBuiltin, BitwiseBuiltin
 from starkware.cairo.common.math import assert_nn, assert_le, unsigned_div_rem
 from starkware.cairo.common.math_cmp import is_le
 from starkware.cairo.common.alloc import alloc
@@ -13,13 +10,13 @@ from starkware.cairo.common.alloc import alloc
 from starkware.cairo.common.bool import TRUE, FALSE
 
 from contracts.models.common import Vector2, Dust, Cell
-from contracts.interfaces.idust import IDustContract
 from contracts.interfaces.iship import IShip
-from contracts.core.library import MathUtils_clamp_value
+from contracts.interfaces.irand import IRandom
+from contracts.core.library import MathUtils_clamp_value, MathUtils_random_in_range, MathUtils_random_direction
 from contracts.libraries.grid import (
     grid, grid_size, next_grid, _get_grid_size, _get_ship_at, _get_dust_at, _get_next_turn_dust_at,
     _get_next_turn_ship_at, _set_dust_at, _set_ship_at, _set_next_turn_dust_at,
-    _set_next_turn_ship_at, _get_grid_state)
+    _set_next_turn_ship_at, _get_grid_state, _clear_next_turn_dust_at, _clear_dust_at)
 
 # ------------
 # STORAGE VARS
@@ -55,6 +52,18 @@ end
 
 @storage_var
 func ship(id : felt) -> (contract_address : felt):
+end
+
+@storage_var
+func dust_generation_seed() -> (count : felt):
+end
+
+@storage_var
+func rand_contract() -> (rand_contract : felt):
+end
+
+@storage_var
+func scores(ship : felt) -> (score : felt):
 end
 
 # -----
@@ -99,16 +108,16 @@ end
 # ------
 
 @event
-func dust_spawned(space_contract_address : felt, dust_id : Uint256, position : Vector2):
+func dust_spawned(space_contract_address : felt, direction : Vector2, position : Vector2):
 end
 
 @event
-func dust_destroyed(space_contract_address : felt, dust_id : Uint256, position : Vector2):
+func dust_destroyed(space_contract_address : felt, position : Vector2):
 end
 
 @event
 func dust_moved(
-        space_contract_address : felt, dust_id : Uint256, previous_position : Vector2,
+        space_contract_address : felt, previous_position : Vector2,
         position : Vector2):
 end
 
@@ -156,7 +165,7 @@ end
 
 # This function must be invoked to process the next turn of the game.
 @external
-func next_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (is_finished: felt):
+func next_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr, bitwise_ptr : BitwiseBuiltin*}() -> (is_finished: felt):
     alloc_locals
 
     let (turn) = current_turn.read()
@@ -193,10 +202,9 @@ func add_ship{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}
     end
 
     # Check dust
-    let dust_id : Uint256 = _get_dust_at(x, y)
-    let (no_dust_found) = uint256_eq(dust_id, Uint256(0, 0))
+    let dust : Dust = _get_dust_at(x, y)
     with_attr error_message("Space: cell is not free"):
-        assert no_dust_found = TRUE
+        assert dust.present = FALSE
     end
 
     # Register the ship contract under a new id
@@ -228,9 +236,9 @@ func _only_not_initialized{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, ran
     return ()
 end
 
-func _spawn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+func _spawn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr, bitwise_ptr : BitwiseBuiltin*}():
     alloc_locals
-    let (local size) = grid_size.read()
+    let (local size) = _get_grid_size()
     let (local dust_count) = current_dust_count.read()
     let (max_dust) = max_dust_count.read()
 
@@ -241,42 +249,31 @@ func _spawn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
 
     let (dust_contract_address) = dust_contract.read()
 
-    # Create a new Dust at random position and with random direction
-    let (token_id : Uint256) = IDustContract.mint_random_on_border(dust_contract_address, size)
-
-    # Get created Dust metadata to retrieve its position
-    let (local dust : Dust) = IDustContract.metadata(dust_contract_address, token_id)
+    # Create a new Dust at random position on a border and with random direction
+    let (local dust : Dust, position : Vector2) = _generate_random_dust_on_border()
 
     # Check there is no dust at this position yet
-    let other_dust_id : Uint256 = _get_next_turn_dust_at(dust.position.x, dust.position.y)
-    let (no_dust_found) = uint256_eq(other_dust_id, Uint256(0, 0))
-    if no_dust_found == FALSE:
-        IDustContract.burn(dust_contract_address, token_id)
+    let other_dust : Dust = _get_next_turn_dust_at(position.x, position.y)
+    if other_dust.present == TRUE:
+        # There is already some dust here, so let's just skip dust spawning this turn
         return ()
     end
 
     # Finally, add dust to the grid
-    _set_next_turn_dust_at(dust.position.x, dust.position.y, token_id)
+    _set_next_turn_dust_at(position.x, position.y, dust)
     current_dust_count.write(dust_count + 1)
 
     let (contract_address) = get_contract_address()
-    dust_spawned.emit(contract_address, token_id, dust.position)
+    dust_spawned.emit(contract_address, dust.direction, position)
 
     return ()
-end
-
-# Returns internal id of dust - as stored in the grid - from its token id.
-func _to_internal_dust_id{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        token_id : Uint256) -> (internal_dust_id : Uint256):
-    let (internal_dust_id : Uint256, _) = uint256_add(token_id, Uint256(1, 0))
-    return (internal_dust_id)
 end
 
 # Recursive function that goes through the entire grid and updates dusts position
 func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         x : felt, y : felt):
     alloc_locals
-    let (size) = grid_size.read()
+    let (size) = _get_grid_size()
 
     # We reached the last cell, this is the end
     if x == size:
@@ -288,40 +285,36 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
         return ()
     end
 
-    let (local dust_id : Uint256) = _get_dust_at(x, y)
+    let (local dust : Dust) = _get_dust_at(x, y)
 
     # if there is no dust here, we go directly to the next cell
-    let (no_dust_found) = uint256_eq(dust_id, Uint256(0, 0))
-    if no_dust_found == TRUE:
+    if dust.present == FALSE:
         _move_dust(x, y + 1)
         return ()
     end
 
     # There is some dust here! Let's move it
     let (local dust_contract_address) = dust_contract.read()
-    let (local moved_dust : Dust) = IDustContract.move(dust_contract_address, dust_id)
+    let (local new_position : Vector2) = _compute_new_dust_position(dust, Vector2(x, y)) #TODO
 
     # As the dust position changed, we free its old position
-    _set_next_turn_dust_at(x, y, Uint256(0, 0))
+    _clear_next_turn_dust_at(x, y)
 
     # Check collision with ship
-    let (ship_id : felt) = _get_ship_at(moved_dust.position.x, moved_dust.position.y)
+    let (ship_id : felt) = _get_ship_at(new_position.x, new_position.y)
     if ship_id != 0:
         # transfer dust to the ship and process next cell
-        let (ship_contract) = ship.read(ship_id)
-        _catch_dust(dust_id, ship_contract)
+        _catch_dust(dust, Vector2(new_position.x, new_position.y), ship_id)
         _move_dust(x, y + 1)
         return ()
     end
 
     # Check collision
-    let (local other_dust_id : Uint256) = _get_next_turn_dust_at(
-        moved_dust.position.x, moved_dust.position.y)
-    let (local no_other_dust) = uint256_eq(other_dust_id, Uint256(0, 0))
+    let (local other_dust : Dust) = _get_next_turn_dust_at(new_position.x, new_position.y)
 
-    if no_other_dust == FALSE:
-        # In case of collision, burn the current dust
-        _burn_dust(dust_id)
+    if other_dust.present == TRUE:
+        # In case of collision, do not assign the dust to the cell. The dust is lost forever.
+        _burn_dust(dust, Vector2(x, y))
 
         # see https://www.cairo-lang.org/docs/how_cairo_works/builtins.html#revoked-implicit-arguments
         tempvar syscall_ptr = syscall_ptr
@@ -329,10 +322,10 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
         tempvar range_check_ptr = range_check_ptr
     else:
         # No collision. Update the dust position in the grid
-        _set_next_turn_dust_at(moved_dust.position.x, moved_dust.position.y, dust_id)
+        _set_next_turn_dust_at(new_position.x, new_position.y, dust)
 
         let (space_contract_address) = get_contract_address()
-        dust_moved.emit(space_contract_address, dust_id, Vector2(x, y), moved_dust.position)
+        dust_moved.emit(space_contract_address, Vector2(x, y), new_position)
 
         tempvar syscall_ptr = syscall_ptr
         tempvar pedersen_ptr = pedersen_ptr
@@ -346,7 +339,7 @@ end
 
 func _update_grid{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         x : felt, y : felt):
-    let (size) = grid_size.read()
+    let (size) = _get_grid_size()
 
     # We reached the last cell, this is the end
     if x == size:
@@ -371,7 +364,7 @@ func _move_ships{
         syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr, grid_state_len,
         grid_state : Cell*}(x : felt, y : felt):
     alloc_locals
-    let (size) = grid_size.read()
+    let (size) = _get_grid_size()
 
     # We reached the last cell, this is the end
     if x == size:
@@ -410,15 +403,14 @@ func _move_ships{
     ship_moved.emit(space_contract_address, 0, Vector2(x, y), Vector2(new_x, new_y))
 
     # Check collision with dust
-    let dust_id : Uint256 = _get_dust_at(new_x, new_y)
-    let (no_dust_found) = uint256_eq(dust_id, Uint256(0, 0))
-    if no_dust_found == FALSE:
+    let (dust : Dust) = _get_dust_at(new_x, new_y)
+    if dust.present == TRUE:
         # transfer dust to the ship
-        _catch_dust(dust_id, ship_contract)
+        _catch_dust(dust, Vector2(new_x, new_y), ship_id)
 
         # remove dust from the grid
-        _set_dust_at(new_x, new_y, Uint256(0, 0))
-        _set_next_turn_dust_at(new_x, new_y, Uint256(0, 0))
+        _clear_dust_at(new_x, new_y)
+        _clear_next_turn_dust_at(new_x, new_y)
 
         # see https://www.cairo-lang.org/docs/how_cairo_works/builtins.html#revoked-implicit-arguments
         tempvar syscall_ptr = syscall_ptr
@@ -450,35 +442,144 @@ func _handle_collision_with_other_ship{
 end
 
 func _catch_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        dust_id : Uint256, ship : felt):
+        dust : Dust, position : Vector2, ship : felt):
+    assert dust.present = TRUE
+
     let (dust_count) = current_dust_count.read()
     assert_nn(dust_count)
     current_dust_count.write(dust_count - 1)
 
-    let (space_contract_address) = get_contract_address()
-    let (dust_contract_address) = dust_contract.read()
-
-    IDustContract.safeTransferFrom(dust_contract_address, space_contract_address, ship, dust_id)
+    let (current_score) = scores.read(ship)
+    scores.write(ship, current_score + 1)
 
     # Emit event so the front can remove it from the grid
-    let (dust) = IDustContract.metadata(dust_contract_address, dust_id)
-    dust_destroyed.emit(space_contract_address, dust_id, dust.position)
+    let (contract_address) = get_contract_address()
+    dust_destroyed.emit(contract_address, position)
 
     return ()
 end
 
 func _burn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        dust_id : Uint256):
-    let (space_contract_address) = get_contract_address()
-    let (dust_contract_address) = dust_contract.read()
+        dust : Dust, position : Vector2):
+    assert dust.present = TRUE
 
-    let (dust) = IDustContract.metadata(dust_contract_address, dust_id)
-    IDustContract.burn(dust_contract_address, dust_id)
     let (dust_count) = current_dust_count.read()
     assert_nn(dust_count)
     current_dust_count.write(dust_count - 1)
 
-    dust_destroyed.emit(space_contract_address, dust_id, dust.position)
+    let (contract_address) = get_contract_address()
+    dust_destroyed.emit(contract_address, position)
 
     return ()
+end
+
+# Generate random dust given a space size
+func _generate_random_dust_on_border{
+        pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr,
+        bitwise_ptr : BitwiseBuiltin*}() -> (dust : Dust, position : Vector2):
+    alloc_locals
+    local dust : Dust
+    assert dust.present = TRUE
+
+    let (seed) = dust_generation_seed.read()
+    dust_generation_seed.write(seed + 1)
+
+    let (rand_contract_address) = rand_contract.read()
+    let (r1, r2, r3, r4, r5) = IRandom.generate_random_numbers(
+        rand_contract_address, seed)
+
+    let (direction : Vector2) = MathUtils_random_direction(r1, r2)
+    assert dust.direction = direction
+
+    let (position : Vector2) = _generate_random_position_on_border(r3, r4, r5)
+
+    return (dust=dust, position=position)
+end
+
+# Generate a random position on a given border (top, left, right, bottom)
+func _generate_random_position_on_border{
+        pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr}(r1, r2, r3) -> (position : Vector2):
+    alloc_locals
+    let (space_size) = _get_grid_size()
+
+    # x is 0 or space_size - 1
+    let (x) = MathUtils_random_in_range(r1, 0, 1)
+    local x = x * (space_size - 1)
+
+    # y is in [0, space_size-1]
+    let (y) = MathUtils_random_in_range(r2, 0, space_size - 1)
+
+    return _shuffled_position(x, y, r3)
+end
+
+# given x, y return randomly Position(x,y) or Position(y,x)
+func _shuffled_position{pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr}(
+        x : felt, y : felt, r) -> (position : Vector2):
+    alloc_locals
+    local position : Vector2
+
+    let (on_horizontal_border) = MathUtils_random_in_range(r, 0, 1)
+    if on_horizontal_border == 0:
+        assert position.x = x
+        assert position.y = y
+    else:
+        assert position.x = y
+        assert position.y = x
+    end
+
+    return (position=position)
+end
+
+
+func _compute_new_dust_position{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(dust : Dust, current_position : Vector2) -> (
+        new_position : Vector2):
+    alloc_locals
+
+    let (new_hdir) = _get_new_hdir(dust, current_position)
+    let (new_vdir) = _get_new_vdir(dust, current_position)
+
+    let new_x = current_position.x + new_hdir
+    let new_y = current_position.y + new_vdir
+
+    return (new_position=Vector2(x=new_x, y=new_y))
+end
+
+func _get_new_hdir{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        dust : Dust, current_position : Vector2) -> (hdir : felt):
+    alloc_locals
+    let (space_size) = _get_grid_size()
+
+    if current_position.x == space_size - 1:
+        if dust.direction.x == 1:
+            return (hdir=-1)
+        end
+    end
+
+    if current_position.x == 0:
+        if dust.direction.x == -1:
+            return (hdir=1)
+        end
+    end
+
+    return (hdir=dust.direction.x)
+end
+
+func _get_new_vdir{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        dust : Dust, current_position : Vector2) -> (vdir : felt):
+    alloc_locals
+    let (space_size) = _get_grid_size()
+
+    if current_position.y == space_size - 1:
+        if dust.direction.y == 1:
+            return (vdir=-1)
+        end
+    end
+
+    if current_position.y == 0:
+        if dust.direction.y == -1:
+            return (vdir=1)
+        end
+    end
+
+    return (vdir=dust.direction.y)
 end
