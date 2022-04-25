@@ -4,7 +4,7 @@ from contracts.models.common import Cell
 
 @contract_interface
 namespace ISpace:
-    func initialize(dust_contract_address, size, turn_count, max_dust) -> ():
+    func initialize(rand_contract_address, size, turn_count, max_dust) -> ():
     end
 
     func add_ship(x, y, ship_contract):
