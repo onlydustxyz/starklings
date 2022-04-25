@@ -16,6 +16,10 @@ from contracts.models.common import Vector2, Dust, Cell
 from contracts.interfaces.idust import IDustContract
 from contracts.interfaces.iship import IShip
 from contracts.core.library import MathUtils_clamp_value
+from contracts.libraries.grid import (
+    grid, grid_size, next_grid, _get_grid_size, _get_ship_at, _get_dust_at, _get_next_turn_dust_at,
+    _get_next_turn_ship_at, _set_dust_at, _set_ship_at, _set_next_turn_dust_at,
+    _set_next_turn_ship_at, _get_grid_state)
 
 # ------------
 # STORAGE VARS
@@ -31,18 +35,6 @@ end
 
 @storage_var
 func current_turn() -> (num : felt):
-end
-
-@storage_var
-func grid_size() -> (size : felt):
-end
-
-@storage_var
-func grid(position : Vector2) -> (cell : Cell):
-end
-
-@storage_var
-func next_grid(position : Vector2) -> (cell : Cell):
 end
 
 @storage_var
@@ -76,36 +68,9 @@ func get_current_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_ch
 end
 
 @view
-func get_grid_size{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
-        size : felt):
-    let (size) = grid_size.read()
-    return (size)
-end
-
-@view
-func get_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt) -> (dust_id : Uint256):
-    let (cell : Cell) = grid.read(Vector2(x, y))
-    return (dust_id=cell.dust_id)
-end
-
-@view
-func get_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt) -> (ship : felt):
-    let (cell : Cell) = grid.read(Vector2(x, y))
-    return (ship=cell.ship)
-end
-
-@view
 func get_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
         grid_state_len : felt, grid_state : Cell*):
-    alloc_locals
-
-    let (local grid_state : Cell*) = alloc()
-
-    let (grid_state_len) = _rec_fill_grid_state(0, grid_state)
-
-    return (grid_state_len, grid_state)
+    return _get_grid_state()
 end
 
 # ------
@@ -113,31 +78,35 @@ end
 # ------
 
 @event
-func dust_spawned(space_contract_address: felt, dust_id: Uint256, position: Vector2):
+func dust_spawned(space_contract_address : felt, dust_id : Uint256, position : Vector2):
 end
 
 @event
-func dust_destroyed(space_contract_address: felt, dust_id: Uint256, position: Vector2):
+func dust_destroyed(space_contract_address : felt, dust_id : Uint256, position : Vector2):
 end
 
 @event
-func dust_moved(space_contract_address: felt, dust_id: Uint256, previous_position: Vector2, position: Vector2):
+func dust_moved(
+        space_contract_address : felt, dust_id : Uint256, previous_position : Vector2,
+        position : Vector2):
 end
 
 @event
-func ship_added(space_contract_address: felt, ship_id: felt, position: Vector2):
+func ship_added(space_contract_address : felt, ship_id : felt, position : Vector2):
 end
 
 @event
-func ship_moved(space_contract_address: felt, ship_id: felt, previous_position: Vector2, position: Vector2):
+func ship_moved(
+        space_contract_address : felt, ship_id : felt, previous_position : Vector2,
+        position : Vector2):
 end
 
 @event
-func score_changed(space_contract_address: felt, ship_id: felt, score: felt):
+func score_changed(space_contract_address : felt, ship_id : felt, score : felt):
 end
 
 @event
-func match_finished(space_contract_address: felt, winner_ship_id: felt):
+func match_finished(space_contract_address : felt, winner_ship_id : felt):
 end
 
 # -----------
@@ -187,13 +156,13 @@ func add_ship{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}
     alloc_locals
 
     # Check other ship
-    let (ship_at_position : felt) = get_ship_at(x, y)
+    let (ship_at_position : felt) = _get_ship_at(x, y)
     with_attr error_message("Space: cell is not free"):
         assert ship_at_position = 0
     end
 
     # Check dust
-    let dust_id : Uint256 = get_dust_at(x, y)
+    let dust_id : Uint256 = _get_dust_at(x, y)
     let (no_dust_found) = uint256_eq(dust_id, Uint256(0, 0))
     with_attr error_message("Space: cell is not free"):
         assert no_dust_found = TRUE
@@ -201,7 +170,7 @@ func add_ship{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}
 
     _set_next_turn_ship_at(x, y, ship_contract)
     _set_ship_at(x, y, ship_contract)
-    
+
     let (space_contract_address) = get_contract_address()
     # TODO: When each ship have it's unique identifier inside space, use this instead of `0`
     ship_added.emit(space_contract_address, 0, Vector2(x, y))
@@ -251,7 +220,7 @@ func _spawn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     # Finally, add dust to the grid
     _set_next_turn_dust_at(dust.position.x, dust.position.y, token_id)
     current_dust_count.write(dust_count + 1)
-    
+
     let (contract_address) = get_contract_address()
     dust_spawned.emit(contract_address, token_id, dust.position)
 
@@ -281,7 +250,7 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
         return ()
     end
 
-    let (local dust_id : Uint256) = get_dust_at(x, y)
+    let (local dust_id : Uint256) = _get_dust_at(x, y)
 
     # if there is no dust here, we go directly to the next cell
     let (no_dust_found) = uint256_eq(dust_id, Uint256(0, 0))
@@ -298,7 +267,7 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
     _set_next_turn_dust_at(x, y, Uint256(0, 0))
 
     # Check collision with ship
-    let (ship : felt) = get_ship_at(moved_dust.position.x, moved_dust.position.y)
+    let (ship : felt) = _get_ship_at(moved_dust.position.x, moved_dust.position.y)
     if ship != 0:
         # transfer dust to the ship and process next cell
         _catch_dust(dust_id, ship)
@@ -374,7 +343,7 @@ func _move_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
         return ()
     end
 
-    let (local ship : felt) = get_ship_at(x, y)
+    let (local ship : felt) = _get_ship_at(x, y)
 
     # if there is no ship here, we go directly to the next cell
     if ship == 0:
@@ -401,7 +370,7 @@ func _move_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     ship_moved.emit(space_contract_address, 0, Vector2(x, y), Vector2(new_x, new_y))
 
     # Check collision with dust
-    let dust_id : Uint256 = get_dust_at(new_x, new_y)
+    let dust_id : Uint256 = _get_dust_at(new_x, new_y)
     let (no_dust_found) = uint256_eq(dust_id, Uint256(0, 0))
     if no_dust_found == FALSE:
         # transfer dust to the ship
@@ -450,79 +419,26 @@ func _catch_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     let (dust_contract_address) = dust_contract.read()
 
     IDustContract.safeTransferFrom(dust_contract_address, space_contract_address, ship, dust_id)
-    
+
     # Emit event so the front can remove it from the grid
     let (dust) = IDustContract.metadata(dust_contract_address, dust_id)
     dust_destroyed.emit(space_contract_address, dust_id, dust.position)
-    
+
     return ()
 end
 
-func _burn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(dust_id: Uint256):
+func _burn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        dust_id : Uint256):
     let (space_contract_address) = get_contract_address()
     let (dust_contract_address) = dust_contract.read()
-    
+
     let (dust) = IDustContract.metadata(dust_contract_address, dust_id)
     IDustContract.burn(dust_contract_address, dust_id)
     let (dust_count) = current_dust_count.read()
     assert_nn(dust_count)
     current_dust_count.write(dust_count - 1)
-    
+
     dust_destroyed.emit(space_contract_address, dust_id, dust.position)
-    
-    return ()
-end
 
-func _rec_fill_grid_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        grid_state_len : felt, grid_state : Cell*) -> (len : felt):
-    let (size) = grid_size.read()
-    if size * size == grid_state_len:
-        return (grid_state_len)
-    end
-
-    let (y, x) = unsigned_div_rem(grid_state_len, size)
-    let (cell : Cell) = grid.read(Vector2(x=x, y=y))
-
-    assert grid_state[grid_state_len] = Cell(cell.dust_id, cell.ship)
-    return _rec_fill_grid_state(grid_state_len + 1, grid_state)
-end
-
-func _get_next_turn_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt) -> (ship : felt):
-    let (cell : Cell) = next_grid.read(Vector2(x, y))
-    return (ship=cell.ship)
-end
-
-func _get_next_turn_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt) -> (dust_id : Uint256):
-    let (cell : Cell) = next_grid.read(Vector2(x, y))
-    return (dust_id=cell.dust_id)
-end
-
-func _set_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt, ship : felt):
-    let position = Vector2(x, y)
-    grid.write(position, Cell(Uint256(0, 0), ship))
-    return ()
-end
-
-func _set_next_turn_ship_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt, ship : felt):
-    let position = Vector2(x, y)
-    next_grid.write(position, Cell(Uint256(0, 0), ship))
-    return ()
-end
-
-func _set_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt, dust_id : Uint256):
-    let position = Vector2(x, y)
-    grid.write(position, Cell(dust_id, 0))
-    return ()
-end
-
-func _set_next_turn_dust_at{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt, dust_id : Uint256):
-    let position = Vector2(x, y)
-    next_grid.write(position, Cell(dust_id, 0))
     return ()
 end
