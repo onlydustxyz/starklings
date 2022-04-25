@@ -139,7 +139,11 @@ func score_changed(space_contract_address : felt, ship_id : felt, score : felt):
 end
 
 @event
-func match_finished(space_contract_address : felt, winner_ship_id : felt):
+func new_turn(space_contract_address : felt, turn_number: felt):
+end
+
+@event
+func game_finished(space_contract_address : felt):
 end
 
 # -----------
@@ -166,6 +170,27 @@ end
 # EXTERNAL FUNCTIONS
 # ------------------
 
+@external
+func play_game{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr, bitwise_ptr : BitwiseBuiltin*}():
+
+    _rec_play_turns()
+
+    return ()
+end
+
+func _rec_play_turns{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr, bitwise_ptr : BitwiseBuiltin*}():
+    let (is_finished) = next_turn()
+    if is_finished != 0:
+        let (space_contract_address) = get_contract_address()
+        game_finished.emit(space_contract_address)
+
+        return ()
+    end
+
+    _rec_play_turns()
+    return ()
+end
+
 # This function must be invoked to process the next turn of the game.
 @external
 func next_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr, bitwise_ptr : BitwiseBuiltin*}() -> (is_finished: felt):
@@ -180,6 +205,9 @@ func next_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
     end
 
     current_turn.write(turn + 1)
+
+    let (space_contract_address) = get_contract_address()
+    new_turn.emit(space_contract_address, turn + 1)
 
     _spawn_dust()
 
