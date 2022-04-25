@@ -21,6 +21,9 @@ nile run ./scripts/deploy-starkonquest-boarding-pass.py
 
 ## Deploy Tournament
 
+A few environment variables control the parameters of the tournament. Set them to 
+appropriate values before deploying the contract.
+
 ```sh
 export SEASON_ID=1
 export SHIPS_PER_BATTLE=2
@@ -30,9 +33,20 @@ nile run ./scripts/deploy-tournament.py
 
 ## Deploy Space
 
+A few environment variables control the parameters of the space. Set them to 
+appropriate values before deploying the contract.
+
 ```sh
 export SPACE_SIZE=100
 export TURN_COUNT=50
 export MAX_DUST=20
 nile run ./scripts/deploy-space.py
+```
+
+## Deploy Ships
+
+You should deploy your ship contract with `nile`:
+
+```sh
+nile deploy basic_ship
 ```
