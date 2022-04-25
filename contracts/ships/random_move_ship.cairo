@@ -37,7 +37,7 @@ end
 # ---------
 
 @external
-func move{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(grid_state_len: felt, grid_state: felt*) -> (
+func move{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(grid_state_len: felt, grid_state: felt*, ship_id: felt) -> (
         new_direction : Vector2):
     let (random_contract_address) = random_contract.read()
     let (block_timestamp) = get_block_timestamp()
