@@ -5,6 +5,9 @@ from starkware.cairo.common.uint256 import Uint256
 @contract_interface
 namespace ITournament:
 
+    func start() -> ():
+    end
+
     func open_tournament_registration() -> ():
     end
 
@@ -24,6 +27,9 @@ namespace ITournament:
     end
 
     func boarding_pass_token_address() -> (res: felt):
+    end
+
+    func rand_contract_address() -> (res: felt):
     end
 
     func reward_total_amount() -> (res: Uint256):
