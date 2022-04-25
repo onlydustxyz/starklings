@@ -23,6 +23,9 @@ namespace ITournament:
     func reward_token_address() -> (res: felt):
     end
 
+    func boarding_pass_token_address() -> (res: felt):
+    end
+
     func reward_total_amount() -> (res: Uint256):
     end
 

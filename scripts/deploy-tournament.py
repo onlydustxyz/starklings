@@ -15,7 +15,10 @@ def run(nre : NileRuntimeEnvironment):
     season_id = "1"
     season_name = str(str_to_felt("StarkNet Hackathon AMS"))
     reward_token_address = "0x00746683a9dd511d66aaa7ecd2c6d8019c11105061a18cf63a82ab5d2bcbfc1d"
-    params = [owner, season_id, season_name, reward_token_address]
+    boarding_pass_token_address = "0x00348f5537be66815eb7de63295fcb5d8b8b2ffe09bb712af4966db7cbb04a95"
+    ships_per_battle = "2"
+    max_players = "16"
+    params = [owner, season_id, season_name, reward_token_address, boarding_pass_token_address, ships_per_battle, max_players]
     address, abi = nre.deploy("Tournament", params, alias="tournament")
     print(f"ABI: {abi},\nContract address: {address}")
 
