@@ -5,6 +5,7 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.bool import (TRUE, FALSE)
+from starkware.cairo.common.math import (assert_lt, assert_nn)
 from starkware.cairo.common.uint256 import Uint256
 from starkware.starknet.common.syscalls import (get_contract_address, get_caller_address)
 
@@ -195,6 +196,12 @@ func register{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}
     ship_address: felt
 ) -> (success: felt):
     _only_tournament_open()
+    let (current_player_count) = player_count_.read()
+    let (max_ships_per_tournament) = max_ships_per_tournament_.read()
+    # Check that we did not reach the max number of players
+    with_attr error_message("Tournament: max player count reached"):
+        assert_lt(current_player_count, max_ships_per_tournament)
+    end
     let (player_address) = get_caller_address()
     let (player_registerd_ship) = player_ship_.read(player_address)
     # Check if player already registered a ship for this tournament
