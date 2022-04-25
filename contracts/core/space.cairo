@@ -213,8 +213,7 @@ func _spawn_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     end
 
     # Finally, add dust to the grid
-    let (internal_dust_id : Uint256) = _to_internal_dust_id(token_id)
-    _set_next_turn_dust_at(dust.position.x, dust.position.y, internal_dust_id)
+    _set_next_turn_dust_at(dust.position.x, dust.position.y, token_id)
     current_dust_count.write(dust_count + 1)
     return ()
 end
@@ -224,13 +223,6 @@ func _to_internal_dust_id{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, rang
         token_id : Uint256) -> (internal_dust_id : Uint256):
     let (internal_dust_id : Uint256, _) = uint256_add(token_id, Uint256(1, 0))
     return (internal_dust_id)
-end
-
-# Returns token id of dust from its internal id.
-func _to_external_dust_id{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        internal_dust_id : Uint256) -> (token_id : Uint256):
-    let (token_id : Uint256) = uint256_sub(internal_dust_id, Uint256(1, 0))
-    return (token_id)
 end
 
 # Recursive function that goes through the entire grid and updates dusts position
@@ -258,12 +250,9 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
         return ()
     end
 
-    # Compute token_id in NFT contract
-    let (token_id : Uint256) = _to_external_dust_id(dust_id)
-
     # There is some dust here! Let's move it
     let (local dust_contract_address) = dust_contract.read()
-    let (local moved_dust : Dust) = IDustContract.move(dust_contract_address, token_id)
+    let (local moved_dust : Dust) = IDustContract.move(dust_contract_address, dust_id)
 
     # As the dust position changed, we free its old position
     _set_next_turn_dust_at(x, y, Uint256(0, 0))
@@ -284,7 +273,7 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
 
     if no_other_dust == FALSE:
         # In case of collision, burn the current dust
-        IDustContract.burn(dust_contract_address, token_id)
+        IDustContract.burn(dust_contract_address, dust_id)
         let (dust_count) = current_dust_count.read()
         assert_nn(dust_count)
         current_dust_count.write(dust_count - 1)
@@ -415,8 +404,7 @@ func _catch_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     let (contract_address) = get_contract_address()
     let (dust_contract_address) = dust_contract.read()
 
-    let (token_id : Uint256) = _to_external_dust_id(dust_id)
-    IDustContract.safeTransferFrom(dust_contract_address, contract_address, ship, token_id)
+    IDustContract.safeTransferFrom(dust_contract_address, contract_address, ship, dust_id)
     return ()
 end
 
