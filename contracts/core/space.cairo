@@ -49,6 +49,14 @@ end
 func max_dust_count() -> (count : felt):
 end
 
+@storage_var
+func ship_counter() -> (id: felt):
+end
+
+@storage_var
+func ship(id: felt) -> (contract_address: felt):
+end
+
 # -----
 # VIEWS
 # -----
@@ -170,13 +178,20 @@ func add_ship{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}
     with_attr error_message("Space: cell is not free"):
         assert no_dust_found = TRUE
     end
+    
+    # Register the ship contract under a new id
+    let (last_ship_id) = ship_counter.read()
+    let new_id = last_ship_id + 1
+    ship.write(new_id, ship_contract)
+    
+    # Put the ship on grids
+    _set_next_turn_ship_at(x, y, new_id)
+    _set_ship_at(x, y, new_id)
 
-    _set_next_turn_ship_at(x, y, ship_contract)
-    _set_ship_at(x, y, ship_contract)
-
+    # Emit events
     let (space_contract_address) = get_contract_address()
-    # TODO: When each ship have it's unique identifier inside space, use this instead of `0`
-    ship_added.emit(space_contract_address, 0, Vector2(x, y))
+    ship_added.emit(space_contract_address, new_id, Vector2(x, y))
+
     return ()
 end
 
@@ -270,10 +285,11 @@ func _move_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
     _set_next_turn_dust_at(x, y, Uint256(0, 0))
 
     # Check collision with ship
-    let (ship : felt) = _get_ship_at(moved_dust.position.x, moved_dust.position.y)
-    if ship != 0:
+    let (ship_id : felt) = _get_ship_at(moved_dust.position.x, moved_dust.position.y)
+    if ship_id != 0:
         # transfer dust to the ship and process next cell
-        _catch_dust(dust_id, ship)
+        let (ship_contract) = ship.read(ship_id)
+        _catch_dust(dust_id, ship_contract)
         _move_dust(x, y + 1)
         return ()
     end
@@ -347,16 +363,17 @@ func _move_ships{
         return ()
     end
 
-    let (local ship : felt) = _get_ship_at(x, y)
+    let (local ship_id : felt) = _get_ship_at(x, y)
 
     # if there is no ship here, we go directly to the next cell
-    if ship == 0:
+    if ship_id == 0:
         _move_ships(x, y + 1)
         return ()
     end
 
     # Call ship contract
-    let (local new_direction : Vector2) = IShip.move(ship, grid_state_len, grid_state)
+    let (ship_contract) = ship.read(ship_id)
+    let (local new_direction : Vector2) = IShip.move(ship_contract, grid_state_len, grid_state)
     let (direction_x) = MathUtils_clamp_value(new_direction.x, -1, 1)
     let (direction_y) = MathUtils_clamp_value(new_direction.y, -1, 1)
 
@@ -376,7 +393,7 @@ func _move_ships{
     let (no_dust_found) = uint256_eq(dust_id, Uint256(0, 0))
     if no_dust_found == FALSE:
         # transfer dust to the ship
-        _catch_dust(dust_id, ship)
+        _catch_dust(dust_id, ship_contract)
 
         # remove dust from the grid
         _set_dust_at(new_x, new_y, Uint256(0, 0))
@@ -394,7 +411,7 @@ func _move_ships{
 
     # Update the dust position in the grid
     _set_next_turn_ship_at(x, y, 0)
-    _set_next_turn_ship_at(new_x, new_y, ship)
+    _set_next_turn_ship_at(new_x, new_y, ship_id)
 
     # process the next cell
     _move_ships(x, y + 1)
