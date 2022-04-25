@@ -4,7 +4,7 @@
 %lang starknet
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
-from starkware.cairo.common.bool import TRUE
+from starkware.cairo.common.bool import (TRUE, FALSE)
 from starkware.cairo.common.uint256 import Uint256
 from starkware.starknet.common.syscalls import get_contract_address
 
@@ -26,6 +26,10 @@ end
 
 @storage_var
 func reward_token_address_() -> (res : felt):
+end
+
+@storage_var
+func is_season_open_() -> (res : felt):
 end
 
 # -----
@@ -53,6 +57,13 @@ func reward_token_address{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, rang
 end
 
 @view
+func is_season_open{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+) -> (is_season_open : felt):
+    let (is_season_open) = is_season_open_.read()
+    return (is_season_open)
+end
+
+@view
 func reward_total_amount{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
 ) -> (reward_total_amount : Uint256):
     let (reward_token_address) = reward_token_address_.read()
@@ -62,6 +73,10 @@ func reward_total_amount{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range
     )
     return (reward_total_amount)
 end
+
+# -----
+# CONSTRUCTOR
+# -----
 
 @constructor
 func constructor{
@@ -78,5 +93,47 @@ func constructor{
     season_id_.write(season_id)
     season_name_.write(season_name)
     reward_token_address_.write(reward_token_address)
+    return ()
+end
+
+# -----
+# EXTERNAL FUNCTIONS
+# -----
+
+@external
+func open_season{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+) -> (success: felt):
+    Ownable_only_owner()
+    _only_season_closed()
+    return (TRUE)
+end
+
+@external
+func close_season{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+) -> (success: felt):
+    Ownable_only_owner()
+    _only_season_open()
+    return (TRUE)
+end
+
+# -----
+# INTERNAL FUNCTIONS
+# -----
+
+func _only_season_open{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+):
+    let (is_season_open) = is_season_open_.read()
+    with_attr error_message("RankedSeaon: season is open"):
+        is_season_open = TRUE
+    end
+    return ()
+end
+
+func _only_season_closed{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+):
+    let (is_season_open) = is_season_open_.read()
+    with_attr error_message("RankedSeaon: season is closed"):
+        is_season_open = FALSE
+    end
     return ()
 end
