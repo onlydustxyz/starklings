@@ -126,7 +126,8 @@ func mint{
 
     # Mint token
     let (caller) = get_caller_address()
-    let (local token_id : Uint256) = ERC721_Enumerable_totalSupply()
+    let (total_supply : Uint256) = ERC721_Enumerable_totalSupply()
+    let (local token_id : Uint256, _) = uint256_add(total_supply, Uint256(1, 0))
     ERC721_Enumerable_mint(caller, token_id)
 
     # Store metadata

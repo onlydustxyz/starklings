@@ -49,7 +49,7 @@ async def test_mint(dust_factory):
     await assert_revert(dust.mint(metadata()).invoke(caller_address=anyone.contract_address), reverted_with='Ownable: caller is not the owner')
 
     # Mint 10 tokens
-    for i in map(to_uint, range(10)):
+    for i in map(to_uint, range(1, 11)):
         execution_info = await dust.mint(metadata()).invoke(caller_address=SPACE_CONTRACT)
         assert execution_info.result == (i,)
 
@@ -58,7 +58,7 @@ async def test_mint(dust_factory):
     assert execution_info.result == (to_uint(10),)
 
     # Check the owner of minted tokens
-    for i in map(to_uint, range(10)):
+    for i in map(to_uint, range(1, 11)):
         execution_info = await dust.ownerOf(i).invoke()
         assert execution_info.result == (SPACE_CONTRACT,)
 
@@ -71,14 +71,14 @@ async def test_mint_batch(dust_factory):
 
     # Mint 10 tokens
     execution_info = await dust.mint_batch([metadata() for i in range(10)]).invoke(caller_address=SPACE_CONTRACT)
-    assert execution_info.result == (list(map(to_uint, range(10))),)
+    assert execution_info.result == (list(map(to_uint, range(1, 11))),)
 
     # Check balance of owner
     execution_info = await dust.balanceOf(SPACE_CONTRACT).invoke()
     assert execution_info.result == (to_uint(10),)
 
     # Check the owner of minted tokens
-    for i in map(to_uint, range(10)):
+    for i in map(to_uint, range(1, 11)):
         execution_info = await dust.ownerOf(i).invoke()
         assert execution_info.result == (SPACE_CONTRACT,)
 
@@ -94,7 +94,7 @@ async def test_mint_random_on_border(dust_factory):
     await assert_revert(dust.mint_random_on_border(SPACE_SIZE).invoke(caller_address=anyone.contract_address), reverted_with='Ownable: caller is not the owner')
 
     # Mint NB_TOKENS tokens
-    for i in map(to_uint, range(NB_TOKENS)):
+    for i in map(to_uint, range(1, NB_TOKENS + 1)):
         execution_info = await dust.mint_random_on_border(SPACE_SIZE).invoke(caller_address=SPACE_CONTRACT)
         assert execution_info.result == (i,)
 
@@ -103,14 +103,14 @@ async def test_mint_random_on_border(dust_factory):
     assert execution_info.result == (to_uint(NB_TOKENS),)
 
     # Check the owner of minted tokens
-    for i in map(to_uint, range(NB_TOKENS)):
+    for i in map(to_uint, range(1, NB_TOKENS + 1)):
         execution_info = await dust.ownerOf(i).invoke()
         assert execution_info.result == (SPACE_CONTRACT,)
 
     # Check the metadata
     all_positions = []
     all_directions = []
-    for i in map(to_uint, range(NB_TOKENS)):
+    for i in map(to_uint, range(1, NB_TOKENS + 1)):
         execution_info = await dust.metadata(i).invoke()
         space_size, position, direction = execution_info.result.metadata
         all_positions.append(position)
@@ -157,21 +157,21 @@ async def test_mint_batch_random_on_border(dust_factory):
 
     # Mint NB_TOKENS tokens
     execution_info = await dust.mint_batch_random_on_border(SPACE_SIZE, NB_TOKENS).invoke(caller_address=SPACE_CONTRACT)
-    assert execution_info.result == (list(map(to_uint, range(NB_TOKENS))),)
+    assert execution_info.result == (list(map(to_uint, range(1, NB_TOKENS + 1))),)
 
     # Check balance of owner
     execution_info = await dust.balanceOf(SPACE_CONTRACT).invoke()
     assert execution_info.result == (to_uint(NB_TOKENS),)
 
     # Check the owner of minted tokens
-    for i in map(to_uint, range(NB_TOKENS)):
+    for i in map(to_uint, range(1, NB_TOKENS + 1)):
         execution_info = await dust.ownerOf(i).invoke()
         assert execution_info.result == (SPACE_CONTRACT,)
 
     # Check the metadata
     all_positions = []
     all_directions = []
-    for i in map(to_uint, range(NB_TOKENS)):
+    for i in map(to_uint, range(1, NB_TOKENS + 1)):
         execution_info = await dust.metadata(i).invoke()
         space_size, position, direction = execution_info.result.metadata
         all_positions.append(position)
@@ -211,24 +211,24 @@ async def test_burn(dust_factory):
     dust, anyone, _ = dust_factory
 
     # Mint 2 tokens
-    for i in map(to_uint, range(2)):
+    for i in map(to_uint, range(1, 3)):
         execution_info = await dust.mint(metadata()).invoke(caller_address=SPACE_CONTRACT)
         assert execution_info.result == (i,)
 
     # Cannot burn if not owner
-    await assert_revert(dust.burn(to_uint(0)).invoke(caller_address=anyone.contract_address), reverted_with='Ownable: caller is not the owner')
+    await assert_revert(dust.burn(to_uint(1)).invoke(caller_address=anyone.contract_address), reverted_with='Ownable: caller is not the owner')
 
     # Burn token 0
-    await dust.burn(to_uint(0)).invoke(caller_address=SPACE_CONTRACT)
+    await dust.burn(to_uint(1)).invoke(caller_address=SPACE_CONTRACT)
 
     # Check balance of owner
     execution_info = await dust.balanceOf(SPACE_CONTRACT).invoke()
     assert execution_info.result == (to_uint(1),)
 
     # Check the owner of minted tokens
-    await assert_revert(dust.ownerOf(to_uint(0)).invoke(), reverted_with='ERC721: owner query for nonexistent token')
+    await assert_revert(dust.ownerOf(to_uint(1)).invoke(), reverted_with='ERC721: owner query for nonexistent token')
 
-    execution_info = await dust.ownerOf(to_uint(1)).invoke()
+    execution_info = await dust.ownerOf(to_uint(2)).invoke()
     assert execution_info.result == (SPACE_CONTRACT,)
 
 

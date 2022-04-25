@@ -82,7 +82,7 @@ async def test_next_turn_no_ship(space_factory):
     # MAX_DUST == 2 so no more dust has been spawned
 
     # A collision occured, assert the dust was burnt
-    await assert_revert(dust.ownerOf(to_uint(1)).call(), reverted_with='ERC721: owner query for nonexistent token')
+    await assert_revert(dust.ownerOf(to_uint(2)).call(), reverted_with='ERC721: owner query for nonexistent token')
 
     await assert_grid_state(space, [Cell(Vector2(0, 3), 1, 0)])
 
@@ -141,9 +141,9 @@ async def test_next_turn_with_ship(starknet: Starknet, space_factory):
     await assert_grid_state(space, [Cell(Vector2(0, 2), 1, 0), Cell(Vector2(0, 4), 2, 0), ship_assertion])
 
     # Assert the space owns the dusts
-    execution_info = await dust.ownerOf(to_uint(0)).call()
-    assert execution_info.result == (space.contract_address,)
     execution_info = await dust.ownerOf(to_uint(1)).call()
+    assert execution_info.result == (space.contract_address,)
+    execution_info = await dust.ownerOf(to_uint(2)).call()
     assert execution_info.result == (space.contract_address,)
 
     # Next turn --------------------------------------------------
@@ -154,9 +154,9 @@ async def test_next_turn_with_ship(starknet: Starknet, space_factory):
     # MAX_DUST == 2 so no more dust has been spawned
 
     # Assert the ship earned the dusts at position (0, 3)
-    execution_info = await dust.ownerOf(to_uint(0)).call()
-    assert execution_info.result == (ship.contract_address,)
     execution_info = await dust.ownerOf(to_uint(1)).call()
+    assert execution_info.result == (ship.contract_address,)
+    execution_info = await dust.ownerOf(to_uint(2)).call()
     assert execution_info.result == (ship.contract_address,)
 
     await assert_grid_state(space, [ship_assertion])
@@ -191,7 +191,7 @@ async def assert_grid_state(space, cells: List[Cell]):
         assert cell.ship == cell_in_state.ship
 
 async def assert_dust_state(dust, id:int, position:Vector2, direction:Vector2):
-    execution_info = await dust.metadata(to_uint(id-1)).call()
+    execution_info = await dust.metadata(to_uint(id)).call()
     _, (position_x, position_y), (direction_x, direction_y) = execution_info.result.metadata
     assert position_x == position.x
     assert position_y == position.y
