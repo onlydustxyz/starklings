@@ -2,7 +2,7 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin, SignatureBuiltin, BitwiseBuiltin
 from starkware.cairo.common.alloc import alloc
-from starkware.cairo.common.math import unsigned_div_rem, assert_lt
+from starkware.cairo.common.math import unsigned_div_rem, assert_lt, assert_not_zero
 from starkware.cairo.common.uint256 import Uint256, uint256_add
 from starkware.starknet.common.syscalls import get_caller_address
 
@@ -93,6 +93,8 @@ end
 @view
 func metadata{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         token_id : Uint256) -> (metadata : Dust):
+    _only_valid_token_id(token_id)
+
     let (metadata : Metadata) = token_metadatas.read(token_id)
     let (dust : Dust) = _to_dust(metadata)
     return (metadata=dust)
@@ -123,6 +125,7 @@ func mint{
         bitwise_ptr : BitwiseBuiltin*}(dust : Dust) -> (token_id : Uint256):
     alloc_locals
     Ownable_only_owner()
+    _only_valid_dust(dust)
 
     # Mint token
     let (caller) = get_caller_address()
@@ -186,6 +189,7 @@ end
 @external
 func burn{pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr}(token_id : Uint256):
     Ownable_only_owner()
+    _only_valid_token_id(token_id)
 
     # Burn token
     ERC721_Enumerable_burn(token_id)
@@ -198,6 +202,7 @@ func move{pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr}(
         token_id : Uint256) -> (metadata : Dust):
     alloc_locals
     Ownable_only_owner()
+    _only_valid_token_id(token_id)
 
     let (current_metadata : Metadata) = token_metadatas.read(token_id)
     let (current_dust : Dust) = _to_dust(current_metadata)
@@ -360,4 +365,23 @@ func _to_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}
     assert dust.direction.y = y - 1
 
     return (dust)
+end
+
+func _only_valid_token_id{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        token_id : Uint256):
+    let (metadata : Metadata) = token_metadatas.read(token_id)
+    with_attr error_message("Dust: Invalid token id"):
+        assert_not_zero(metadata.space_size)
+    end
+
+    return ()
+end
+
+func _only_valid_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        dust : Dust):
+    with_attr error_message("Dust: Space size cannot be zero"):
+        assert_not_zero(dust.space_size)
+    end
+
+    return ()
 end
