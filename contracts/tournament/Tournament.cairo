@@ -1,17 +1,18 @@
 # SPDX-License-Identifier: Apache-2.0
-# OpenZeppelin Contracts for Cairo v0.1.0 (tournament/Tournament.cairo)
+# StarKonquest smart contracts written in Cairo v0.1.0 (tournament/Tournament.cairo)
 
 %lang starknet
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.bool import (TRUE, FALSE)
 from starkware.cairo.common.math import (assert_lt, assert_nn)
-from starkware.cairo.common.uint256 import Uint256
+from starkware.cairo.common.uint256 import (Uint256, uint256_le)
 from starkware.starknet.common.syscalls import (get_contract_address, get_caller_address)
 
 # OpenZeppeling dependencies
 from openzeppelin.access.ownable import (Ownable_initializer, Ownable_only_owner)
 from openzeppelin.token.erc20.interfaces.IERC20 import IERC20
+from openzeppelin.token.erc721.interfaces.IERC721 import IERC721
 
 from contracts.interfaces.ispace import ISpace
 
@@ -33,6 +34,11 @@ end
 # ERC20 token address for the reward
 @storage_var
 func reward_token_address_() -> (res : felt):
+end
+
+# ERC721 token address for access control
+@storage_var
+func boarding_pass_token_address_() -> (res : felt):
 end
 
 # Whether or not registration are open
@@ -84,9 +90,16 @@ end
 
 @view
 func reward_token_address{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (tournament_id : felt):
+) -> (reward_token_address : felt):
     let (reward_token_address) = reward_token_address_.read()
     return (reward_token_address)
+end
+
+@view
+func boarding_pass_token_address{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+) -> (boarding_pass_token_address : felt):
+    let (boarding_pass_token_address) = boarding_pass_token_address_.read()
+    return (boarding_pass_token_address)
 end
 
 @view
@@ -158,6 +171,7 @@ func constructor{
         tournament_id: felt,
         tournament_name: felt,
         reward_token_address: felt,
+        boarding_pass_token_address: felt,
         ships_per_battle: felt,
         max_ships_per_tournament: felt
     ):
@@ -165,6 +179,7 @@ func constructor{
     tournament_id_.write(tournament_id)
     tournament_name_.write(tournament_name)
     reward_token_address_.write(reward_token_address)
+    boarding_pass_token_address_.write(boarding_pass_token_address)
     ships_per_battle_.write(ships_per_battle)
     max_ships_per_tournament_.write(max_ships_per_tournament)
     player_count_.write(0)
@@ -199,14 +214,26 @@ end
 func register{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     ship_address: felt
 ) -> (success: felt):
+    alloc_locals
     _only_tournament_open()
+    let (player_address) = get_caller_address()
+    let (boarding_pass_token_address) = boarding_pass_token_address_.read()
+    # Check access control with NFT boarding pass
+    let (player_boarding_pass_balance) = IERC721.balanceOf(
+        contract_address=boarding_pass_token_address,
+        owner=player_address
+    )
+    let one = Uint256(1, 0)
+    let (is_allowed) = uint256_le(one, player_boarding_pass_balance)
+    with_attr error_message("Tournament: player is not allowed to register"):
+        assert is_allowed = TRUE
+    end   
     let (current_player_count) = player_count_.read()
     let (max_ships_per_tournament) = max_ships_per_tournament_.read()
     # Check that we did not reach the max number of players
     with_attr error_message("Tournament: max player count reached"):
         assert_lt(current_player_count, max_ships_per_tournament)
     end
-    let (player_address) = get_caller_address()
     let (player_registerd_ship) = player_ship_.read(player_address)
     # Check if player already registered a ship for this tournament
     with_attr error_message("Tournament: player already registered"):
