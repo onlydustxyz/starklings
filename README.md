@@ -92,3 +92,9 @@ nile invoke <space-contract-address> next_turn
 Coding your ship logic can be tricky, we suggest you use tests to check your code.
 
 You can get inspiration from the [static ship tests](https://github.com/onlydustxyz/starknet-onboarding/blob/main/tests/test_space.py#L188) and run this specific test with `pytest tests -k "test_next_turn_with_ship"`.
+
+## CLI
+
+```bash
+make cli
+```
