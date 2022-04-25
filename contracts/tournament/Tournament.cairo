@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# OpenZeppelin Contracts for Cairo v0.1.0 (tournament/RankedSeason.cairo)
+# OpenZeppelin Contracts for Cairo v0.1.0 (tournament/Tournament.cairo)
 
 %lang starknet
 
@@ -17,11 +17,11 @@ from openzeppelin.token.erc20.interfaces.IERC20 import IERC20
 # ------------
 
 @storage_var
-func season_id_() -> (res : felt):
+func tournament_id_() -> (res : felt):
 end
 
 @storage_var
-func season_name_() -> (res : felt):
+func tournament_name_() -> (res : felt):
 end
 
 @storage_var
@@ -29,38 +29,38 @@ func reward_token_address_() -> (res : felt):
 end
 
 @storage_var
-func is_season_open_() -> (res : felt):
+func is_tournament_open_() -> (res : felt):
 end
 
 # -----
 # VIEWS
 # -----
 @view
-func season_id{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (season_id : felt):
-    let (season_id) = season_id_.read()
-    return (season_id)
+func tournament_id{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+) -> (tournament_id : felt):
+    let (tournament_id) = tournament_id_.read()
+    return (tournament_id)
 end
 
 @view
-func season_name{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (season_name : felt):
-    let (season_name) = season_name_.read()
-    return (season_name)
+func tournament_name{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+) -> (tournament_name : felt):
+    let (tournament_name) = tournament_name_.read()
+    return (tournament_name)
 end
 
 @view
 func reward_token_address{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (season_id : felt):
+) -> (tournament_id : felt):
     let (reward_token_address) = reward_token_address_.read()
     return (reward_token_address)
 end
 
 @view
-func is_season_open{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (is_season_open : felt):
-    let (is_season_open) = is_season_open_.read()
-    return (is_season_open)
+func is_tournament_open{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+) -> (is_tournament_open : felt):
+    let (is_tournament_open) = is_tournament_open_.read()
+    return (is_tournament_open)
 end
 
 @view
@@ -85,13 +85,13 @@ func constructor{
         range_check_ptr
     }(
         owner: felt,
-        season_id: felt,
-        season_name: felt,
+        tournament_id: felt,
+        tournament_name: felt,
         reward_token_address: felt
     ):
     Ownable_initializer(owner)
-    season_id_.write(season_id)
-    season_name_.write(season_name)
+    tournament_id_.write(tournament_id)
+    tournament_name_.write(tournament_name)
     reward_token_address_.write(reward_token_address)
     return ()
 end
@@ -101,18 +101,18 @@ end
 # -----
 
 @external
-func open_season{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+func open_tournament{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
 ) -> (success: felt):
     Ownable_only_owner()
-    _only_season_closed()
+    _only_tournament_closed()
     return (TRUE)
 end
 
 @external
-func close_season{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+func close_tournament{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
 ) -> (success: felt):
     Ownable_only_owner()
-    _only_season_open()
+    _only_tournament_open()
     return (TRUE)
 end
 
@@ -120,20 +120,20 @@ end
 # INTERNAL FUNCTIONS
 # -----
 
-func _only_season_open{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+func _only_tournament_open{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
 ):
-    let (is_season_open) = is_season_open_.read()
-    with_attr error_message("RankedSeaon: season is open"):
-        is_season_open = TRUE
+    let (is_tournament_open) = is_tournament_open_.read()
+    with_attr error_message("Tournament: tournament is open"):
+        is_tournament_open = TRUE
     end
     return ()
 end
 
-func _only_season_closed{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+func _only_tournament_closed{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
 ):
-    let (is_season_open) = is_season_open_.read()
-    with_attr error_message("RankedSeaon: season is closed"):
-        is_season_open = FALSE
+    let (is_tournament_open) = is_tournament_open_.read()
+    with_attr error_message("Tournament: tournament is closed"):
+        is_tournament_open = FALSE
     end
     return ()
 end
