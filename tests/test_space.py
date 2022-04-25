@@ -73,7 +73,7 @@ async def test_next_turn_no_ship(space_factory):
 
     await assert_dust_state(dust, 1, Vector2(0, 2), Vector2(0, 1))
     await assert_dust_state(dust, 2, Vector2(0, 4), Vector2(0, -1))
-    await assert_grid_state(space, [Cell(Vector2(0, 2), 1, 0), Cell(Vector2(0, 4), 2, 0)])
+    await assert_grid_state(space, [Cell(Vector2(0, 2), 1, 0), Cell(Vector2(0, 4), 1, 0)])
 
     # Next turn --------------------------------------------------
     await space.next_turn().invoke(caller_address=ADMIN)
@@ -94,7 +94,7 @@ async def test_next_turn_no_ship(space_factory):
     # a new dust was spawned, with the id of the burnt token
     await assert_dust_state(dust, 2, Vector2(5, 1), Vector2(0, 1))
 
-    await assert_grid_state(space, [Cell(Vector2(0, 4), 1, 0), Cell(Vector2(5, 1), 2, 0)])
+    await assert_grid_state(space, [Cell(Vector2(0, 4), 1, 0), Cell(Vector2(5, 1), 1, 0)])
 
     # Next turn --------------------------------------------------
     await space.next_turn().invoke(caller_address=ADMIN)
@@ -103,7 +103,7 @@ async def test_next_turn_no_ship(space_factory):
     await assert_dust_state(dust, 2, Vector2(5, 2), Vector2(0, 1))
     # no new dust was spawned, because it would have been at the same position (5,2)
 
-    await assert_grid_state(space, [Cell(Vector2(0, 5), 1, 0), Cell(Vector2(5, 2), 2, 0)])
+    await assert_grid_state(space, [Cell(Vector2(0, 5), 1, 0), Cell(Vector2(5, 2), 1, 0)])
 
 
 @pytest.mark.asyncio
@@ -139,7 +139,7 @@ async def test_next_turn_with_ship(starknet: Starknet, space_factory):
 
     await assert_dust_state(dust, 1, Vector2(0, 2), Vector2(0, 1))
     await assert_dust_state(dust, 2, Vector2(0, 4), Vector2(0, -1))
-    await assert_grid_state(space, [Cell(Vector2(0, 2), 1, 0), Cell(Vector2(0, 4), 2, 0), ship_assertion])
+    await assert_grid_state(space, [Cell(Vector2(0, 2), 1, 0), Cell(Vector2(0, 4), 1, 0), ship_assertion])
 
     # Assert the space owns the dusts
     execution_info = await dust.ownerOf(to_uint(1)).call()
@@ -167,7 +167,7 @@ async def test_next_turn_with_ship(starknet: Starknet, space_factory):
 
     await assert_dust_state(dust, 3, Vector2(5, 1), Vector2(0, 1))
 
-    await assert_grid_state(space, [Cell(Vector2(5, 1), 3, 0), ship_assertion])
+    await assert_grid_state(space, [Cell(Vector2(5, 1), 1, 0), ship_assertion])
 
 #
 # Helpers to assert the state of the entire grid
@@ -178,8 +178,13 @@ class Vector2(NamedTuple):
 
 class Cell(NamedTuple):
     position: Vector2
+<<<<<<< HEAD
     dust_id: int
     ship_id: int
+=======
+    dust_present: int
+    ship: int
+>>>>>>> aad222c (feat: dust is not ERC721 anymore)
 
 
 async def assert_grid_state(space, cells: List[Cell]):
@@ -188,8 +193,13 @@ async def assert_grid_state(space, cells: List[Cell]):
     for cell in cells:
         index_in_state = SPACE_SIZE * cell.position.y + cell.position.x
         cell_in_state = grid_state[index_in_state]
+<<<<<<< HEAD
         assert cell.dust_id == cell_in_state.dust_id.low
         assert cell.ship_id == cell_in_state.ship_id
+=======
+        assert cell.dust_present == cell_in_state.dust.present
+        assert cell.ship == cell_in_state.ship
+>>>>>>> aad222c (feat: dust is not ERC721 anymore)
 
 async def assert_dust_state(dust, id:int, position:Vector2, direction:Vector2):
     execution_info = await dust.metadata(to_uint(id)).call()
