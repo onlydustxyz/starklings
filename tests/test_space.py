@@ -142,6 +142,20 @@ async def test_next_turn_with_ship(starknet: Starknet, space_factory):
 
     await assert_grid_state(space, [Cell(Vector2(5, 1), 1, 0), ship_assertion])
 
+
+@pytest.mark.asyncio
+async def test_play_game(starknet: Starknet, space_factory):
+    space = space_factory
+    ship: StarknetContract = await deploy_contract(starknet, 'ships/static_ship.cairo')
+    await space.add_ship(0, 3, ship.contract_address).invoke(caller_address=ADMIN)
+    ship_assertion = Cell(Vector2(0, 3), 0, 1)
+
+    # Assert grid is empty
+    await assert_grid_state(space, [ship_assertion])
+    
+    # Play the game
+    await space.play_game().invoke(caller_address=ADMIN)
+
 #
 # Helpers to assert the state of the entire grid
 #

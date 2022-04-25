@@ -12,6 +12,9 @@ namespace ISpace:
 
     func next_turn() -> ():
     end
+    
+    func play_game() -> ():
+    end
 
     func get_grid_state() -> (grid_state_len : felt, grid_state : Cell*):
     end
