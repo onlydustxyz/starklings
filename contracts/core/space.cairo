@@ -180,7 +180,7 @@ end
 
 func _rec_play_turns{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr, bitwise_ptr : BitwiseBuiltin*}():
     let (is_finished) = next_turn()
-    if is_finished != 0:
+    if is_finished == TRUE:
         let (space_contract_address) = get_contract_address()
         game_finished.emit(space_contract_address)
 
@@ -201,7 +201,7 @@ func next_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
 
     let (local still_palying) = is_le(turn + 1, max_turn)
     if still_palying == 0:
-        return (1)
+        return (TRUE)
     end
 
     current_turn.write(turn + 1)
@@ -218,7 +218,7 @@ func next_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
     end
     _update_grid(0, 0)
 
-    return (0)
+    return (FALSE)
 end
 
 @external
