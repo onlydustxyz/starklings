@@ -144,7 +144,10 @@ func next_turn{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
     _spawn_dust()
 
     _move_dust(0, 0)
-    _move_ships(0, 0)
+    let (grid_state_len, grid_state) = get_grid_state()
+    with grid_state_len, grid_state:
+        _move_ships(0, 0)
+    end
     _update_grid(0, 0)
 
     return ()
@@ -328,8 +331,9 @@ func _update_grid{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_
 end
 
 # Recursive function that goes through the entire grid and updates ships position
-func _move_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        x : felt, y : felt):
+func _move_ships{
+        syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr, grid_state_len,
+        grid_state : Cell*}(x : felt, y : felt):
     alloc_locals
     let (size) = grid_size.read()
 
@@ -350,8 +354,6 @@ func _move_ships{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
         _move_ships(x, y + 1)
         return ()
     end
-
-    let (grid_state_len, grid_state) = get_grid_state()
 
     # Call ship contract
     let (local new_direction : Vector2) = IShip.move(ship, grid_state_len, grid_state)
