@@ -6,7 +6,7 @@ from starkware.starknet.common.syscalls import get_block_timestamp, get_block_nu
 
 from openzeppelin.introspection.ERC165 import ERC165_supports_interface, ERC165_register_interface
 
-from contracts.models.common import Vector2
+from contracts.models.common import Vector2, Cell
 from contracts.core.library import MathUtils_random_direction
 from contracts.interfaces.irand import IRandom
 
@@ -37,7 +37,7 @@ end
 # ---------
 
 @external
-func move{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(grid_state_len: felt, grid_state: felt*, ship_id: felt) -> (
+func move{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(grid_state_len: felt, grid_state: Cell*, ship_id: felt) -> (
         new_direction : Vector2):
     let (random_contract_address) = random_contract.read()
     let (block_timestamp) = get_block_timestamp()

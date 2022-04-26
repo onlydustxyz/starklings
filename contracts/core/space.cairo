@@ -18,7 +18,7 @@ from contracts.libraries.grid import (
     _get_grid_size, _get_ship_at, _get_dust_at, _get_next_turn_dust_at, _get_next_turn_ship_at,
     _set_dust_at, _set_ship_at, _set_next_turn_dust_at, _set_next_turn_ship_at, _get_grid_state,
     _clear_next_turn_dust_at, _clear_dust_at, _get_next_cell_at, _get_cell_at, _set_cell_at,
-    _set_next_cell_at, _init_grid, _increment_ship_score)
+    _set_next_cell_at, _init_grid, _increment_ship_score, _sync_two_grids)
 
 # ------
 # EVENTS
@@ -155,7 +155,7 @@ func _next_turn{
     with grid_state_len, grid_state:
         _move_ships(0, 0)
     end
-    _update_grid(0, 0)
+    _sync_two_grids()
 
     return (FALSE)
 end
@@ -293,29 +293,6 @@ func _move_dust{
 
     # process the next cell
     _move_dust(x, y + 1)
-    return ()
-end
-
-func _update_grid{
-        syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr, context : Context}(
-        x : felt, y : felt):
-    let (size) = _get_grid_size()
-
-    # We reached the last cell, this is the end
-    if x == size:
-        return ()
-    end
-    # We reached the end of the column, let's go to the next one
-    if y == size:
-        _update_grid(x + 1, 0)
-        return ()
-    end
-
-    let (cell : Cell) = _get_next_cell_at(x, y)
-    _set_cell_at(x, y, cell)
-
-    # process the next cell
-    _update_grid(x, y + 1)
     return ()
 end
 

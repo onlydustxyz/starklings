@@ -237,3 +237,24 @@ func _get_incremented_scores{
 
     return _get_incremented_scores(ships_len - 1, ship_id, new_scores + 1)
 end
+
+func _sync_two_grids{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr, context : Context}():
+    alloc_locals
+
+    local new_context : Context
+    let new_grid: Cell* = alloc()
+
+    assert new_context.grid_size = context.grid_size
+    assert new_context.grid = context.next_grid 
+    assert new_context.next_grid = new_grid
+    assert new_context.max_turn_count = context.max_turn_count
+    assert new_context.max_dust = context.max_dust
+    assert new_context.rand_contract = context.rand_contract
+    assert new_context.ships_len = context.ships_len
+    assert new_context.ships = context.ships
+    
+    _init_grid(context.grid_size * context.grid_size, new_context.next_grid)
+    
+    let context = new_context
+    return ()
+end
