@@ -24,7 +24,8 @@ end
 # ---------
 
 @external
-func move{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(grid_state_len: felt, grid_state: felt*, ship_id: felt) -> (new_direction : Vector2):
+func move{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        grid_state_len : felt, grid_state : felt*, ship_id : felt) -> (new_direction : Vector2):
     return (Vector2(0, 0))
 end
 
