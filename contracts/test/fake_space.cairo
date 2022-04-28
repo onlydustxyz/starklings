@@ -1,7 +1,7 @@
 %lang starknet
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin, SignatureBuiltin, BitwiseBuiltin
-from starkware.cairo.common.math import (assert_le)
+from starkware.cairo.common.math import assert_le
 from contracts.models.common import ShipInit
 
 @external

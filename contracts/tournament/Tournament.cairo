@@ -4,16 +4,16 @@
 %lang starknet
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
-from starkware.cairo.common.bool import (TRUE, FALSE)
-from starkware.cairo.common.math import (assert_lt, assert_nn, assert_not_zero)
+from starkware.cairo.common.bool import TRUE, FALSE
+from starkware.cairo.common.math import assert_lt, assert_nn, assert_not_zero
 from starkware.cairo.common.math_cmp import is_le
-from starkware.cairo.common.uint256 import (Uint256, uint256_le)
-from starkware.starknet.common.syscalls import (get_contract_address, get_caller_address)
+from starkware.cairo.common.uint256 import Uint256, uint256_le
+from starkware.starknet.common.syscalls import get_contract_address, get_caller_address
 from starkware.cairo.common.math import unsigned_div_rem
 from starkware.cairo.common.alloc import alloc
 
 # OpenZeppeling dependencies
-from openzeppelin.access.ownable import (Ownable_initializer, Ownable_only_owner)
+from openzeppelin.access.ownable import Ownable_initializer, Ownable_only_owner
 from openzeppelin.token.erc20.interfaces.IERC20 import IERC20
 from openzeppelin.token.erc721.interfaces.IERC721 import IERC721
 
@@ -91,22 +91,22 @@ end
 
 # Player registered ship
 @storage_var
-func player_ship_(player_address: felt) -> (res : felt):
+func player_ship_(player_address : felt) -> (res : felt):
 end
 
 # Ship associated player
 @storage_var
-func ship_player_(ship_address: felt) -> (res : felt):
+func ship_player_(ship_address : felt) -> (res : felt):
 end
 
 # Ship array
 @storage_var
-func ships_(index: felt) -> (ship_address : felt):
+func ships_(index : felt) -> (ship_address : felt):
 end
 
 # Array of playing ships
 @storage_var
-func playing_ships_(index: felt) -> (ship_address : felt):
+func playing_ships_(index : felt) -> (ship_address : felt):
 end
 @storage_var
 func playing_ship_count_() -> (res : felt):
@@ -114,7 +114,7 @@ end
 
 # Player scores
 @storage_var
-func player_score_(player_address: felt) -> (res : felt):
+func player_score_(player_address : felt) -> (res : felt):
 end
 
 # Played battle count
@@ -122,132 +122,128 @@ end
 func played_battle_count_() -> (res : felt):
 end
 
-
 # -----
 # VIEWS
 # -----
 @view
-func tournament_id{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (tournament_id : felt):
+func tournament_id{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+        tournament_id : felt):
     let (tournament_id) = tournament_id_.read()
     return (tournament_id)
 end
 
 @view
-func tournament_name{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (tournament_name : felt):
+func tournament_name{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+        tournament_name : felt):
     let (tournament_name) = tournament_name_.read()
     return (tournament_name)
 end
 
 @view
-func reward_token_address{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (reward_token_address : felt):
+func reward_token_address{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+        reward_token_address : felt):
     let (reward_token_address) = reward_token_address_.read()
     return (reward_token_address)
 end
 
 @view
 func boarding_pass_token_address{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (boarding_pass_token_address : felt):
+        ) -> (boarding_pass_token_address : felt):
     let (boarding_pass_token_address) = boarding_pass_token_address_.read()
     return (boarding_pass_token_address)
 end
 
 @view
-func rand_contract_address{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (rand_contract_address : felt):
+func rand_contract_address{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+        rand_contract_address : felt):
     let (rand_contract_address) = rand_contract_address_.read()
     return (rand_contract_address)
 end
 
 @view
-func are_tournament_registrations_open{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (are_tournament_registrations_open : felt):
+func are_tournament_registrations_open{
+        syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+        are_tournament_registrations_open : felt):
     let (are_tournament_registrations_open) = are_tournament_registrations_open_.read()
     return (are_tournament_registrations_open)
 end
 
 @view
-func reward_total_amount{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (reward_total_amount : Uint256):
+func reward_total_amount{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+        reward_total_amount : Uint256):
     let (reward_token_address) = reward_token_address_.read()
     let (contract_address) = get_contract_address()
     let (reward_total_amount) = IERC20.balanceOf(
-        contract_address=reward_token_address, account=contract_address
-    )
+        contract_address=reward_token_address, account=contract_address)
     return (reward_total_amount)
 end
 
 @view
-func ships_per_battle{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (ships_per_battle : felt):
+func ships_per_battle{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+        ships_per_battle : felt):
     let (ships_per_battle) = ships_per_battle_.read()
     return (ships_per_battle)
 end
 
 @view
 func max_ships_per_tournament{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (max_ships_per_tournament : felt):
+        ) -> (max_ships_per_tournament : felt):
     let (max_ships_per_tournament) = max_ships_per_tournament_.read()
     return (max_ships_per_tournament)
 end
 
 @view
-func grid_size{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (grid_size : felt):
+func grid_size{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+        grid_size : felt):
     let (grid_size) = grid_size_.read()
     return (grid_size)
 end
 
 @view
-func turn_count{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (turn_count : felt):
+func turn_count{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+        turn_count : felt):
     let (turn_count) = turn_count_.read()
     return (turn_count)
 end
 
 @view
-func max_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (max_dust : felt):
+func max_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+        max_dust : felt):
     let (max_dust) = max_dust_.read()
     return (max_dust)
 end
 
 @view
-func player_count{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (player_count : felt):
+func player_count{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+        player_count : felt):
     let (player_count) = player_count_.read()
     return (player_count)
 end
 
 @view
 func player_ship{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    player_adress: felt
-) -> (player_ship : felt):
+        player_adress : felt) -> (player_ship : felt):
     let (player_ship) = player_ship_.read(player_adress)
     return (player_ship)
 end
 
 @view
 func ship_player{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    ship_adress: felt
-) -> (ship_player : felt):
+        ship_adress : felt) -> (ship_player : felt):
     let (ship_player) = ship_player_.read(ship_adress)
     return (ship_player)
 end
 
 @view
 func player_score{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    player_adress: felt
-) -> (player_score : felt):
+        player_adress : felt) -> (player_score : felt):
     let (player_score) = player_score_.read(player_adress)
     return (player_score)
 end
 
 @view
-func played_battle_count{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (played_battle_count : felt):
+func played_battle_count{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+        played_battle_count : felt):
     let (played_battle_count) = played_battle_count_.read()
     return (played_battle_count)
 end
@@ -257,24 +253,11 @@ end
 # -----
 
 @constructor
-func constructor{
-        syscall_ptr: felt*, 
-        pedersen_ptr: HashBuiltin*,
-        range_check_ptr
-    }(
-        owner: felt,
-        tournament_id: felt,
-        tournament_name: felt,
-        reward_token_address: felt,
-        boarding_pass_token_address: felt,
-        rand_contract_address: felt,
-        space_contract_address: felt,
-        ships_per_battle: felt,
-        max_ships_per_tournament: felt,
-        grid_size: felt,
-        turn_count: felt,
-        max_dust: felt
-    ):
+func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        owner : felt, tournament_id : felt, tournament_name : felt, reward_token_address : felt,
+        boarding_pass_token_address : felt, rand_contract_address : felt,
+        space_contract_address : felt, ships_per_battle : felt, max_ships_per_tournament : felt,
+        grid_size : felt, turn_count : felt, max_dust : felt):
     Ownable_initializer(owner)
     tournament_id_.write(tournament_id)
     tournament_name_.write(tournament_name)
@@ -297,9 +280,9 @@ end
 
 # Open tournament registrations
 @external
-func open_tournament_registrations{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (success: felt):
-    #TODO: add Ownable_only_owner()
+func open_tournament_registrations{
+        syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (success : felt):
+    # TODO: add Ownable_only_owner()
     _only_tournament_registrations_closed()
     are_tournament_registrations_open_.write(TRUE)
     return (TRUE)
@@ -307,23 +290,22 @@ end
 
 # Close tournament registrations
 @external
-func close_tournament_registrations{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-) -> (success: felt):
-    #TODO: add Ownable_only_owner()
+func close_tournament_registrations{
+        syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (success : felt):
+    # TODO: add Ownable_only_owner()
     _only_tournament_registrations_open()
     are_tournament_registrations_open_.write(FALSE)
     return (TRUE)
 end
 
-
 # Start the tournament
 @external
-func start{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (success: felt):
-    #TODO: add Ownable_only_owner()
+func start{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (success : felt):
+    # TODO: add Ownable_only_owner()
     _only_tournament_registrations_closed()
-    
+
     _recursive_start()
-    
+
     return (TRUE)
 end
 
@@ -331,22 +313,19 @@ end
 # @param ship_address: the address of the ship smart contract
 @external
 func register{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    ship_address: felt
-) -> (success: felt):
+        ship_address : felt) -> (success : felt):
     alloc_locals
     _only_tournament_registrations_open()
     let (player_address) = get_caller_address()
     let (boarding_pass_token_address) = boarding_pass_token_address_.read()
     # Check access control with NFT boarding pass
     let (player_boarding_pass_balance) = IERC721.balanceOf(
-        contract_address=boarding_pass_token_address,
-        owner=player_address
-    )
+        contract_address=boarding_pass_token_address, owner=player_address)
     let one = Uint256(1, 0)
     let (is_allowed) = uint256_le(one, player_boarding_pass_balance)
     with_attr error_message("Tournament: player is not allowed to register"):
         assert is_allowed = TRUE
-    end   
+    end
     let (current_player_count) = player_count_.read()
     let (max_ships_per_tournament) = max_ships_per_tournament_.read()
     # Check that we did not reach the max number of players
@@ -374,14 +353,12 @@ func register{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}
     return (TRUE)
 end
 
-
 # -----
 # INTERNAL FUNCTIONS
 # -----
 
 func _increase_score{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    player_address: felt, points: felt
-):
+        player_address : felt, points : felt):
     let (current_score) = player_score_.read(player_address)
     tempvar new_score
     assert new_score = current_score + points
@@ -390,8 +367,7 @@ func _increase_score{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_che
 end
 
 func _decrease_score{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    player_address: felt, points: felt
-):
+        player_address : felt, points : felt):
     let (current_score) = player_score_.read(player_address)
     tempvar new_score
     assert new_score = current_score - points
@@ -399,8 +375,8 @@ func _decrease_score{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_che
     return ()
 end
 
-func _only_tournament_registrations_open{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-):
+func _only_tournament_registrations_open{
+        syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
     let (are_tournament_registrations_open) = are_tournament_registrations_open_.read()
     with_attr error_message("Tournament: tournament is open"):
         assert are_tournament_registrations_open = TRUE
@@ -408,8 +384,8 @@ func _only_tournament_registrations_open{syscall_ptr : felt*, pedersen_ptr : Has
     return ()
 end
 
-func _only_tournament_registrations_closed{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-):
+func _only_tournament_registrations_closed{
+        syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
     let (are_tournament_registrations_open) = are_tournament_registrations_open_.read()
     with_attr error_message("Tournament: tournament is closed"):
         assert are_tournament_registrations_open = FALSE
@@ -421,7 +397,7 @@ end
 func _recursive_start{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
     let (ship_count) = playing_ship_count_.read()
     assert_not_zero(ship_count)
-    
+
     let (winner_ships_len : felt, winner_ships : felt*) = _play_current_round_battles()
     assert_not_zero(winner_ships_len)
 
@@ -436,14 +412,18 @@ func _recursive_start{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_ch
 end
 
 # Play all battles of the current round
-func _play_current_round_battles{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (winner_ships_len : felt, winner_ships : felt*):
+func _play_current_round_battles{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        ) -> (winner_ships_len : felt, winner_ships : felt*):
     alloc_locals
     let (winner_ships : felt*) = alloc()
     let (winner_ships_len) = _recursive_play_current_round_battles(0, 0, winner_ships)
     return (winner_ships_len, winner_ships)
 end
 
-func _recursive_play_current_round_battles{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(ship_index : felt, winner_ships_len : felt, winner_ships : felt*) -> (new_winner_ships_len : felt):
+func _recursive_play_current_round_battles{
+        syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        ship_index : felt, winner_ships_len : felt, winner_ships : felt*) -> (
+        new_winner_ships_len : felt):
     alloc_locals
 
     let (local ships_len : felt, ships : ShipInit*) = _build_battle_ship_array(ship_index)
@@ -456,12 +436,14 @@ func _recursive_play_current_round_battles{syscall_ptr : felt*, pedersen_ptr : H
 
     # Add winner ship to the list of winners of this round
     assert winner_ships[winner_ships_len] = winner_ship
-    
-    return _recursive_play_current_round_battles(ship_index + ships_len, winner_ships_len + 1, winner_ships)
+
+    return _recursive_play_current_round_battles(
+        ship_index + ships_len, winner_ships_len + 1, winner_ships)
 end
 
 # Play the battle entirely
-func _play_next_battle{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(ships_len : felt, ships : ShipInit*) -> (winner_ship : felt):
+func _play_next_battle{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        ships_len : felt, ships : ShipInit*) -> (winner_ship : felt):
     alloc_locals
     let (space_contract) = space_contract_address_.read()
     let (rand_contract) = rand_contract_address_.read()
@@ -469,10 +451,9 @@ func _play_next_battle{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_c
     let (turn_count) = turn_count_.read()
     let (max_dust) = max_dust_.read()
 
-    ISpace.play_game(space_contract,
-            rand_contract, grid_size, turn_count, max_dust,
-            ships_len, ships)
-    
+    ISpace.play_game(
+        space_contract, rand_contract, grid_size, turn_count, max_dust, ships_len, ships)
+
     let (played_battle_count) = played_battle_count_.read()
     played_battle_count_.write(played_battle_count + 1)
 
@@ -484,8 +465,8 @@ func _play_next_battle{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_c
 end
 
 # Get the ships that will participate in the next battle
-func _build_battle_ship_array{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(ship_index : felt) -> (
-        ships_len : felt, ships : ShipInit*):
+func _build_battle_ship_array{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        ship_index : felt) -> (ships_len : felt, ships : ShipInit*):
     alloc_locals
 
     let (local ships : ShipInit*) = alloc()
@@ -495,7 +476,8 @@ func _build_battle_ship_array{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, 
     return (ships_len, ships)
 end
 
-func _recursive_build_battle_ship_array{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+func _recursive_build_battle_ship_array{
+        syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         ship_index : felt, ships_len : felt, ships : ShipInit*) -> (len : felt):
     alloc_locals
     let (ships_per_battle) = ships_per_battle_.read()
@@ -518,8 +500,8 @@ func _recursive_build_battle_ship_array{syscall_ptr : felt*, pedersen_ptr : Hash
     return _recursive_build_battle_ship_array(ship_index + 1, ships_len + 1, ships)
 end
 
-func _get_initial_ship_position{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(battle_ship_index : felt) -> (
-        initial_position : Vector2):
+func _get_initial_ship_position{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        battle_ship_index : felt) -> (initial_position : Vector2):
     let (grid_size) = grid_size_.read()
 
     let (y, x) = unsigned_div_rem(battle_ship_index, grid_size)
@@ -528,14 +510,18 @@ func _get_initial_ship_position{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*
 end
 
 # Update the list of ships that will be playing in the next ground
-func _update_playing_ships_for_next_round{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(winner_ships_len : felt, winner_ships : felt*):
+func _update_playing_ships_for_next_round{
+        syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        winner_ships_len : felt, winner_ships : felt*):
     playing_ship_count_.write(winner_ships_len)
 
     _recursive_update_playing_ships_for_next_round(0, winner_ships_len, winner_ships)
     return ()
 end
 
-func _recursive_update_playing_ships_for_next_round{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(index : felt, winner_ships_len : felt, winner_ships : felt*):
+func _recursive_update_playing_ships_for_next_round{
+        syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        index : felt, winner_ships_len : felt, winner_ships : felt*):
     if winner_ships_len == 0:
         return ()
     end
@@ -543,7 +529,7 @@ func _recursive_update_playing_ships_for_next_round{syscall_ptr : felt*, pederse
     let ship_address : felt = [winner_ships]
     playing_ships_.write(index, ship_address)
 
-    _recursive_update_playing_ships_for_next_round(index + 1, winner_ships_len - 1, &winner_ships[1])
+    _recursive_update_playing_ships_for_next_round(
+        index + 1, winner_ships_len - 1, &winner_ships[1])
     return ()
 end
-

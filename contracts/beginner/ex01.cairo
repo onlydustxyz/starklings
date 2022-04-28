@@ -1,11 +1,11 @@
 %lang starknet
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
-from starkware.starknet.common.syscalls import (get_caller_address)
-from starkware.cairo.common.math import (assert_le)
+from starkware.starknet.common.syscalls import get_caller_address
+from starkware.cairo.common.math import assert_le
 
 @storage_var
-func dust(address: felt) -> (amount: felt):
+func dust(address : felt) -> (amount : felt):
 end
 
 # TODO
@@ -16,14 +16,13 @@ end
 # TODO
 # Create an event `a_star_is_born`
 # It will log:
-# - the `account` that issued the transaction 
+# - the `account` that issued the transaction
 # - the `slot` where this `star` has been registered
 # - the size of the given `star`
 # https://starknet.io/documentation/events/
 
 @external
-func collect_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        amount : felt):
+func collect_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(amount : felt):
     let (address) = get_caller_address()
 
     let (res) = dust.read(address)
@@ -38,7 +37,7 @@ end
 # https://starknet.io/docs/how_cairo_works/builtins.html
 @external
 func light_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        dust_amount: felt):
+        dust_amount : felt):
     # TODO
     # Get the caller address
     # Get the amount on dust owned by the caller
@@ -52,13 +51,12 @@ func light_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
     return ()
 end
 
-
 @view
-func view_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(address: felt) -> (
-        amount: felt):
+func view_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        address : felt) -> (amount : felt):
     let (res) = dust.read(address)
     return (res)
 end
 
-#TODO
+# TODO
 # Write two views, for the `star` and `slot` storages
