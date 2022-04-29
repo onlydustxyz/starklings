@@ -1,9 +1,9 @@
-name: Linting
+name: Formatting
 
 on: push
 
 jobs:
-  lint-cairo:
+  format-cairo:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -14,9 +14,9 @@ jobs:
       - name: Install dependencies
         run: |
           pip install cairo-lang
-      - name: Lint files
+      - name: Check files formatting
         run: cairo-format -c contracts/**/*.cairo
-  lint-python:
+  format-python:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -27,5 +27,5 @@ jobs:
       - name: Install dependencies
         run: |
           pip install black
-      - name: Lint files
+      - name: Check files formatting
         run: black --check tests
