@@ -3,7 +3,7 @@ name: Formatting
 on: push
 
 jobs:
-  format-cairo:
+  cairo:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,7 +16,7 @@ jobs:
           pip install cairo-lang
       - name: Check files formatting
         run: cairo-format -c contracts/**/*.cairo
-  format-python:
+  python:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
