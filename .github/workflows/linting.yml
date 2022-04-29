@@ -3,7 +3,7 @@ name: Linting
 on: push
 
 jobs:
-  lint:
+  lint-cairo:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,3 +16,16 @@ jobs:
           pip install cairo-lang
       - name: Lint files
         run: cairo-format -c contracts/**/*.cairo
+  lint-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
+          cache: "pip"
+      - name: Install dependencies
+        run: |
+          pip install black
+      - name: Lint files
+        run: black --check tests
