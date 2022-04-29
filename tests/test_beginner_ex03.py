@@ -14,8 +14,12 @@ CONTRACT_FILE = os.path.join("contracts", "beginner", "ex03.cairo")
 
 @pytest.fixture
 async def dust_factory(starknet: Starknet) -> StarknetContract:
-    account1 = await deploy_contract(starknet, 'openzeppelin/token/erc721/utils/ERC721_Holder.cairo')
-    account2 = await deploy_contract(starknet, 'openzeppelin/token/erc721/utils/ERC721_Holder.cairo')
+    account1 = await deploy_contract(
+        starknet, "openzeppelin/token/erc721/utils/ERC721_Holder.cairo"
+    )
+    account2 = await deploy_contract(
+        starknet, "openzeppelin/token/erc721/utils/ERC721_Holder.cairo"
+    )
     contract = await starknet.deploy(
         source=CONTRACT_FILE,
     )
@@ -51,22 +55,23 @@ async def test_light_stars(dust_factory):
         star(str_to_felt("Corvus"), dust_amount),
     ]
 
-    await contract.collect_dust(dust_collected).invoke(caller_address=a.contract_address)
+    await contract.collect_dust(dust_collected).invoke(
+        caller_address=a.contract_address
+    )
 
     await contract.light_stars(new_stars).invoke(caller_address=a.contract_address)
 
     owned_dust = await contract.view_dust(address=a.contract_address).call()
-    assert owned_dust.result == (
-        dust_collected - dust_amount * len(new_stars),)
+    assert owned_dust.result == (dust_collected - dust_amount * len(new_stars),)
 
     stored_star = await contract.view_star(address=a.contract_address, slot=0).call()
-    assert stored_star.result == (new_stars[0], )
+    assert stored_star.result == (new_stars[0],)
 
     stored_star = await contract.view_star(address=a.contract_address, slot=1).call()
-    assert stored_star.result == (new_stars[1], )
+    assert stored_star.result == (new_stars[1],)
 
     stored_star = await contract.view_star(address=a.contract_address, slot=2).call()
-    assert stored_star.result == (new_stars[2], )
+    assert stored_star.result == (new_stars[2],)
 
     slot = await contract.view_slot(address=a.contract_address).call()
     assert slot.result == (3,)

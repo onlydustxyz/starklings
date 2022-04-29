@@ -13,8 +13,12 @@ CONTRACT_FILE = os.path.join("contracts", "beginner", "ex01.cairo")
 
 @pytest.fixture
 async def dust_factory(starknet: Starknet) -> StarknetContract:
-    account1 = await deploy_contract(starknet, 'openzeppelin/token/erc721/utils/ERC721_Holder.cairo')
-    account2 = await deploy_contract(starknet, 'openzeppelin/token/erc721/utils/ERC721_Holder.cairo')
+    account1 = await deploy_contract(
+        starknet, "openzeppelin/token/erc721/utils/ERC721_Holder.cairo"
+    )
+    account2 = await deploy_contract(
+        starknet, "openzeppelin/token/erc721/utils/ERC721_Holder.cairo"
+    )
     contract = await starknet.deploy(
         source=CONTRACT_FILE,
     )
@@ -41,7 +45,9 @@ async def test_light_star(dust_factory):
     dust_collected = 5000
     dust_amount = 2000
 
-    await contract.collect_dust(dust_collected).invoke(caller_address=a.contract_address)
+    await contract.collect_dust(dust_collected).invoke(
+        caller_address=a.contract_address
+    )
 
     await contract.light_star(dust_amount).invoke(caller_address=a.contract_address)
 
