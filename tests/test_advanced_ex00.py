@@ -42,7 +42,6 @@ def metadata(space_size=100, position=(10, 10), direction=(1, 0)):
 
 
 @pytest.mark.asyncio
-@pytest.mark.workshop
 async def test_constructor(dust_factory):
     dust, _, _ = dust_factory
 
@@ -54,7 +53,6 @@ async def test_constructor(dust_factory):
 
 
 @pytest.mark.asyncio
-@pytest.mark.workshop
 async def test_mint(dust_factory):
     dust, anyone, _ = dust_factory
 
@@ -81,7 +79,6 @@ async def test_mint(dust_factory):
 
 
 @pytest.mark.asyncio
-@pytest.mark.workshop
 async def test_burn(dust_factory):
     dust, anyone, _ = dust_factory
 
@@ -116,7 +113,6 @@ async def test_burn(dust_factory):
 
 
 @pytest.mark.asyncio
-@pytest.mark.workshop
 async def test_transfer(dust_factory):
     dust, ship1, ship2 = dust_factory
 
