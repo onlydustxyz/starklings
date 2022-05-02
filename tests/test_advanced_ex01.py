@@ -29,7 +29,6 @@ value_first_block = 0
 
 
 @pytest.mark.asyncio
-@pytest.mark.workshop
 async def test_rand(rand_factory):
     rand, _, _ = rand_factory
 
@@ -40,6 +39,5 @@ async def test_rand(rand_factory):
 
 
 @pytest.mark.asyncio
-@pytest.mark.workshop
 async def test_rand(rand_factory):
     rand, _, _ = rand_factory
