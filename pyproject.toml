@@ -1,0 +1,12 @@
+[tool.poetry]
+name = "starklings"
+version = "0.1.0"
+description = "An interactive tutorial to get you up and running with Starknet"
+authors = ["OnlyDust"]
+
+[tool.poetry.dependencies]
+python = ">=3.8 <3.9"
+protostar = { git = "https://github.com/software-mansion/protostar.git", tag = "v0.1.0" }
+pyinstaller = "ˆ5.0.1"
+
+[tool.poetry.dev-dependencies]

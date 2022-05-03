@@ -1,5 +1,5 @@
 <div align="center">
-  <h1 align="center">Starknet Onboarding</h1>
+  <h1 align="center">Starklings</h1>
   <p align="center">
     <a href="http://makeapullrequest.com">
       <img alt="pull requests welcome badge" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat">
@@ -13,29 +13,32 @@
             alt="License"></a>            
   </p>
   
-  <h3 align="center">Starknet onboarding with a game</h3>
+  <h3 align="center">An interactive tutorial to get you up and running with Starknet</h3>
 </div>
 
-# Environment setup
+---
 
-## Prerequisites
+## Development
 
-- [Python <=3.8](https://www.python.org/downloads/)
+### Requirements
 
-## Installation
+- [Python >=3.8 <3.9](https://www.python.org/downloads/)
 
-- `python -m venv env`
-- `source env/bin/activate`
-- `pip install -r requirements.txt`
-- `nile install`
+### Setting up environment
 
-# How to use this repo
+1. Install Python version management tool: [pyenv](https://github.com/pyenv/pyenv) or [asdf](https://github.com/asdf-vm/asdf)
+2. Install `Python 3.8` using the Python version management tool and activate that version
+3. Clone this repository
+4. Verify the active Python version: `python -V`
+5. Create Python virtual environment in the project directory: `python -m venv env`
+6. Activate environment: `source env/bin/activate`
+7. Upgrade pip: `pip install --upgrade pip`
+8. Install [Poetry](https://python-poetry.org/) — a dependency manager: `pip install poetry`
+9. Install project dependencies: `poetry install`
 
-## Tutorial
+---
 
-This repo has 2 difficulty levels: beginner and advanced.
+## Inspiration
 
-`contracts<beginner/advanced>/ex` contrains exercises with instructions on what to do.  
-Run `pytest tests/test_<beginner/advanced>_ex00.py` and code until the tests pass.
-
-Repeat for all contracts. Have fun!
+- [Protostar](https://github.com/software-mansion/protostar) for all the project tooling and setup, deployment, packaging
+- [Rustlings](https://github.com/rust-lang/rustlings) for the amazing pedagogy and brilliant concept of progressive and interactive tutorial
