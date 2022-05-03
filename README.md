@@ -20,6 +20,16 @@
 
 ## Installation
 
+To install the tool, run:
+
+```shell
+curl -L https://raw.githubusercontent.com/onlydustxyz/starklings/master/install.sh | bash
+```
+
+---
+
+## Development
+
 ### Requirements
 
 - [Python >=3.8 <3.9](https://www.python.org/downloads/)
@@ -35,12 +45,6 @@
 7. Upgrade pip: `pip install --upgrade pip`
 8. Install [Poetry](https://python-poetry.org/) — a dependency manager: `pip install poetry`
 9. Install project dependencies: `poetry install`
-
----
-
-## Usage
-
-For the beginner workshop run `poe beginner`, and make the tests pass.
 
 ---
 
