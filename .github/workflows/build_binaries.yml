@@ -1,0 +1,62 @@
+name: Build binaries
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, macOS-10.15] # TODO: Fix windows gmp.h not found issue, and add a windows binary
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8.12
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8.12
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install
+      - name: Build binary
+        run: |
+          poe build
+      - name: Pack binary into a tarball
+        run: tar -czvf starklings.tar.gz ./dist/starklings
+
+      - name: Upload the tarball
+        uses: actions/upload-artifact@v2
+        with:
+          name: starklings-${{ runner.os }}
+          path: starklings.tar.gz
+  publish:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          path: dist
+
+      - name: Upload macOS binary to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/starklings-macOS/starklings.tar.gz
+          asset_name: starklings-macOS.tar.gz
+          tag: ${{ github.ref }}
+          overwrite: true
+
+      - name: Upload Linux binary to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/starklings-Linux/starklings.tar.gz
+          asset_name: starklings-Linux.tar.gz
+          tag: ${{ github.ref }}
+          overwrite: true
