@@ -20,6 +20,7 @@ tomli = "<2.0.0"
 
 [tool.poe.tasks]
 build = "pyinstaller starklings.spec --noconfirm"
+deploy = "python deploy.py"
 beginner = "pytest tests/test_beginner*.py"
 
 [build-system]
