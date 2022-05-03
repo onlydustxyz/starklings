@@ -18,7 +18,7 @@
 
 ---
 
-## Development
+## Installation
 
 ### Requirements
 
@@ -35,6 +35,12 @@
 7. Upgrade pip: `pip install --upgrade pip`
 8. Install [Poetry](https://python-poetry.org/) — a dependency manager: `pip install poetry`
 9. Install project dependencies: `poetry install`
+
+---
+
+## Usage
+
+For the beginner workshop run `poe beginner`, and make the tests pass.
 
 ---
 
