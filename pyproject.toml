@@ -14,7 +14,14 @@ openzeppelin-cairo-contracts = "^0.1.0"
 
 [tool.poetry.dev-dependencies]
 poethepoet = "ˆ0.13.1"
+packaging = "^21.3"
+GitPython = "^3.1.27"
+tomli = "<2.0.0"
 
 [tool.poe.tasks]
 build = "pyinstaller starklings.spec --noconfirm"
 beginner = "pytest tests/test_beginner*.py"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
