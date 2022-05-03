@@ -36,6 +36,6 @@
 This repo has 2 difficulty levels: beginner and advanced.
 
 `contracts<beginner/advanced>/ex` contrains exercises with instructions on what to do.  
-Run `pytest tests/test_<beginner/advanced>_ex00.py --runworkshop` and code until the tests pass.
+Run `pytest tests/test_<beginner/advanced>_ex00.py` and code until the tests pass.
 
 Repeat for all contracts. Have fun!
