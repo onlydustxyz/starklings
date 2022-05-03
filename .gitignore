@@ -5,13 +5,8 @@
 __pycache__
 env
 
-# starknet 
-node.json
-*.deployments.txt
-artifacts
-
-# nile
-127.0.0.1.*
-
 # Protostar
 build
+
+# Pyinstaller
+dist
