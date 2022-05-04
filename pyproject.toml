@@ -1,27 +1,30 @@
 [tool.poetry]
+authors = ["OnlyDust"]
+description = "An interactive tutorial to get you up and running with Starknet"
 name = "starklings"
 version = "0.0.1"
-description = "An interactive tutorial to get you up and running with Starknet"
-authors = ["OnlyDust"]
 
 [tool.poetry.dependencies]
-python = ">=3.8 <3.9"
-protostar = { git = "https://github.com/software-mansion/protostar.git", tag = "v0.1.0" }
+argparse = "^1.4.0"
+cairo-lang = "^0.8.1"
+colorama = "^0.4.4"
+openzeppelin-cairo-contracts = "^0.1.0"
+protostar = {git = "https://github.com/software-mansion/protostar.git", tag = "v0.1.0"}
 pyinstaller = "ˆ5.0.1"
 pytest = "^7.1.2"
-cairo-lang = "^0.8.1"
-openzeppelin-cairo-contracts = "^0.1.0"
+python = ">=3.8 <3.9"
 
 [tool.poetry.dev-dependencies]
-poethepoet = "ˆ0.13.1"
-packaging = "^21.3"
 GitPython = "^3.1.27"
+packaging = "^21.3"
+poethepoet = "ˆ0.13.1"
 tomli = "<2.0.0"
 
 [tool.poe.tasks]
+beginner = "pytest tests/test_beginner*.py"
 build = "pyinstaller starklings.spec --noconfirm"
 deploy = "python deploy.py"
-beginner = "pytest tests/test_beginner*.py"
+test = "pytest src"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
