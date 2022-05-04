@@ -21,4 +21,4 @@ except Exception as error:
     print(
         "Unexpected Starklings error. Report it here:\nhttps://github.com/onlydustxyz/starklings/issues\n"
     )
-    raise err
+    raise error
