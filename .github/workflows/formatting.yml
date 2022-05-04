@@ -26,4 +26,4 @@ jobs:
         run: |
           pip install black
       - name: Check files formatting
-        run: black --check tests
+        run: black --check src tests

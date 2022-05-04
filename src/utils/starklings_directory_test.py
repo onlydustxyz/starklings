@@ -21,6 +21,7 @@ def test_directory_root_path(script_root: Path):
 
     assert starklings_directory.root_dir_path == script_root / ".." / ".."
 
+
 def test_version_manager():
     starklings_directory = StarklingsDirectory(Path(__file__).parent)
     version_manager = VersionManager(starklings_directory)
