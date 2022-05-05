@@ -6,6 +6,8 @@
 # You will find some function definition in this file and have to implement their body.
 # Nothing to hairy, just use the openzepelin provided functions
 
+# I AM NOT DONE
+
 from starkware.cairo.common.cairo_builtins import HashBuiltin, SignatureBuiltin, BitwiseBuiltin
 from starkware.cairo.common.alloc import alloc
 from starkware.cairo.common.math import unsigned_div_rem, assert_lt
