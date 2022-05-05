@@ -3,6 +3,8 @@
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.starknet.common.syscalls import get_caller_address
 
+# I AM NOT DONE
+
 # TODO
 # Create a storage named `dust` that map an `address` to an `amount`
 # https://starknet.io/documentation/contracts/#contracts_storage

@@ -4,6 +4,8 @@ from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.starknet.common.syscalls import get_caller_address
 from starkware.cairo.common.math import assert_le
 
+# I AM NOT DONE
+
 # We want to store more info than just the `star` size.
 # We are going to give them a name and a size
 
