@@ -1,9 +1,7 @@
 from argparse import ArgumentParser
 import asyncio
 from pathlib import Path
-from tokenize import String
 from src import cli
-from typing import List
 
 
 script_root = Path(__file__).parent

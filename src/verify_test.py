@@ -59,7 +59,7 @@ def test_find_next_exercise_all_true(mocker):
     assert seeker.find_next_exercise() == None
 
 
-def test_find_next_exercise_all_true(mocker):
+def test_find_next_exercise(mocker):
     def mock_is_exercise_done():
         res = True
 
