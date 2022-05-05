@@ -46,7 +46,8 @@ end
 
 @view
 func view_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        address : felt) -> (amount : felt):
+    address : felt
+) -> (amount : felt):
     let (res) = dust.read(address)
     return (res)
 end
@@ -57,7 +58,8 @@ end
 
 @view
 func view_slot{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        address : felt) -> (amount : felt):
+    address : felt
+) -> (amount : felt):
     let (res) = slot.read(address)
     return (res)
 end

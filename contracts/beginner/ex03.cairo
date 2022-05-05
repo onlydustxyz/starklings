@@ -37,7 +37,8 @@ end
 
 @external
 func light_stars{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        stars_len : felt, stars : Star*):
+    stars_len : felt, stars : Star*
+):
     let (address) = get_caller_address()
 
     batch_create_stars(address, stars_len, stars)
@@ -46,7 +47,8 @@ func light_stars{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
 end
 
 func batch_create_stars{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        address : felt, array_len : felt, array : Star*):
+    address : felt, array_len : felt, array : Star*
+):
     # Successively insert all the array stars in the storage
     # There is no loops in cairo, we use recursion
     # https://www.cairo-lang.org/docs/hello_starknet/more_features.html#array-arguments-in-calldata
@@ -61,7 +63,8 @@ func batch_create_stars{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_
 end
 
 func insert_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        address : felt, new_star : Star):
+    address : felt, new_star : Star
+):
     let (dust_reserve) = dust.read(address)
     assert_le(new_star.size, dust_reserve)
 
@@ -80,21 +83,24 @@ end
 
 @view
 func view_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        address : felt) -> (amount : felt):
+    address : felt
+) -> (amount : felt):
     let (res) = dust.read(address)
     return (res)
 end
 
 @view
 func view_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        address : felt, slot : felt) -> (star : Star):
+    address : felt, slot : felt
+) -> (star : Star):
     let (res) = star.read(address, slot)
     return (res)
 end
 
 @view
 func view_slot{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        address : felt) -> (amount : felt):
+    address : felt
+) -> (amount : felt):
     let (res) = slot.read(address)
     return (res)
 end
