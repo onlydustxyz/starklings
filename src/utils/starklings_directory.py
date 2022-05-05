@@ -72,10 +72,12 @@ class VersionManager:
         )
         try:
             with open(path, "r", encoding="UTF-8") as file:
-                version_s = tomli.loads(file.read())["tool"]["poetry"]["dependencies"][
-                    "cairo-lang"
-                ].replace("^", "")
-                return VersionManager.parse(version_s)
+                raw_version = tomli.loads(file.read())["tool"]["poetry"][
+                    "dependencies"
+                ]["cairo-lang"]["url"]
+                version_regex = re.compile(r".*cairo-lang-(.+)\.zip.*")
+                version_match = version_regex.match(raw_version)
+                return VersionManager.parse(version_match.group(1))
         except FileNotFoundError:
             getLogger().warning("Couldn't read cairo-lang version")
             return None
