@@ -21,7 +21,6 @@ class ProtostarExerciseRunner:
             capture_output=True,
             cwd=script_root,
         )
-        print(test_run)
         if len(test_run.stderr) > 0:
             raise ExerciceFailed(test_run.stderr.decode("utf-8"))
         if "------- FAILURES --------" in test_run.stdout.decode("utf-8"):
