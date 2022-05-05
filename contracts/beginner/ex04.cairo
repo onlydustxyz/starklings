@@ -46,7 +46,8 @@ end
 
 @external
 func light_stars{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        stars_len : felt, stars : Star*):
+    stars_len : felt, stars : Star*
+):
     let (address) = get_caller_address()
 
     batch_create_stars(address, stars_len, stars)
@@ -55,7 +56,8 @@ func light_stars{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
 end
 
 func batch_create_stars{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        address : felt, array_len : felt, array : Star*):
+    address : felt, array_len : felt, array : Star*
+):
     if array_len == 0:
         return ()
     end
@@ -67,7 +69,8 @@ func batch_create_stars{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_
 end
 
 func insert_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        address : felt, new_star : Star):
+    address : felt, new_star : Star
+):
     alloc_locals
 
     let (dust_reserve) = dust.read(address)
@@ -94,7 +97,8 @@ func insert_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
 end
 
 func increase_rank{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        address : felt):
+    address : felt
+):
     let (current_rank) = rank.read(address)
     rank.write(address, current_rank + 1)
 
@@ -103,21 +107,24 @@ end
 
 @view
 func view_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        address : felt) -> (amount : felt):
+    address : felt
+) -> (amount : felt):
     let (res) = dust.read(address)
     return (res)
 end
 
 @view
 func view_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        address : felt, slot : felt) -> (star : Star):
+    address : felt, slot : felt
+) -> (star : Star):
     let (res) = star.read(address, slot)
     return (res)
 end
 
 @view
 func view_slot{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        address : felt) -> (amount : felt):
+    address : felt
+) -> (amount : felt):
     let (res) = slot.read(address)
     return (res)
 end
@@ -125,7 +132,8 @@ end
 # A view to the `rank` storage
 @view
 func view_rank{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        address : felt) -> (amount : felt):
+    address : felt
+) -> (amount : felt):
     let (res) = rank.read(address)
     return (res)
 end

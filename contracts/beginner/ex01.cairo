@@ -37,7 +37,8 @@ end
 # https://starknet.io/docs/how_cairo_works/builtins.html
 @external
 func light_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        dust_amount : felt):
+    dust_amount : felt
+):
     # TODO
     # Get the caller address
     # Get the amount on dust owned by the caller
@@ -53,7 +54,8 @@ end
 
 @view
 func view_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        address : felt) -> (amount : felt):
+    address : felt
+) -> (amount : felt):
     let (res) = dust.read(address)
     return (res)
 end

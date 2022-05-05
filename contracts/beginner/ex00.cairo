@@ -33,7 +33,8 @@ end
 # Except for this limitation, they can still do computation and be fairly complex
 @view
 func view_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        address : felt) -> (amount : felt):
+    address : felt
+) -> (amount : felt):
     let (res) = dust.read(address)
     return (res)
 end
