@@ -9,7 +9,6 @@ argparse = "^1.4.0"
 cairo-lang = "^0.8.1"
 colorama = "^0.4.4"
 openzeppelin-cairo-contracts = "^0.1.0"
-protostar = {git = "https://github.com/software-mansion/protostar.git", tag = "v0.1.0"}
 pyinstaller = "ˆ5.0.1"
 pytest = "^7.1.2"
 python = ">=3.8 <3.9"

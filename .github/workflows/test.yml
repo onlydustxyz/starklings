@@ -16,6 +16,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install poetry
           poetry install
+      - name: Install protostar
+        run: |
+          curl -L https://raw.githubusercontent.com/software-mansion/protostar/master/install.sh | bash
+      - name: Update env variables
+        run: |
+          source /home/runner/.bashrc | bash
       - name: Build binary
         run: |
           poetry run pyinstaller starklings.spec
