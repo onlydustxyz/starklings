@@ -7,11 +7,12 @@ def test_is_exercise_done_true(mocker):
     file_content = """Lorem ipsum
 Some text
 More text"""
-    m = mocker.patch("builtins.open", mocker.mock_open(read_data=file_content))
+    mock = mocker.patch("builtins.open", mocker.mock_open(read_data=file_content))
 
-    res = ExerciseSeeker._is_exercise_done("foo")
-    m.assert_called_once_with("foo", "r")
-    assert res == True
+    # pylint: disable=protected-access
+    exercise_done = ExerciseSeeker._is_exercise_done("foo")
+    mock.assert_called_once_with("foo", "r", encoding="utf-8")
+    assert exercise_done
 
 
 def test_is_exercise_done_false(mocker):
@@ -20,11 +21,12 @@ def test_is_exercise_done_false(mocker):
 Some text
 More text"""
 
-    m = mocker.patch("builtins.open", mocker.mock_open(read_data=file_content))
+    mock = mocker.patch("builtins.open", mocker.mock_open(read_data=file_content))
 
-    res = ExerciseSeeker._is_exercise_done("foo")
-    m.assert_called_once_with("foo", "r")
-    assert res == False
+    # pylint: disable=protected-access
+    exercise_done = ExerciseSeeker._is_exercise_done("foo")
+    mock.assert_called_once_with("foo", "r", encoding="utf-8")
+    assert not exercise_done
 
 
 def test_find_next_exercise_all_false(mocker):
@@ -34,11 +36,11 @@ def test_find_next_exercise_all_false(mocker):
     seeker = ExerciseSeeker(
         [("dir0", ["ex00", "ex01"]), ("dir1", ["ex00", "ex01"])], Path("root")
     )
-    m = mocker.patch.object(
+    mock = mocker.patch.object(
         ExerciseSeeker,
         "_is_exercise_done",
     )
-    m.side_effect = lambda x: mock_is_exercise_done()
+    mock.side_effect = lambda x: mock_is_exercise_done()
 
     assert seeker.find_next_exercise() == Path("root/dir0/ex00.cairo")
 
@@ -50,13 +52,13 @@ def test_find_next_exercise_all_true(mocker):
     seeker = ExerciseSeeker(
         [("dir0", ["ex00", "ex01"]), ("dir1", ["ex00", "ex01"])], Path("root")
     )
-    m = mocker.patch.object(
+    mock = mocker.patch.object(
         ExerciseSeeker,
         "_is_exercise_done",
     )
-    m.side_effect = lambda x: mock_is_exercise_done()
+    mock.side_effect = lambda x: mock_is_exercise_done()
 
-    assert seeker.find_next_exercise() == None
+    assert seeker.find_next_exercise() is None
 
 
 def test_find_next_exercise(mocker):
@@ -74,10 +76,10 @@ def test_find_next_exercise(mocker):
     seeker = ExerciseSeeker(
         [("dir0", ["ex00", "ex01"]), ("dir1", ["ex00", "ex01"])], Path("root")
     )
-    m = mocker.patch.object(
+    mock = mocker.patch.object(
         ExerciseSeeker,
         "_is_exercise_done",
     )
-    m.side_effect = lambda x: mock_is_exercise_done()
+    mock.side_effect = lambda x: mock_is_exercise_done()
 
     assert seeker.find_next_exercise() == Path("root/dir1/ex00.cairo")

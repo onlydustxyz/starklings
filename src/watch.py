@@ -6,16 +6,17 @@ from watchdog.events import FileSystemEventHandler
 
 
 class Handler(FileSystemEventHandler):
-    @staticmethod
-    def on_any_event(event):
+    def on_any_event(self, event):
         if event.event_type == "modified":
+            # pylint: disable=fixme
             # TODO: Here we want to run the file tests instead of displaying its path
-            print("Received modified event - {}.".format(event.src_path))
+            print(f"Received modified event - {event.src_path}.")
             return None
-        elif event.is_directory:
+        if event.is_directory:
             return None
-        elif event.event_type == "created":
+        if event.event_type == "created":
             return None
+        return None
 
 
 class FilesystemWatcher:
@@ -30,7 +31,8 @@ class FilesystemWatcher:
         try:
             while True:
                 time.sleep(5)
-        except:
+        # pylint: disable=broad-except
+        except Exception:
             observer.stop()
             print("Error")
 

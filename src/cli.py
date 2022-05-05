@@ -1,11 +1,8 @@
-import time
-from ast import Return
 from pathlib import Path
 from .verify import ExerciseSeeker
 from .watch import FilesystemWatcher
 from .constants import exercise_files_architecture
-
-from src.utils.starklings_directory import StarklingsDirectory, VersionManager
+from .utils.starklings_directory import StarklingsDirectory, VersionManager
 
 
 async def cli(args, script_root: Path):

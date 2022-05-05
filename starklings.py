@@ -35,6 +35,7 @@ try:
     asyncio.run(cli(root_parser.parse_args(), script_root))
 except Exception as error:
     print(
-        "Unexpected Starklings error. Report it here:\nhttps://github.com/onlydustxyz/starklings/issues\n"
+        "Unexpected Starklings error. Report it here:\n"
+        + "https://github.com/onlydustxyz/starklings/issues\n"
     )
     raise error

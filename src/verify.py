@@ -8,12 +8,11 @@ class ExerciseSeeker:
 
     @staticmethod
     def _is_exercise_done(path: str) -> bool:
-        file = open(path, "r")
-        lines = file.readlines()
-
-        for line in lines:
-            if line == "# I AM NOT DONE\n":
-                return False
+        with open(path, "r", encoding="utf-8") as file:
+            lines = file.readlines()
+            for line in lines:
+                if line == "# I AM NOT DONE\n":
+                    return False
 
         return True
 
@@ -21,7 +20,7 @@ class ExerciseSeeker:
         for (path, exercise_list) in self._exercises:
             for exercise in exercise_list:
                 exercise_path = self._directory.joinpath(path).joinpath(
-                    "{}.cairo".format(exercise)
+                    f"{exercise}.cairo"
                 )
                 if not self._is_exercise_done(exercise_path):
                     return exercise_path
