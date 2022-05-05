@@ -1,5 +1,7 @@
 %lang starknet
 
+# I AM NOT DONE
+
 # What to do in this exercise ?
 #
 # Write a peudo random function
