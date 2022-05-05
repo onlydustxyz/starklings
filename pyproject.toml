@@ -15,6 +15,7 @@ pytest = "^7.1.2"
 python = ">=3.8 <3.9"
 watchdog = "^2.1.7"
 pytest-mock = "^3.7.0"
+pylint = "^2.13.8"
 
 [tool.poetry.dev-dependencies]
 GitPython = "^3.1.27"
