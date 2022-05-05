@@ -1,5 +1,6 @@
 from pathlib import Path
 import subprocess
+from src.protostar import protostar_bin
 
 script_root = Path(__file__).parent / ".." / ".."
 
@@ -16,7 +17,9 @@ class ExerciceFailed(Exception):
 class ProtostarExerciseRunner:
     async def run(self, exercise_path):
         test_run = subprocess.run(
-            ["protostar", "test", exercise_path], capture_output=True, cwd=script_root
+            [protostar_bin(), "test", exercise_path],
+            capture_output=True,
+            cwd=script_root,
         )
         print(test_run)
         if len(test_run.stderr) > 0:

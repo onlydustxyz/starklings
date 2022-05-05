@@ -4,6 +4,9 @@ from packaging.version import Version as PackagingVersion
 from typing import Optional
 import tomli
 from logging import getLogger
+import subprocess
+import re
+from src.protostar import protostar_bin
 
 
 class StarklingsDirectory:
@@ -46,20 +49,15 @@ class VersionManager:
 
     @property
     def protostar_version(self) -> Optional[PackagingVersion]:
-        path = (
-            self._starklings_directory.root_dir_path
-            / "dist"
-            / "starklings"
-            / "info"
-            / "pyproject.toml"
+        protostar_output = subprocess.run(
+            [protostar_bin(), "--version"], capture_output=True
         )
+        version_regex = re.compile(r"Protostar version: ([\d\.]+)")
+        version_match = version_regex.match(protostar_output.stdout.decode("UTF-8"))
         try:
-            with open(path, "r", encoding="UTF-8") as file:
-                version_s = tomli.loads(file.read())["tool"]["poetry"]["dependencies"][
-                    "protostar"
-                ]["tag"].replace("v", "")
-                return VersionManager.parse(version_s)
-        except FileNotFoundError:
+            version = version_match.group(1)
+            return VersionManager.parse(version)
+        except IndexError:
             getLogger().warning("Couldn't read Protostar version")
             return None
 
