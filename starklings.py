@@ -22,7 +22,7 @@ root_parser.add_argument(
     "-v",
     default=False,
     help="Verifies all exercises according to the recommended order",
-    action="store_true"
+    action="store_true",
 )
 
 root_parser.add_argument(
@@ -30,7 +30,7 @@ root_parser.add_argument(
     "-w",
     default=False,
     help="Reruns `verify` when files were edited",
-    action="store_true"
+    action="store_true",
 )
 
 try:
