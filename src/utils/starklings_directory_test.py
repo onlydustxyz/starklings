@@ -5,8 +5,8 @@ import pytest
 from src.utils.starklings_directory import StarklingsDirectory, VersionManager
 
 
-@pytest.fixture
-def script_root(tmpdir: str) -> Path:
+@pytest.fixture(name="script_root")
+def script_root_fixture(tmpdir: str) -> Path:
     return Path(tmpdir)
 
 

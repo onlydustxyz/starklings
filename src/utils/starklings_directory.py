@@ -1,11 +1,11 @@
 from pathlib import Path
-from packaging import version
-from packaging.version import Version as PackagingVersion
-from typing import Optional
-import tomli
+import re
 from logging import getLogger
 import subprocess
-import re
+from typing import Optional
+import tomli
+from packaging import version
+from packaging.version import Version as PackagingVersion
 from src.protostar import protostar_bin
 
 
@@ -50,13 +50,13 @@ class VersionManager:
     @property
     def protostar_version(self) -> Optional[PackagingVersion]:
         protostar_output = subprocess.run(
-            [protostar_bin(), "--version"], capture_output=True
+            [protostar_bin(), "--version"], capture_output=True, check=True
         )
         version_regex = re.compile(r"Protostar version: ([\d\.]+)")
         version_match = version_regex.match(protostar_output.stdout.decode("UTF-8"))
         try:
-            version = version_match.group(1)
-            return VersionManager.parse(version)
+            version_string = version_match.group(1)
+            return VersionManager.parse(version_string)
         except IndexError:
             getLogger().warning("Couldn't read Protostar version")
             return None
