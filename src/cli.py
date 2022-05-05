@@ -1,8 +1,9 @@
 import time
 from ast import Return
 from pathlib import Path
-from .verify import find_next_exercise
-from .watch import watch
+from .verify import ExerciseSeeker
+from .watch import FilesystemWatcher
+from .constants import exercise_files_architecture
 
 from src.utils.starklings_directory import StarklingsDirectory, VersionManager
 
@@ -15,11 +16,14 @@ async def cli(args, script_root: Path):
         version_manager.print_current_version()
 
     if args.watch:
-        watch(script_root.joinpath("contracts"))
+        watcher = FilesystemWatcher(script_root.joinpath("contracts"))
+        watcher.start()
 
     if args.verify:
-        res = find_next_exercise(script_root)
-        if not res:
+        seeker = ExerciseSeeker(exercise_files_architecture, script_root)
+        exercise_path = seeker.find_next_exercise()
+
+        if not exercise_path:
             print("All exercises finished ! 🎉")
         else:
-            print(res)
+            print(exercise_path)
