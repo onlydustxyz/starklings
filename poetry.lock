@@ -155,6 +155,9 @@ sympy = "*"
 typeguard = "*"
 Web3 = "*"
 
+[package.source]
+type = "url"
+url = "https://files.pythonhosted.org/packages/c0/f6/c850604895a2ce5ff3ef77cdb470b6b0ef50889645748a748e18a1c2269e/cairo-lang-0.8.1.post1.zip#sha256=b3c1a23078ba4e0c8ec45d2cd2ba4873ad70b6723dfba70f70c978c9723ff6eb"
 [[package]]
 name = "certifi"
 version = "2021.10.8"
@@ -1119,7 +1122,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8 <3.9"
-content-hash = "1b2f1749304636c8558d51207316288122d21e420664fe912bd446e88e184766"
+content-hash = "95066533b1d009533ce34f9a0d73f9c4c66564cfb2f8efebc9855ca066868e26"
 
 [metadata.files]
 aiohttp = [
@@ -1256,9 +1259,7 @@ cachetools = [
     {file = "cachetools-5.0.0-py3-none-any.whl", hash = "sha256:8fecd4203a38af17928be7b90689d8083603073622229ca7077b72d8e5a976e4"},
     {file = "cachetools-5.0.0.tar.gz", hash = "sha256:486471dfa8799eb7ec503a8059e263db000cdda20075ce5e48903087f79d5fd6"},
 ]
-cairo-lang = [
-    {file = "cairo-lang-0.8.1.zip", hash = "sha256:e0107576f9fe9a904ea945eb04d0f5be7892b8306ae7e95a5c7cdcd4c8703b9c"},
-]
+cairo-lang = []
 certifi = [
     {file = "certifi-2021.10.8-py2.py3-none-any.whl", hash = "sha256:d62a0163eb4c2344ac042ab2bdf75399a71a2d8c7d47eac2e2ee91b9d6339569"},
     {file = "certifi-2021.10.8.tar.gz", hash = "sha256:78884e7c1d4b00ce3cea67b44566851c4343c120abd683433ce934a68ea58872"},
