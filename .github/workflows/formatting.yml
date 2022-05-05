@@ -11,8 +11,9 @@ jobs:
         with:
           python-version: "3.8"
       - name: Install dependencies
-        run: |
-          pip install cairo-lang
+        run:
+          | # Install latest version from https://pypi.org/simple/cairo-lang/ (as done in nile)
+          pip install https://files.pythonhosted.org/packages/c0/f6/c850604895a2ce5ff3ef77cdb470b6b0ef50889645748a748e18a1c2269e/cairo-lang-0.8.1.post1.zip#sha256=b3c1a23078ba4e0c8ec45d2cd2ba4873ad70b6723dfba70f70c978c9723ff6eb
       - name: Check files formatting
         run: cairo-format -c contracts/**/*.cairo
   python:
