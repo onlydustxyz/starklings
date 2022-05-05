@@ -18,6 +18,10 @@
 
 ---
 
+## Prerequisites
+
+- [Protostar](https://github.com/software-mansion/protostar) make sure you install it before you start!
+
 ## Installation
 
 To install the tool, run:
