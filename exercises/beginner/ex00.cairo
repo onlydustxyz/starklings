@@ -41,8 +41,12 @@ func view_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
     return (res)
 end
 
+#########
+# TESTS #
+#########
+
 @external
-func test_storage{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+func test_collect_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
     collect_dust(5)
     let (dust_amount) = view_dust(0)
     assert dust_amount = 5
