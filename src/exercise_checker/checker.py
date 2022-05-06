@@ -37,3 +37,4 @@ class ProtostarExerciseChecker:
             raise ExerciceFailed(stderr)
         if "------- FAILURES --------" in stdout:
             raise ExerciceFailed(stdout)
+        return stdout
