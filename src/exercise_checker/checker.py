@@ -15,7 +15,7 @@ class ExerciceFailed(Exception):
         return self._message
 
 
-class ProtostarExerciseRunner:
+class ProtostarExerciseChecker:
     def __init__(self):
         self._protostar_bin = protostar_bin()
 
