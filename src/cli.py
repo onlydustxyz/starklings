@@ -1,6 +1,6 @@
 from pathlib import Path
+from .runner import Runner
 from .verify import ExerciseSeeker
-from .file_watcher.watcher import FileWatcher
 from .constants import exercise_files_architecture
 from .utils.starklings_directory import StarklingsDirectory, VersionManager
 
@@ -13,8 +13,8 @@ async def cli(args, script_root: Path):
         version_manager.print_current_version()
 
     if args.watch:
-        watcher = FileWatcher(script_root.joinpath("contracts"))
-        watcher.start(lambda event: print(event))
+        runner = Runner(script_root)
+        runner.run()
 
     if args.verify:
         seeker = ExerciseSeeker(exercise_files_architecture, script_root)
