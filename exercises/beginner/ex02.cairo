@@ -54,14 +54,50 @@ func view_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
     return (res)
 end
 
-# TODO
-# Create a view for `star`
-# It must return an instance of `Star` instead of a `felt`
-
 @view
 func view_slot{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     address : felt
 ) -> (amount : felt):
     let (res) = slot.read(address)
     return (res)
+end
+
+# TODO
+# Create a view for `star`
+# It must return an instance of `Star` instead of a `felt`
+
+#########
+# TESTS #
+#########
+
+@external
+func test_collect_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+    collect_dust(5)
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 5
+
+    collect_dust(10)
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 15
+
+    return ()
+end
+
+@external
+func test_light_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+    collect_dust(100)
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 100
+
+    # `Andromeda` encoded
+    light_star(Star(0x416e64726f6d656461, 60))
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 40
+    let (slot) = view_slot(0)
+    assert slot = 1
+    let (star) = view_star(0, 0)
+    assert star.name = 0x416e64726f6d656461
+    assert star.size = 60
+
+    return ()
 end
