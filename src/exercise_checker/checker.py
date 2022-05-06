@@ -1,8 +1,5 @@
-from pathlib import Path
 import asyncio
 from src.protostar import protostar_bin
-
-script_root = Path(__file__).parent / ".." / ".."
 
 
 class ExerciceFailed(Exception):
@@ -16,9 +13,10 @@ class ExerciceFailed(Exception):
 
 
 class ProtostarExerciseChecker:
-    def __init__(self):
+    def __init__(self, script_root):
         self._protostar_bin = protostar_bin()
         self._current_check = None
+        self._script_root = script_root
 
     async def run(self, exercise_path):
         if self._current_check is not None:
@@ -27,6 +25,7 @@ class ProtostarExerciseChecker:
             f"{self._protostar_bin} test {exercise_path}",
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
+            cwd=str(self._script_root),
         )
 
         raw_stdout, raw_stderr = await self._current_check.communicate()

@@ -1,10 +1,11 @@
 from argparse import ArgumentParser
 import asyncio
+import os
 from pathlib import Path
 from src import cli
 
 
-script_root = Path(__file__).parent
+script_root = Path(os.getcwd())
 root_parser = ArgumentParser()
 
 root_parser.add_argument(

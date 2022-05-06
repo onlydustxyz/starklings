@@ -9,12 +9,9 @@ from src.constants import exercise_files_architecture
 
 class Runner:
     def __init__(self, root_path: Path):
-        self._root_path = root_path
-        self._file_watcher = FileWatcher(self._root_path)
-        self._exercise_checker = ProtostarExerciseChecker()
-        self._exercise_seeker = ExerciseSeeker(
-            exercise_files_architecture, self._root_path
-        )
+        self._file_watcher = FileWatcher(root_path)
+        self._exercise_checker = ProtostarExerciseChecker(root_path)
+        self._exercise_seeker = ExerciseSeeker(exercise_files_architecture, root_path)
 
     def on_file_changed(self, _):
         asyncio.run(self._check_exercise())
