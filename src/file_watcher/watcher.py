@@ -1,4 +1,3 @@
-import time
 from pathlib import Path
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -17,18 +16,13 @@ class Handler(FileSystemEventHandler):
 class FileWatcher:
     def __init__(self, root_dir: Path):
         self._root_dir = root_dir
+        self._observer = Observer()
 
     def start(self, callback):
         event_handler = Handler(callback)
-        observer = Observer()
-        observer.schedule(event_handler, self._root_dir, recursive=True)
-        observer.start()
-        try:
-            while True:
-                time.sleep(5)
-        # pylint: disable=broad-except
-        except Exception:
-            observer.stop()
-            print("Error")
+        self._observer.schedule(event_handler, self._root_dir, recursive=True)
+        self._observer.start()
 
-        observer.join()
+    def stop(self):
+        self._observer.stop()
+        self._observer.join()
