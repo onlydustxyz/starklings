@@ -1,30 +1,25 @@
 import time
 from pathlib import Path
-
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+from src.utils.debounce import debounce
 
 
 class Handler(FileSystemEventHandler):
+    def __init__(self, callback):
+        self._callback = debounce(0.1)(callback)
+
     def on_any_event(self, event):
         if event.event_type == "modified":
-            # pylint: disable=fixme
-            # TODO: Here we want to run the file tests instead of displaying its path
-            print(f"Received modified event - {event.src_path}.")
-            return None
-        if event.is_directory:
-            return None
-        if event.event_type == "created":
-            return None
-        return None
+            self._callback(event)
 
 
 class FilesystemWatcher:
     def __init__(self, root_dir: Path):
         self._root_dir = root_dir
 
-    def start(self):
-        event_handler = Handler()
+    def start(self, callback):
+        event_handler = Handler(callback)
         observer = Observer()
         observer.schedule(event_handler, self._root_dir, recursive=True)
         observer.start()
