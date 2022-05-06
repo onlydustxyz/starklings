@@ -20,7 +20,7 @@ def test_file_watcher(mocker):
 
     try:
         assert stub.call_count == 1
-        assert stub.call_args[0][0].src_path == str(dummy_file_path)
+        assert stub.call_args[0][0].src_path in str(dummy_file_path)
     finally:
         with open(dummy_file_path, "w", encoding="utf-8") as dummy_file:
             dummy_file.write(content)
