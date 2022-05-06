@@ -14,7 +14,7 @@ class Handler(FileSystemEventHandler):
             self._callback(event)
 
 
-class FilesystemWatcher:
+class FileWatcher:
     def __init__(self, root_dir: Path):
         self._root_dir = root_dir
 
