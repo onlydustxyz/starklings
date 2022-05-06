@@ -3,4 +3,5 @@
 disable=missing-function-docstring,
         missing-module-docstring,
         missing-class-docstring,
-        too-few-public-methods
+        too-few-public-methods,
+        line-too-long # not an issue to disable this rule since black automatically wraps the overflowing lines
