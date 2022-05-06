@@ -24,10 +24,24 @@
 
 ## Installation
 
-To install the tool, run:
+Clone the repository to your local machine:
+
+```shell
+git clone https://github.com/onlydustxyz/starklings.git
+```
+
+Then install the tool, run:
 
 ```shell
 curl -L https://raw.githubusercontent.com/onlydustxyz/starklings/master/install.sh | bash
+```
+
+## Usage
+
+Run the tool in watch mode and follow the instructions:
+
+```shell
+starklings --watch
 ```
 
 ---
