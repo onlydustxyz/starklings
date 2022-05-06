@@ -12,8 +12,8 @@ end
 
 # TODO
 # Create two storages `star` and `slot`
-# `star` will map an `address` and a `slot` to a `size`
 # `slot` will map an `address` to the next available `slot` this `address` can use
+# `star` will map an `address` and a `slot` to a `size`
 
 # TODO
 # Create an event `a_star_is_born`
@@ -64,3 +64,45 @@ end
 
 # TODO
 # Write two views, for the `star` and `slot` storages
+
+#########
+# TESTS #
+#########
+
+@external
+func test_collect_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+    collect_dust(5)
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 5
+
+    collect_dust(10)
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 15
+
+    return ()
+end
+
+@external
+func test_light_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+    collect_dust(100)
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 100
+
+    light_star(60)
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 40
+    let (slot) = view_slot(0)
+    assert slot = 1
+    let (star_size) = view_star(0, 0)
+    assert star_size = 60
+
+    light_star(30)
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 10
+    let (slot) = view_slot(0)
+    assert slot = 2
+    let (star_size) = view_star(0, 1)
+    assert star_size = 30
+
+    return ()
+end
