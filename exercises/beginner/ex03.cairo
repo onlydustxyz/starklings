@@ -106,3 +106,47 @@ func view_slot{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
     let (res) = slot.read(address)
     return (res)
 end
+
+#########
+# TESTS #
+#########
+
+from starkware.cairo.common.alloc import alloc
+
+@external
+func test_collect_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+    collect_dust(5)
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 5
+
+    collect_dust(10)
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 15
+
+    return ()
+end
+
+@external
+func test_light_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+    collect_dust(100)
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 100
+
+    let (stars : Star*) = alloc()
+    assert stars[0] = Star(0xcafe, 60)
+    assert stars[1] = Star(0xbabe, 40)
+
+    light_stars(2, stars)
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 0
+    let (slot) = view_slot(0)
+    assert slot = 2
+    let (star1) = view_star(0, 0)
+    assert star1.name = 0xcafe
+    assert star1.size = 60
+    let (star2) = view_star(0, 1)
+    assert star2.name = 0xbabe
+    assert star2.size = 40
+
+    return ()
+end
