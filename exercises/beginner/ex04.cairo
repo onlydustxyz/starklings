@@ -139,3 +139,76 @@ func view_rank{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
     let (res) = rank.read(address)
     return (res)
 end
+
+#########
+# TESTS #
+#########
+
+from starkware.cairo.common.alloc import alloc
+
+@external
+func test_collect_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+    collect_dust(5)
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 5
+
+    collect_dust(10)
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 15
+
+    return ()
+end
+
+@external
+func test_light_100_stars{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+    collect_dust(100)
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 100
+
+    rec_light_100_stars(0)
+
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 0
+
+    let (current_rank) = rank.read(0)
+    assert current_rank = 3
+
+    return ()
+end
+
+func rec_light_100_stars{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    counter : felt
+):
+    if counter - 100 == 0:
+        return ()
+    end
+    if counter - 100 == 99:
+        let (current_rank) = rank.read(0)
+        assert current_rank = 1
+        tempvar syscall_ptr = syscall_ptr
+        tempvar pedersen_ptr = pedersen_ptr
+        tempvar range_check_ptr = range_check_ptr
+    else:
+        tempvar syscall_ptr = syscall_ptr
+        tempvar pedersen_ptr = pedersen_ptr
+        tempvar range_check_ptr = range_check_ptr
+    end
+    if counter - 100 == 90:
+        let (current_rank) = rank.read(0)
+        assert current_rank = 2
+        tempvar syscall_ptr = syscall_ptr
+        tempvar pedersen_ptr = pedersen_ptr
+        tempvar range_check_ptr = range_check_ptr
+    else:
+        tempvar syscall_ptr = syscall_ptr
+        tempvar pedersen_ptr = pedersen_ptr
+        tempvar range_check_ptr = range_check_ptr
+    end
+
+    let (stars : Star*) = alloc()
+    assert stars[0] = Star(0xbabe, 1)
+    light_stars(1, stars)
+
+    rec_light_100_stars(counter + 1)
+    return ()
+end
