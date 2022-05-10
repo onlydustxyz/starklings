@@ -9,7 +9,7 @@ from utils import str_to_felt, MAX_FELT
 
 
 # The path to the contract source code.
-CONTRACT_FILE = os.path.join("contracts", "beginner", "ex04.cairo")
+CONTRACT_FILE = os.path.join("exercises", "beginner", "ex04.cairo")
 
 
 @pytest.fixture
