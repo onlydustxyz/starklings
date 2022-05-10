@@ -9,9 +9,9 @@ from src.constants import exercise_files_architecture
 
 
 class Runner:
-    def __init__(self, root_path: Path):
+    def __init__(self, root_path: Path, protostar_version):
         self._file_watcher = FileWatcher(root_path)
-        self._exercise_checker = ProtostarExerciseChecker(root_path)
+        self._exercise_checker = ProtostarExerciseChecker(root_path, protostar_version)
         self._exercise_seeker = ExerciseSeeker(exercise_files_architecture, root_path)
         prompt.on_watch_start(self._exercise_seeker.find_next_exercise())
 
