@@ -127,7 +127,7 @@ func test_collect_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_c
 end
 
 @external
-func test_light_stars{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+func test_light_stars_ok{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
     collect_dust(100)
     let (dust_amount) = view_dust(0)
     assert dust_amount = 100
@@ -147,6 +147,27 @@ func test_light_stars{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_ch
     let (star2) = view_star(0, 1)
     assert star2.name = 0xbabe
     assert star2.size = 40
+
+    return ()
+end
+
+@external
+func test_light_stars_ko{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+    collect_dust(100)
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 100
+
+    let (stars : Star*) = alloc()
+    assert stars[0] = Star(0xcafe, 60)
+    assert stars[1] = Star(0xbabe, 50)
+
+    %{ expect_revert() %}
+    light_stars(2, stars)
+
+    let (dust_amount) = view_dust(0)
+    assert dust_amount = 100
+    let (slot) = view_slot(0)
+    assert slot = 0
 
     return ()
 end
