@@ -7,7 +7,7 @@
 # TODO: make the test pass!
 
 func takes_two_arguments_and_returns_one() -> ():
-    return (a + b) # Do not change
+    return (a + b)  # Do not change
 end
 
 # You could be tempted to change the test to make it pass, but don't?
