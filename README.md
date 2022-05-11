@@ -5,9 +5,6 @@
         <img src="https://img.shields.io/badge/Discord-6666FF?style=for-the-badge&logo=discord&logoColor=white">
     </a>
     <a href="https://twitter.com/intent/follow?screen_name=onlydust_xyz">
-        <img src="https://img.shields.io/twitter/follow/onlydust_xyz?style=social&logo=twitter"
-            alt="follow on Twitter"></a>
-    <a href="https://twitter.com/intent/follow?screen_name=onlydust_xyz">
         <img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white">
     </a>       
   </p>
