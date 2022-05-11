@@ -17,6 +17,15 @@ for section in `ls $PATCH_DIR`
         done
     done
     
-$HOME/.protostar/dist/protostar/protostar test $TMP_DIR
+RESULT=$($HOME/.protostar/dist/protostar/protostar test $TMP_DIR 2>&1 | grep -iF "failed")
 
 rm -rf $TMP_DIR
+
+if [ -z "$RESULT" ]
+then
+    echo "All exercises passed"
+    exit 0
+else
+    echo "Some exercises failed"
+    exit 1
+fi
