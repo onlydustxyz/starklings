@@ -1,11 +1,12 @@
 #!/bin/bash
 
-TMP_DIR=".tmp_exercises"
-PATCH_DIR=".patches"
+ROOT_DIR=$(pwd)
+TMP_DIR="/tmp/tmp_exercises"
+PATCH_DIR="$ROOT_DIR/.patches"
 
 mkdir -p $TMP_DIR
 
-cp -R "./exercises/" $TMP_DIR
+cp -r "$ROOT_DIR/exercises/." "$TMP_DIR/"
 
 for section in `ls $PATCH_DIR`
     do
@@ -16,6 +17,6 @@ for section in `ls $PATCH_DIR`
         done
     done
     
-protostar test $TMP_DIR
+$HOME/.protostar/dist/protostar/protostar test $TMP_DIR
 
 rm -rf $TMP_DIR
