@@ -1,0 +1,6 @@
+diff --git a/exercises/syntax/syntax01.cairo b/exercises/syntax/syntax01.cairo
+index f5b07a3..2e4537d 100644
+--- a/exercises/syntax/syntax01.cairo
++++ b/exercises/syntax/syntax01.cairo
+@@ -0,0 +1 @@
++%lang starknet

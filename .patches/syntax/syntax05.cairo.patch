@@ -1,0 +1,9 @@
+diff --git a/exercises/syntax/syntax05.cairo b/exercises/syntax/syntax05.cairo
+index bb65c7b..1dc484c 100644
+--- a/exercises/syntax/syntax05.cairo
++++ b/exercises/syntax/syntax05.cairo
+@@ -7,0 +8,4 @@
++struct Currency:
++    member name : felt
++    member decimals : felt
++end

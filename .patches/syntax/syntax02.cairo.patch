@@ -1,0 +1,6 @@
+diff --git a/exercises/syntax/syntax02.cairo b/exercises/syntax/syntax02.cairo
+index e210f76..a65e2a6 100644
+--- a/exercises/syntax/syntax02.cairo
++++ b/exercises/syntax/syntax02.cairo
+@@ -8,0 +9 @@
++from starkware.cairo.common.cairo_builtins import HashBuiltin

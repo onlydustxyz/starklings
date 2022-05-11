@@ -1,0 +1,7 @@
+diff --git a/exercises/syntax/syntax04.cairo b/exercises/syntax/syntax04.cairo
+index 60e60bd..9e9e3d3 100644
+--- a/exercises/syntax/syntax04.cairo
++++ b/exercises/syntax/syntax04.cairo
+@@ -19 +19 @@ func test_hello{syscall_ptr : felt*}():
+-    let (result) = returns_something()
++    let (result) = my_namespace.returns_something()
