@@ -3,7 +3,7 @@ name: Test
 on: push
 
 jobs:
-  test:
+  unit-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -25,3 +25,19 @@ jobs:
       - name: Run tests
         run: |
           poetry run pytest src
+  exercises-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8.12
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8.12
+      - name: Install protostar
+        run: |
+          curl -L https://raw.githubusercontent.com/software-mansion/protostar/master/install.sh | bash
+      - name: Run exercise tests
+        run: |
+          chmod +x ./scripts/patch_and_test_exercises.sh
+          ./scripts/patch_and_test_exercises.sh
+        shell: bash
