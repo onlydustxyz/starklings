@@ -3,6 +3,7 @@ from .runner import Runner
 from .verify import ExerciseSeeker
 from .constants import exercise_files_architecture
 from .utils.starklings_directory import StarklingsDirectory, VersionManager
+from .solution import SolutionDisplayer
 
 
 async def cli(args, script_root: Path):
@@ -24,3 +25,7 @@ async def cli(args, script_root: Path):
             print("All exercises finished ! 🎉")
         else:
             print(exercise_path)
+
+    if args.solution:
+        displayer = SolutionDisplayer(args.solution)
+        print(displayer.get_solution())
