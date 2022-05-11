@@ -32,6 +32,21 @@ root_parser.add_argument(
     action="store_true",
 )
 
+
+def is_valid_file(parser, arg):
+    if not os.path.exists(arg):
+        parser.error("The file %s does not exist!" % arg)
+    else:
+        return Path(arg)
+
+
+root_parser.add_argument(
+    "-s",
+    "--solution",
+    help="path to an exercise file",
+    type=lambda x: is_valid_file(root_parser, x),
+)
+
 try:
     asyncio.run(cli(root_parser.parse_args(), script_root))
 except Exception as error:

@@ -1,5 +1,5 @@
---- exercises/beginner/ex01.cairo	2022-05-10 13:54:32.000000000 +0200
-+++ .solutions/ex01.cairo	2022-05-10 14:08:56.000000000 +0200
+--- exercises/beginner/ex01.cairo	2022-05-11 14:05:48.000000000 +0200
++++ .tmp_exercises/beginner/test_ex01.cairo	2022-05-11 14:04:26.000000000 +0200
 @@ -14,6 +14,13 @@
  # Create two storages `star` and `slot`
  # `slot` will map an `address` to the next available `slot` this `address` can use
