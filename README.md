@@ -1,8 +1,8 @@
 <div align="center">
   <h1 align="center">Starklings</h1>
   <p align="center">
-    <a href="http://makeapullrequest.com">
-      <img alt="pull requests welcome badge" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat">
+    <a href="https://discord.gg/onlydust">
+        <img src="https://img.shields.io/badge/Discord-6666FF?style=for-the-badge&logo=discord&logoColor=white">
     </a>
     <a href="https://twitter.com/intent/follow?screen_name=onlydust_xyz">
         <img src="https://img.shields.io/twitter/follow/onlydust_xyz?style=social&logo=twitter"
