@@ -1,5 +1,5 @@
---- exercises/beginner/ex00.cairo	2022-05-11 16:41:27.000000000 +0200
-+++ /tmp/tmp_exercises/beginner/test_ex00.cairo	2022-05-12 15:35:42.000000000 +0200
+--- exercises/beginner/ex00.cairo	2022-05-10 13:54:32.000000000 +0200
++++ .solutions/ex00.cairo	2022-05-10 13:56:26.000000000 +0200
 @@ -10,6 +10,9 @@
  # https://starknet.io/documentation/contracts/#contracts_storage
  # https://www.cairo-lang.org/docs/hello_starknet/intro.html

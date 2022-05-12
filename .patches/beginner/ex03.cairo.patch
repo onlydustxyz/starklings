@@ -1,5 +1,5 @@
---- exercises/beginner/ex03.cairo	2022-05-11 14:05:48.000000000 +0200
-+++ /tmp/tmp_exercises/beginner/test_ex03.cairo	2022-05-12 15:35:42.000000000 +0200
+--- exercises/beginner/ex03.cairo	2022-05-10 14:33:02.000000000 +0200
++++ .solutions/ex03.cairo	2022-05-10 14:31:17.000000000 +0200
 @@ -58,8 +58,13 @@
  
      # TODO
