@@ -3,7 +3,7 @@ from .runner import Runner
 from .verify import ExerciseSeeker
 from .constants import exercise_files_architecture
 from .utils.starklings_directory import StarklingsDirectory, VersionManager
-from .solution import SolutionDisplayer
+from .solution import SolutionPatcher
 
 
 async def cli(args, script_root: Path):
@@ -27,5 +27,5 @@ async def cli(args, script_root: Path):
             print(exercise_path)
 
     if args.solution:
-        displayer = SolutionDisplayer(args.solution)
+        displayer = SolutionPatcher(args.solution)
         print(displayer.get_solution())
