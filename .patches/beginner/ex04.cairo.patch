@@ -1,5 +1,5 @@
---- exercises/beginner/ex04.cairo	2022-05-11 14:05:48.000000000 +0200
-+++ /tmp/tmp_exercises/beginner/test_ex04.cairo	2022-05-12 15:35:42.000000000 +0200
+--- exercises/beginner/ex04.cairo	2022-05-10 14:33:56.000000000 +0200
++++ .solutions/ex04.cairo	2022-05-10 14:43:23.000000000 +0200
 @@ -92,6 +92,37 @@
      # https://www.cairo-lang.org/docs/how_cairo_works/consts.html#revoked-references
      # That's one of the most tricky feature of cairo. Treat yourself !
