@@ -3,7 +3,7 @@ from pathlib import Path
 from patch import PatchSet
 
 
-class SolutionDisplayer:
+class SolutionPatcher:
     def __init__(self, exercise_path: Path):
         self.path = exercise_path
 
@@ -16,7 +16,7 @@ class SolutionDisplayer:
             return patch_path
 
     def get_solution(self) -> str:
-        patch_path = SolutionDisplayer.find_patch(self.path)
+        patch_path = SolutionPatcher.find_patch(self.path)
         if not patch_path:
             print("Solution file not found")
             return
