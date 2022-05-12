@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from typing import Optional
 from patch import PatchSet
 
 
@@ -8,14 +9,14 @@ class SolutionPatcher:
         self.path = exercise_path
 
     @staticmethod
-    def find_patch(exercise_path: Path) -> Path:
+    def find_patch(exercise_path: Path) -> Optional[Path]:
         patch_path = Path(f"./.patches/{Path(*exercise_path.parts[1:])}.patch")
         if not os.path.exists(patch_path):
             return None
 
         return patch_path
 
-    def get_solution(self) -> str:
+    def get_solution(self) -> Optional[str]:
         patch_path = SolutionPatcher.find_patch(self.path)
         if not patch_path:
             return None
