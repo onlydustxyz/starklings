@@ -1,5 +1,5 @@
 --- exercises/beginner/ex02.cairo	2022-05-11 14:05:48.000000000 +0200
-+++ .tmp_exercises/beginner/test_ex02.cairo	2022-05-11 14:04:26.000000000 +0200
++++ /tmp/tmp_exercises/beginner/test_ex02.cairo	2022-05-12 15:35:42.000000000 +0200
 @@ -16,6 +16,10 @@
  # - size
  # Both members are of type `felt`

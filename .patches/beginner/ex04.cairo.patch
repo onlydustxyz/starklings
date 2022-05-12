@@ -1,5 +1,5 @@
 --- exercises/beginner/ex04.cairo	2022-05-11 14:05:48.000000000 +0200
-+++ .tmp_exercises/beginner/test_ex04.cairo	2022-05-11 14:04:26.000000000 +0200
++++ /tmp/tmp_exercises/beginner/test_ex04.cairo	2022-05-12 15:35:42.000000000 +0200
 @@ -92,6 +92,37 @@
      # https://www.cairo-lang.org/docs/how_cairo_works/consts.html#revoked-references
      # That's one of the most tricky feature of cairo. Treat yourself !
@@ -38,31 +38,3 @@
  
      a_star_is_born.emit(address, current_slot, new_star)
  
-@@ -160,27 +191,6 @@
- end
- 
- @external
--func test_light_stars_ko{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
--    collect_dust(100)
--    let (dust_amount) = view_dust(0)
--    assert dust_amount = 100
--
--    let (stars : Star*) = alloc()
--    assert stars[0] = Star(0xcafe, 60)
--    assert stars[1] = Star(0xbabe, 50)
--
--    %{ expect_revert() %}
--    light_stars(2, stars)
--
--    let (dust_amount) = view_dust(0)
--    assert dust_amount = 100
--    let (slot) = view_slot(0)
--    assert slot = 0
--
--    return ()
--end
--
--@external
- func test_light_100_stars{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
-     collect_dust(100)
-     let (dust_amount) = view_dust(0)
