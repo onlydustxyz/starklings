@@ -28,8 +28,8 @@ async def cli(args, script_root: Path):
 
     if args.solution:
         displayer = SolutionPatcher(args.solution)
-        opt_solution = displayer.get_solution()
-        if opt_solution:
-            print(opt_solution)
+        solution = displayer.get_solution()
+        if solution:
+            print(solution)
         else:
             print("Solution file not found")
