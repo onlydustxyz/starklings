@@ -9,28 +9,27 @@ class SolutionPatcher:
 
     @staticmethod
     def find_patch(exercise_path: Path) -> Path:
-        patch_path = Path("./.patches/{}.patch".format(Path(*exercise_path.parts[1:])))
+        patch_path = Path(f"./.patches/{Path(*exercise_path.parts[1:])}.patch")
         if not os.path.exists(patch_path):
             return None
-        else:
-            return patch_path
+
+        return patch_path
 
     def get_solution(self) -> str:
         patch_path = SolutionPatcher.find_patch(self.path)
         if not patch_path:
-            print("Solution file not found")
-            return
+            return None
 
-        x = b""
+        solution = b""
         with open(patch_path, "rb") as patch_f:
             patches = PatchSet()
             patches.parse(patch_f)
             with open(self.path, "rb") as exercise_f:
-                x = x.join(
+                solution = solution.join(
                     patches.patch_stream(
                         exercise_f,
                         patches.items[0].hunks,
                     )
                 )
 
-        return x.decode()
+        return solution.decode()
