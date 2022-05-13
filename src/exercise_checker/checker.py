@@ -1,5 +1,13 @@
-from starklings_protostar.commands.test import run_test_runner
+import asyncio
+from queue import Queue
+from pathlib import Path
+from threading import Lock
+from starklings_protostar.commands.test.runner import TestRunner
+from starklings_protostar.commands.test.reporter import Reporter
 from starklings_protostar.commands.test.cases import PassedCase
+from starklings_protostar.commands.test.test_collector import TestCollector
+
+lock = Lock()
 
 
 class ExerciceFailed(Exception):
@@ -12,21 +20,19 @@ class ExerciceFailed(Exception):
         return self._message
 
 
-class ProtostarExerciseChecker:
-    def __init__(self):
-        self._checking = False
-
-    async def run(self, exercise_path):
-        if self._checking:
-            return
-        try:
-            self._checking = True
-            [reporter] = await run_test_runner(exercise_path, None, None, None)
-        except Exception as error:
-            self._checking = False
-            raise ExerciceFailed(error) from error
-        self._checking = False
-        [test_case_result] = reporter.test_case_results
-        if isinstance(test_case_result, PassedCase):
-            return str(test_case_result)
-        raise ExerciceFailed(str(test_case_result))
+async def check_exercise(exercise_path):
+    try:
+        test_subjects = TestCollector(
+            target=Path(exercise_path),
+        ).collect()
+        queue = Queue()
+        reporter = Reporter(queue)
+        runner = TestRunner(reporter=reporter, include_paths=[])
+        await asyncio.gather(
+            *[runner.run_test_subject(subject) for subject in test_subjects]
+        )
+    except Exception as error:
+        raise ExerciceFailed(str(error)) from error
+    for test_case_result in reporter.test_case_results:
+        if not isinstance(test_case_result, PassedCase):
+            raise ExerciceFailed(str(test_case_result))
