@@ -14,7 +14,7 @@ async def cli(args, script_root: Path):
         version_manager.print_current_version()
 
     if args.watch:
-        runner = Runner(script_root, version_manager.protostar_version)
+        runner = Runner(script_root)
         runner.run()
 
     if args.verify:
