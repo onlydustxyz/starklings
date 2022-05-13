@@ -1,35 +1,31 @@
-import os
-from pathlib import Path
 import pytest
-from packaging.version import Version
 from src.exercise_checker.checker import ExerciceFailed, ProtostarExerciseChecker
 
 
-@pytest.fixture(name="runner")
-def runner_fixture():
-    script_root = Path(os.getcwd())
-    return ProtostarExerciseChecker(script_root, Version("0.2.0"))
+@pytest.fixture(name="checker")
+def checker_fixture():
+    return ProtostarExerciseChecker()
 
 
-async def test_protostar_test_runner_success(runner):
-    await runner.run("tests/test.cairo")
+async def test_protostar_test_checker_success(checker):
+    await checker.run("tests/test.cairo")
 
 
-async def test_protostar_test_runner_missing_exercise(runner):
+async def test_protostar_test_checker_missing_exercise(checker):
     with pytest.raises(ExerciceFailed):
-        await runner.run("tests/test_missing.cairo")
+        await checker.run("tests/test_missing.cairo")
 
 
-async def test_protostar_test_runner_failing_exercise(runner):
+async def test_protostar_test_checker_failing_exercise(checker):
     with pytest.raises(ExerciceFailed):
-        await runner.run("tests/test_failure.cairo")
+        await checker.run("tests/test_failure.cairo")
 
 
-async def test_protostar_test_runner_invalid_exercise(runner):
+async def test_protostar_test_checker_invalid_exercise(checker):
     with pytest.raises(ExerciceFailed):
-        await runner.run("tests/test_invalid.cairo")
+        await checker.run("tests/test_invalid.cairo")
 
 
-async def test_protostar_test_runner_missing_syntax(runner):
+async def test_protostar_test_checker_missing_syntax(checker):
     with pytest.raises(ExerciceFailed):
-        await runner.run("tests/test_missing.cairo")
+        await checker.run("tests/test_missing.cairo")
