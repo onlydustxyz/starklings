@@ -14,10 +14,6 @@
 
 ---
 
-## Prerequisites
-
-- [Protostar](https://github.com/software-mansion/protostar) make sure you install it before you start!
-
 ## Installation
 
 Clone the repository to your local machine:
