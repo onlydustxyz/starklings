@@ -1,31 +1,26 @@
 import pytest
-from src.exercise_checker.checker import ExerciceFailed, ProtostarExerciseChecker
+from src.exercise_checker.checker import ExerciceFailed, check_exercise
 
 
-@pytest.fixture(name="checker")
-def checker_fixture():
-    return ProtostarExerciseChecker()
+async def test_protostar_test_checker_success():
+    await check_exercise("tests/test.cairo")
 
 
-async def test_protostar_test_checker_success(checker):
-    await checker.run("tests/test.cairo")
-
-
-async def test_protostar_test_checker_missing_exercise(checker):
+async def test_protostar_test_checker_missing_exercise():
     with pytest.raises(ExerciceFailed):
-        await checker.run("tests/test_missing.cairo")
+        await check_exercise("tests/test_missing.cairo")
 
 
-async def test_protostar_test_checker_failing_exercise(checker):
+async def test_protostar_test_checker_failing_exercise():
     with pytest.raises(ExerciceFailed):
-        await checker.run("tests/test_failure.cairo")
+        await check_exercise("tests/test_failure.cairo")
 
 
-async def test_protostar_test_checker_invalid_exercise(checker):
+async def test_protostar_test_checker_invalid_exercise():
     with pytest.raises(ExerciceFailed):
-        await checker.run("tests/test_invalid.cairo")
+        await check_exercise("tests/test_invalid.cairo")
 
 
-async def test_protostar_test_checker_missing_syntax(checker):
+async def test_protostar_test_checker_missing_syntax():
     with pytest.raises(ExerciceFailed):
-        await checker.run("tests/test_missing.cairo")
+        await check_exercise("tests/test_missing.cairo")
