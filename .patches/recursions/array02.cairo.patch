@@ -1,0 +1,26 @@
+diff --git a/exercises/recursions/array02.cairo b/exercises/recursions/array02.cairo
+index de33f4a..7ff6098 100644
+--- a/exercises/recursions/array02.cairo
++++ b/exercises/recursions/array02.cairo
+@@ -14 +14 @@ from starkware.cairo.common.alloc import alloc
+-func square(array : felt*, array_len : felt):
++func square(array : felt*, array_len : felt, squared_array : felt*):
+@@ -20 +20 @@ func square(array : felt*, array_len : felt):
+-    assert [array] = squared_item
++    assert [squared_array] = squared_item
+@@ -22 +22 @@ func square(array : felt*, array_len : felt):
+-    return square(array + 1, array_len - 1)
++    return square(array + 1, array_len - 1, squared_array + 1)
+@@ -36 +36,2 @@ func test_square{syscall_ptr : felt*}():
+-    square(array, 4)
++    let (squared_array : felt*) = alloc()
++    square(array, 4, squared_array)
+@@ -38,4 +39,4 @@ func test_square{syscall_ptr : felt*}():
+-    assert [array] = 1
+-    assert [array + 1] = 4
+-    assert [array + 2] = 9
+-    assert [array + 3] = 16
++    assert [squared_array] = 1
++    assert [squared_array + 1] = 4
++    assert [squared_array + 2] = 9
++    assert [squared_array + 3] = 16
