@@ -1,0 +1,14 @@
+diff --git a/exercises/recursions/array01.cairo b/exercises/recursions/array01.cairo
+index 44cb04f..9f0d822 100644
+--- a/exercises/recursions/array01.cairo
++++ b/exercises/recursions/array01.cairo
+@@ -12 +12,8 @@ func contains(needle : felt, haystack : felt*, haystack_len : felt) -> (result :
+-    return (0)
++    if haystack_len == 0:
++        return (0)
++    end
++    if needle == haystack[0]:
++        return (1)
++    end
++    let (next) = contains(needle, haystack + 1, haystack_len - 1)
++    return (next)
