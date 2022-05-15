@@ -1,0 +1,16 @@
+diff --git a/exercises/recursions/recursion01.cairo b/exercises/recursions/recursion01.cairo
+index 811b7a9..4ef0c2f 100644
+--- a/exercises/recursions/recursion01.cairo
++++ b/exercises/recursions/recursion01.cairo
+@@ -13 +13,10 @@ func fibonacci(n : felt) -> (result : felt):
+-    return (0)
++    alloc_locals
++    if n == 0:
++        return (0)
++    end
++    if n == 1:
++        return (1)
++    end
++    let (local n_1) = fibonacci(n - 1)
++    let (local n_2) = fibonacci(n - 2)
++    return (n_1 + n_2)
