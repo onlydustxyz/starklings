@@ -1,8 +1,7 @@
 %lang starknet
 
-# What is really neat with implicit arguments is that they are returned implicitly by any function using them
-# This is a very powerful feature of the language since it helps with readability, letting the developer omit
-# implicit arguments in the subsequent function calls.
+# Implicit arguments are passed down to any subsequent function calls that would require them.
+# Make good usage of this feature to pass this exercise!
 
 # I AM NOT DONE
 
