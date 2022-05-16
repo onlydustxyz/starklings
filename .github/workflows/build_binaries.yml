@@ -25,9 +25,11 @@ jobs:
       - name: Build binary
         run: |
           poetry run pyinstaller starklings.spec
+      - name: Run a smoke test with --help
+        run: |
+          ./dist/starklings/starklings --help
       - name: Pack binary into a tarball
         run: tar -czvf starklings.tar.gz ./dist/starklings
-
       - name: Upload the tarball
         uses: actions/upload-artifact@v2
         with:
