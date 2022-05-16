@@ -1,15 +1,20 @@
 # -*- mode: python ; coding: utf-8 -*-
-from PyInstaller.utils.hooks import collect_data_files
+from PyInstaller.utils.hooks import collect_data_files, collect_submodules
 
 block_cipher = None
 extra_files = [
     ('pyproject.toml', 'info'),
-]
+] + collect_data_files('starkware')
+# Extra imports which are necessary for executing hints
+extra_imports = [
+        "eth_hash.auto",
+    ] + collect_submodules('starkware')
 
 a = Analysis(['starklings.py'],
              pathex=[],
              binaries=[],
              datas=extra_files,
+             hiddenimports=extra_imports,
              hookspath=[],
              hooksconfig={},
              runtime_hooks=[],
