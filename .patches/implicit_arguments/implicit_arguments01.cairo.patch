@@ -1,0 +1,7 @@
+diff --git a/exercises/implicit_arguments/implicit_arguments01.cairo b/exercises/implicit_arguments/implicit_arguments01.cairo
+index ca97179..bb45805 100644
+--- a/exercises/implicit_arguments/implicit_arguments01.cairo
++++ b/exercises/implicit_arguments/implicit_arguments01.cairo
+@@ -10 +10 @@
+-func implicit_sum() -> (result : felt):
++func implicit_sum{a, b}() -> (result : felt):
