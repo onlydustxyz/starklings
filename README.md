@@ -28,6 +28,9 @@ Then install the tool, run:
 curl -L https://raw.githubusercontent.com/onlydustxyz/starklings/master/install.sh | bash
 ```
 
+> Troubleshooting: if you run on a Mac m1, you might encounter the following error: `fatal error: 'gmp.h' file not found`
+> See https://github.com/OpenZeppelin/nile/issues/22 for detailled solutions.
+
 ## Usage
 
 Run the tool in watch mode and follow the instructions:
