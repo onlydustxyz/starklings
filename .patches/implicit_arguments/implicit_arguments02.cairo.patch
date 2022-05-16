@@ -1,0 +1,10 @@
+diff --git a/exercises/implicit_arguments/implicit_arguments02.cairo b/exercises/implicit_arguments/implicit_arguments02.cairo
+index c2390e7..5f64a2f 100644
+--- a/exercises/implicit_arguments/implicit_arguments02.cairo
++++ b/exercises/implicit_arguments/implicit_arguments02.cairo
+@@ -20 +20 @@ end
+-func child_function_1() -> (result : felt):
++func child_function_1{a}() -> (result : felt):
+@@ -25 +25 @@ end
+-func child_function_2() -> (result : felt):
++func child_function_2{b}() -> (result : felt):
