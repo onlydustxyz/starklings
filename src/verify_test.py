@@ -63,11 +63,7 @@ def test_find_next_exercise_all_true(mocker):
 
 def test_find_next_exercise(mocker):
     def mock_is_exercise_done():
-        res = True
-
-        if mock_is_exercise_done.counter >= 2:
-            res = False
-
+        res = mock_is_exercise_done.counter < 2
         mock_is_exercise_done.counter += 1
         return res
 
