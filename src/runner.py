@@ -1,4 +1,5 @@
 import asyncio
+import contextlib
 from pathlib import Path
 from threading import Lock
 from time import sleep
@@ -33,9 +34,7 @@ class Runner:
                 prompt.on_exercise_failure(next_exercise_path, error.message)
 
     def run(self):
-        try:
+        with contextlib.suppress(KeyboardInterrupt):
             self._file_watcher.start(self.on_file_changed)
             while True:
                 sleep(5)
-        except KeyboardInterrupt:
-            pass

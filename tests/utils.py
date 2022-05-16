@@ -38,7 +38,7 @@ def contract_path(name):
         for p in map(Path, sys.path):
             if (p / name).exists():
                 return str(p / name)
-    raise AttributeError("Cannot find file {}".format(name))
+    raise AttributeError(f"Cannot find file {name}")
 
 
 def str_to_felt(text):
@@ -122,19 +122,17 @@ def assert_event_emitted(tx_exec_info, from_address, name, data):
 def get_contract_def(path):
     """Returns the contract definition from the contract path"""
     path = contract_path(path)
-    contract_def = compile_starknet_files(files=[path], debug_info=True)
-    return contract_def
+    return compile_starknet_files(files=[path], debug_info=True)
 
 
 def cached_contract(state, definition, deployed):
     """Returns the cached contract"""
-    contract = StarknetContract(
+    return StarknetContract(
         state=state,
         abi=definition.abi,
         contract_address=deployed.contract_address,
         deploy_execution_info=deployed.deploy_execution_info,
     )
-    return contract
 
 
 class Signer:
