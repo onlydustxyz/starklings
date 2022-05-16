@@ -8,9 +8,8 @@ class Handler(FileSystemEventHandler):
     def __init__(self, callback):
         self._callback = debounce(0.1)(callback)
 
-    def on_any_event(self, event):
-        if event.event_type == "modified":
-            self._callback(event)
+    def on_modified(self, event):
+        self._callback(event)
 
 
 class FileWatcher:
