@@ -1,51 +1,48 @@
---- exercises/registers/registers02.cairo	2022-05-18 11:40:28.000000000 -0400
+--- exercises/registers/registers02.cairo	2022-05-18 12:53:44.000000000 -0400
 +++ .tmp_solution/registers02.cairo	2022-05-18 11:40:22.000000000 -0400
-@@ -8,29 +8,15 @@
- # Rewrite those functions with a high level syntax
- @external
- func sum_array(array_len: felt, array: felt*) -> (sum: felt):
--    [ap] = [fp - 4]; ap ++
--    [ap] = [fp - 3]; ap ++
--    [ap] = 0; ap ++
--    call rec_sum_array
--    ret
+@@ -3,0 +4 @@
++
+@@ -9,6 +10,2 @@
+-func sum_array(array_len : felt, array : felt*) -> (sum : felt):
+-    # [ap] = [fp - 4]; ap++
+-    # [ap] = [fp - 3]; ap++
+-    # [ap] = 0; ap++
+-    # call rec_sum_array
+-    # ret
++func sum_array(array_len: felt, array: felt*) -> (sum: felt):
 +    return rec_sum_array(array_len, array, 0)
- end
- 
- func rec_sum_array(array_len: felt, array: felt*, sum: felt) -> (sum: felt):
--    jmp continue if [fp - 5] != 0
+@@ -17,16 +14,6 @@
+-func rec_sum_array(array_len : felt, array : felt*, sum : felt) -> (sum : felt):
+-    # jmp continue if [fp - 5] != 0
 -
--    stop:
--    [ap] = [fp -3]; ap++
--    jmp done
+-    # stop:
+-    # [ap] = [fp - 3]; ap++
+-    # jmp done
 -
--    continue:
--    [ap] = [[fp -4]]; ap++
--    [ap] = [fp - 5] - 1; ap++
--    [ap] = [fp - 4] + 1; ap++
--    [ap] = [ap - 3] + [fp - 3]; ap++
--    call rec_sum_array
+-    # continue:
+-    # [ap] = [[fp - 4]]; ap++
+-    # [ap] = [fp - 5] - 1; ap++
+-    # [ap] = [fp - 4] + 1; ap++
+-    # [ap] = [ap - 3] + [fp - 3]; ap++
+-    # call rec_sum_array
 -
--    done:
--    ret
+-    # done:
+-    # ret
++func rec_sum_array(array_len: felt, array: felt*, sum: felt) -> (sum: felt):
 +    if array_len == 0:
 +        return (sum)
 +    end
 +    
 +    return rec_sum_array(array_len - 1, array + 1, sum + array[0])
- end
- 
- # TODO
-@@ -38,12 +24,36 @@
- # It's possible to do it with only registers, labels and conditional jump. No reference or localvar
- @external
- func max{range_check_ptr}(a: felt, b: felt) -> (max: felt):
--    let (res) = is_le(a, b)
--    if res == 1:
--        return (b)
--    else:
--        return (a)
--    end
+@@ -39,7 +26,31 @@
+-func max{range_check_ptr}(a : felt, b : felt) -> (max : felt):
+-    # let (res) = is_le(a, b)
+-    # if res == 1:
+-    #     return (b)
+-    # else:
+-    #     return (a)
+-    # end
++func max{range_check_ptr}(a: felt, b: felt) -> (max: felt):
 +    # Push arguments to the stack
 +    [ap] = [fp - 5]; ap++ # range_check_ptr
 +    [ap] = [fp - 4]; ap++ # a
@@ -76,6 +73,6 @@
 +    
 +    done:
 +    ret
- end
- 
- #########
+@@ -79 +90 @@
+-
++    
