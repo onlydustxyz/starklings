@@ -1,29 +1,28 @@
 %lang starknet
 from starkware.cairo.common.math_cmp import is_le
 
-
 # I AM NOT DONE
 
 # TODO
 # Rewrite those functions with a high level syntax
 @external
-func sum_array(array_len: felt, array: felt*) -> (sum: felt):
-    [ap] = [fp - 4]; ap ++
-    [ap] = [fp - 3]; ap ++
-    [ap] = 0; ap ++
+func sum_array(array_len : felt, array : felt*) -> (sum : felt):
+    [ap] = [fp - 4]; ap++
+    [ap] = [fp - 3]; ap++
+    [ap] = 0; ap++
     call rec_sum_array
     ret
 end
 
-func rec_sum_array(array_len: felt, array: felt*, sum: felt) -> (sum: felt):
+func rec_sum_array(array_len : felt, array : felt*, sum : felt) -> (sum : felt):
     jmp continue if [fp - 5] != 0
 
     stop:
-    [ap] = [fp -3]; ap++
+    [ap] = [fp - 3]; ap++
     jmp done
 
     continue:
-    [ap] = [[fp -4]]; ap++
+    [ap] = [[fp - 4]]; ap++
     [ap] = [fp - 5] - 1; ap++
     [ap] = [fp - 4] + 1; ap++
     [ap] = [ap - 3] + [fp - 3]; ap++
@@ -37,7 +36,7 @@ end
 # Rewrite this function with a low level syntax
 # It's possible to do it with only registers, labels and conditional jump. No reference or localvar
 @external
-func max{range_check_ptr}(a: felt, b: felt) -> (max: felt):
+func max{range_check_ptr}(a : felt, b : felt) -> (max : felt):
     let (res) = is_le(a, b)
     if res == 1:
         return (b)
@@ -77,6 +76,6 @@ func test_sum():
 
     let (s) = sum_array(10, array)
     assert s = 55
-    
+
     return ()
 end
