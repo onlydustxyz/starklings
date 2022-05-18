@@ -9,15 +9,15 @@
 # Rewrite this function with a high level syntax
 @external
 func assert_is_42(n : felt):
-    [ap - 3] = 42
-    ret
+    # [ap - 3] = 42
+    # ret
 end
 
 # TODO
 # Rewrite this function with a low level syntax, using registers
 @external
 func sum(a : felt, b : felt) -> (s : felt):
-    return (a + b)
+    # return (a + b)
 end
 
 #########

@@ -10,15 +10,15 @@
 # Rewrite this function body in a high level syntax
 @external
 func ret_42() -> (r : felt):
-    [ap] = 42; ap++
-    ret
+    # [ap] = 42; ap++
+    # ret
 end
 
 # TODO
 # Rewrite this function body in a low level syntax, using registers
 @external
 func ret_0_and_1() -> (zero : felt, one : felt):
-    return (0, 1)
+    # return (0, 1)
 end
 
 #########
