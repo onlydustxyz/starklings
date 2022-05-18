@@ -3,4 +3,5 @@ exercise_files_architecture = [
     ("exercises/beginner", ["ex00", "ex01", "ex02", "ex03", "ex04"]),
     ("exercises/recursions", ["recursion01", "array01", "array02"]),
     ("exercises/advanced", ["ex00", "ex01"]),
+    ("exercises/registers", ["registers00", "registers01", "registers02"]),
 ]
