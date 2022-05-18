@@ -8,7 +8,7 @@
 # TODO
 # Rewrite this function with a high level syntax
 @external
-func assert_is_42(n: felt):
+func assert_is_42(n : felt):
     [ap - 3] = 42
     ret
 end
@@ -16,7 +16,7 @@ end
 # TODO
 # Rewrite this function with a low level syntax, using registers
 @external
-func sum(a: felt, b: felt) -> (s: felt):
+func sum(a : felt, b : felt) -> (s : felt):
     return (a + b)
 end
 
