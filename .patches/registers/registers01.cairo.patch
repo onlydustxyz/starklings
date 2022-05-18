@@ -1,0 +1,21 @@
+--- exercises/registers/registers01.cairo	2022-05-16 10:26:11.000000000 -0400
++++ .tmp_solution/registers01.cairo	2022-05-18 11:39:34.000000000 -0400
+@@ -9,7 +9,7 @@
+ # Rewrite this function with a high level syntax
+ @external
+ func assert_is_42(n: felt):
+-    [ap - 3] = 42
++    assert n = 42
+     ret
+ end
+ 
+@@ -17,7 +17,8 @@
+ # Rewrite this function with a low level syntax, using registers
+ @external
+ func sum(a: felt, b: felt) -> (s: felt):
+-    return (a + b)
++    [ap] = [ap -3] + [ap -4]; ap++
++    ret
+ end
+ 
+ #########
