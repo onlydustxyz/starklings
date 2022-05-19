@@ -21,3 +21,12 @@ def on_exercise_failure(exercise_path, error_message):
 
 def on_exercise_check(exercise_path):
     print(f"{Style.DIM}👀 Checking exercise {exercise_path}...")
+
+
+def on_file_not_found():
+    print(
+        f"{Fore.RED}🧐 Creepy crap it looks that you are not running this script from the root directory of the repository."
+    )
+    print(
+        f"{Fore.RED}Please make sure you are running the CLI from the cloned Starklings repository."
+    )
