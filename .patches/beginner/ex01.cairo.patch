@@ -17,7 +17,7 @@
 @@ -22,6 +29,9 @@
  # - the `slot` where this `star` has been registered
  # - the size of the given `star`
- # https://starknet.io/documentation/events/
+ # https://starknet.io/docs/hello_starknet/events.html
 +@event
 +func a_star_is_born(account : felt, slot : felt, size : felt):
 +end
