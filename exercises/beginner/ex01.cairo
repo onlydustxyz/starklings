@@ -21,7 +21,7 @@ end
 # - the `account` that issued the transaction
 # - the `slot` where this `star` has been registered
 # - the size of the given `star`
-# https://starknet.io/documentation/events/
+# https://starknet.io/docs/hello_starknet/events.html
 
 @external
 func collect_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(amount : felt):
