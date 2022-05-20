@@ -1,0 +1,13 @@
+--- exercises/strings/strings00.cairo	2022-05-20 12:39:21.133087213 +0200
++++ .solutions/strings00.cairo	2022-05-20 13:04:58.046712377 +0200
+@@ -10,7 +10,9 @@
+ # TODO: Fix the say_hello function by filling returning the appropriate short strings
+ 
+ func say_hello() -> (hello_string : felt, hello_felt : felt, hello_hex : felt):
+-    # FILL ME
++    let hello_string = 'Hello Starklings'
++    let hello_felt = '#L2-2022 #L3-2023'
++    let hello_hex = 'buidl buidl buidl'
+     return (hello_string, hello_felt, hello_hex)
+ end
+ 
