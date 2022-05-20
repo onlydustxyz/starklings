@@ -30,10 +30,23 @@ curl -L https://raw.githubusercontent.com/onlydustxyz/starklings/master/install.
 
 ## Usage
 
-Run the tool in watch mode and follow the instructions:
+Run the tool in watch mode in the repository and follow the instructions:
 
 ```shell
+cd PATH_TO_THE_CLONED_REPO
 starklings --watch
+```
+
+To verify your solutions without running the watch mode run:
+
+```shell
+starklings --verify
+```
+
+To display one solution to a given exercise run:
+
+```shell
+starklings --solution path_to_the_exercise_file
 ```
 
 ## Inspiration
