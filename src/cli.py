@@ -18,7 +18,7 @@ sentry_sdk.init(
 
 def capture_solution_request(solution_path: str):
     with sentry_sdk.push_scope() as scope:
-        scope.set_context("path_to_solution", solution_path)
+        scope.set_tag("requested_solution", str(solution_path))
         sentry_sdk.capture_message("Solution requested", level="info")
 
 
