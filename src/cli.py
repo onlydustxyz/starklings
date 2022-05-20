@@ -16,6 +16,12 @@ sentry_sdk.init(
 )
 
 
+def capture_solution_request(solution_path: str):
+    with sentry_sdk.push_scope() as scope:
+        scope.set_context("path_to_solution", solution_path)
+        sentry_sdk.capture_message("Solution requested", level="info")
+
+
 async def cli(args, script_root: Path):
     starklings_directory = StarklingsDirectory(script_root)
     version_manager = VersionManager(starklings_directory)
@@ -39,9 +45,7 @@ async def cli(args, script_root: Path):
             print(exercise_path)
 
     if args.solution:
-        sentry_sdk.capture_message(
-            "Displaying the solution", path_to_solution=args.solution
-        )
+        capture_solution_request(args.solution)
         displayer = SolutionPatcher(args.solution)
         solution = displayer.get_solution()
         if solution:
