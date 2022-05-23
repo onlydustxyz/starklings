@@ -44,7 +44,7 @@ end
 
 # TODO
 # Update the `light_star` external so it take a `Star` struct instead of the amount of dust
-# Caller `dust` storage must be deducted form a amount equal to the star size
+# Caller `dust` storage must be deducted from an amount equal to the star size
 
 @view
 func view_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
