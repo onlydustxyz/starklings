@@ -1,23 +1,11 @@
---- a/exercises/strings/strings01.cairo	2022-05-24 15:41:16.741793231 +0200
+--- a/exercises/strings/strings01.cairo	2022-05-24 16:32:08.050760341 +0200
 +++ b/exercises/strings/strings01.cairo	2022-05-24 15:41:30.545171320 +0200
-@@ -8,7 +8,9 @@
- 
- func decode_cipher1() -> (plaintext : felt):
-     let ciphertext = 'Another One Bites The Dust'
+@@ -11 +11,3 @@
 -    let key = 0
 +
 +    # let key = 34642338947246174141841020580919298249066932857229157879292816894
 +    let key = 'Twinkle Twinkle Little Star' - 'Another One Bites The Dust'
-     let plaintext = ciphertext + key
-     return (plaintext)
- end
-@@ -16,7 +18,8 @@
- # TODO: Find the correct ciphertext that passes the test
- 
- func decode_cipher2() -> (plaintext : felt):
+@@ -19 +21,2 @@
 -    let ciphertext = 0
 +    # let ciphertext = 3042032262124705672547337926850636172917305208722716617195516092604696795127
 +    let ciphertext = ('Magic Starknet Money' - 0xc0de) / 1337
-     let plaintext = 1337 * ciphertext + 0xc0de
-     return (plaintext)
- end
