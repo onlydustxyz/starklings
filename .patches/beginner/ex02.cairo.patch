@@ -1,30 +1,17 @@
---- exercises/beginner/ex02.cairo	2022-05-10 14:26:44.000000000 +0200
-+++ .solutions/ex02.cairo	2022-05-10 14:26:17.000000000 +0200
-@@ -16,6 +16,10 @@
- # - size
- # Both members are of type `felt`
- # https://www.cairo-lang.org/docs/reference/syntax.html#structs
+diff --git a/exercises/beginner/ex02.cairo b/exercises/beginner/ex02.cairo
+index 77b34a0..116cf20 100644
+--- a/exercises/beginner/ex02.cairo
++++ b/exercises/beginner/ex02.cairo
+@@ -18,0 +19,4 @@ from starkware.cairo.common.math import assert_le
 +struct Star:
 +    member name : felt
 +    member size : felt
 +end
- 
- @storage_var
- func dust(address : felt) -> (amount : felt):
-@@ -23,6 +27,9 @@
- 
- # TODO
- # Update the `star` storage to store `Star` instead of `felt`
+@@ -25,0 +30,3 @@ end
 +@storage_var
 +func star(address : felt, slot : felt) -> (size : Star):
 +end
- 
- @storage_var
- func slot(address : felt) -> (slot : felt):
-@@ -45,6 +52,21 @@
- # TODO
- # Update the `light_star` external so it take a `Star` struct instead of the amount of dust
- # Caller `dust` storage must be deducted form a amount equal to the star size
+@@ -47,0 +55,15 @@ end
 +@external
 +func light_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(new_star : Star):
 +    let (address) = get_caller_address()
@@ -40,13 +27,7 @@
 +
 +    return ()
 +end
- 
- @view
- func view_dust{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-@@ -65,6 +87,13 @@
- # TODO
- # Create a view for `star`
- # It must return an instance of `Star` instead of a `felt`
+@@ -67,0 +90,7 @@ end
 +@view
 +func view_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
 +    address : felt, slot : felt
@@ -54,6 +35,3 @@
 +    let (res) = star.read(address, slot)
 +    return (res)
 +end
- 
- #########
- # TESTS #
