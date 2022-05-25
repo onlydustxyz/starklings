@@ -1,14 +1,11 @@
---- a/exercises/recursions/array03.cairo	2022-05-24 23:46:52.383277806 +0200
-+++ b/exercises/recursions/array03.cairo	2022-05-24 23:51:57.655971719 +0200
-@@ -25,2 +25,2 @@
+--- exercises/recursions/array03.cairo	2022-05-25 16:16:23.785739305 +0200
++++ array03.cairo	2022-05-25 16:16:25.372412454 +0200
+@@ -25,2 +25,2 @@ func is_increasing{range_check_ptr : fel
 -    let curr_value = 0
 -    let next_value = 0
 +    let curr_value = [array]
 +    let next_value = [array + 1]
-@@ -29,0 +30 @@
-+
-@@ -43 +44,10 @@
--    # FILL ME
+@@ -43,0 +44,10 @@ func is_decreasing{range_check_ptr : fel
 +    if array_len == 0:
 +        return (1)
 +    end
@@ -19,19 +16,13 @@
 +
 +    let curr_value = array[array_len - 1]
 +    let next_value = array[array_len - 2]
-@@ -47 +56,0 @@
--
-@@ -49 +58 @@
+@@ -49 +59 @@ func is_decreasing{range_check_ptr : fel
 -        return is_decreasing(array, array_len)
 +        return is_decreasing(array, array_len - 1)
-@@ -57 +65,0 @@
--# (rev_array is already allocated)
-@@ -60 +68,7 @@
--    # FILL ME
+@@ -60,0 +71,6 @@ func reverse(array : felt*, rev_array :
 +    if array_len == 0:
 +        return ()
 +    end
 +
 +    assert [rev_array] = array[array_len - 1]
 +    reverse(array, rev_array + 1, array_len - 1)
-+

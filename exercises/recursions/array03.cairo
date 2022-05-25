@@ -54,7 +54,7 @@ end
 
 # TODO
 # Use recursion to reverse array in rev_array
-# (rev_array is already allocated)
+# Assume rev_array is already allocated
 
 func reverse(array : felt*, rev_array : felt*, array_len : felt):
     # FILL ME
@@ -89,15 +89,22 @@ func test_reversed{syscall_ptr : felt*}():
 
     local in_array : felt* = new (1, 2, 3, 4, 19, 42)
     let (reversed_array : felt*) = alloc()
-
     reverse(in_array, reversed_array, 6)
-
     assert 42 = [reversed_array + 0]
     assert 19 = [reversed_array + 1]
     assert 4 = [reversed_array + 2]
     assert 3 = [reversed_array + 3]
     assert 2 = [reversed_array + 4]
     assert 1 = [reversed_array + 5]
+
+    local in_array : felt* = new (31337, 1664, 911, 0, -42)
+    let (reversed_array : felt*) = alloc()
+    reverse(in_array, reversed_array, 5)
+    assert -42 = [reversed_array + 0]
+    assert 0 = [reversed_array + 1]
+    assert 911 = [reversed_array + 2]
+    assert 1664 = [reversed_array + 3]
+    assert 31337 = [reversed_array + 4]
 
     return ()
 end
