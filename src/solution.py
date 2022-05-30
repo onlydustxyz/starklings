@@ -2,11 +2,13 @@ import os
 from pathlib import Path
 from typing import Optional
 from patch import PatchSet
+from git.repo import Repo
 
 
 class SolutionPatcher:
-    def __init__(self, exercise_path: Path):
+    def __init__(self, exercise_path: Path, script_root: Path):
         self.path = exercise_path
+        self.repository = Repo(script_root)
 
     @staticmethod
     def find_patch(exercise_path: Path) -> Optional[Path]:
@@ -22,15 +24,19 @@ class SolutionPatcher:
             return None
 
         solution = b""
-        with open(patch_path, "rb") as patch_f:
-            patches = PatchSet()
-            patches.parse(patch_f)
-            with open(self.path, "rb") as exercise_f:
-                solution = solution.join(
-                    patches.patch_stream(
-                        exercise_f,
-                        patches.items[0].hunks,
+        self.repository.git.stash()
+        try:
+            with open(patch_path, "rb") as patch_f:
+                patches = PatchSet()
+                patches.parse(patch_f)
+                with open(self.path, "rb") as exercise_f:
+                    solution = solution.join(
+                        patches.patch_stream(
+                            exercise_f,
+                            patches.items[0].hunks,
+                        )
                     )
-                )
+        finally:
+            self.repository.git.stash("pop")
 
         return solution.decode()
