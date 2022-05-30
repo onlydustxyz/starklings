@@ -1,0 +1,6 @@
+diff --git a/exercises/hints/hints00.cairo b/exercises/hints/hints00.cairo
+index 24b17e1..554e059 100644
+--- a/exercises/hints/hints00.cairo
++++ b/exercises/hints/hints00.cairo
+@@ -16,0 +17 @@ func basic_hint() -> (value : felt):
++    %{ ids.res = 42 %}
