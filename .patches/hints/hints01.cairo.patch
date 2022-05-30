@@ -1,0 +1,13 @@
+diff --git a/exercises/hints/hints01.cairo b/exercises/hints/hints01.cairo
+index d1d6417..8c87e70 100644
+--- a/exercises/hints/hints01.cairo
++++ b/exercises/hints/hints01.cairo
+@@ -18,0 +19,3 @@ func modulo(x : felt, n : felt) -> (mod : felt):
++        q, r = divmod(ids.x, ids.n)
++        ids.quotient = q
++        ids.remainder = r
+@@ -21,2 +24,2 @@ func modulo(x : felt, n : felt) -> (mod : felt):
+-
+-    return (0)
++    assert x = quotient * n + remainder
++    return (remainder)
