@@ -5,7 +5,10 @@ exercise_files_architecture = [
         "exercises/implicit_arguments",
         ["implicit_arguments01", "implicit_arguments02", "implicit_arguments03"],
     ),
-    ("exercises/recursions", ["recursion01", "array01", "array02", "array03"]),
+    (
+        "exercises/recursions",
+        ["recursion01", "array01", "array02", "array03", "array04"],
+    ),
     ("exercises/registers", ["registers00", "registers01", "registers02"]),
     ("exercises/hints", ["hints00"]),
 ]
