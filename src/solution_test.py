@@ -29,19 +29,19 @@ def solution_patcher(mocker):
     mocker.patch("os.path.exists", new=lambda x: True)
     mocker.patch("src.solution.Repo", autospec=True)
 
-    exercise_path = Path("./exercise/beginner/ex00.cairo")
+    exercise_path = Path("./exercise/syntax/syntax01.cairo")
     patcher = SolutionPatcher(exercise_path, Path("."))
     return patcher
 
 
 def test_find_patch_ok(patcher):
     assert patcher.find_patch(patcher.path) == Path(
-        "./.patches/beginner/ex00.cairo.patch"
+        "./.patches/syntax/syntax01.cairo.patch"
     )
 
 
 def test_find_patch_ko(mocker):
-    exercise_path = Path("./exercise/beginner/ex00.cairo")
+    exercise_path = Path("./exercise/syntax/syntax01.cairo")
 
     patcher = SolutionPatcher(exercise_path, Path("."))
 
