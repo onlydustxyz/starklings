@@ -46,7 +46,7 @@ async def cli(args, script_root: Path):
 
     if args.solution:
         capture_solution_request(args.solution)
-        displayer = SolutionPatcher(args.solution)
+        displayer = SolutionPatcher(args.solution, script_root)
         solution = displayer.get_solution()
         if solution:
             print(solution)
