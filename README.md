@@ -19,7 +19,7 @@
 Clone the repository to your local machine:
 
 ```shell
-git clone https://github.com/onlydustxyz/starklings.git
+git clone --branch stable --single-branch https://github.com/onlydustxyz/starklings.git
 ```
 
 Then install the tool, run:
@@ -47,6 +47,15 @@ To display one solution to a given exercise run:
 
 ```shell
 starklings --solution path_to_the_exercise_file
+```
+
+## Update
+
+The tool is in continuous evolution. You might want to update it regularly.
+
+```shell
+git pull
+bash install.sh
 ```
 
 ## Inspiration
