@@ -10,5 +10,6 @@ exercise_files_architecture = [
         ["recursion01", "array01", "array02", "array03", "array04"],
     ),
     ("exercises/registers", ["registers00", "registers01", "registers02"]),
+    ("exercises/revoked_references", ["revoked_references01"]),
     ("exercises/hints", ["hints00"]),
 ]

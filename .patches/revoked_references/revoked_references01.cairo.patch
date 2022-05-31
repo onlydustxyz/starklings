@@ -1,0 +1,8 @@
+diff --git a/exercises/revoked_references/revoked_references01.cairo b/exercises/revoked_references/revoked_references01.cairo
+index 2c0fe0f..23884e6 100644
+--- a/exercises/revoked_references/revoked_references01.cairo
++++ b/exercises/revoked_references/revoked_references01.cairo
+@@ -22,0 +23 @@ func bar{hash_ptr : HashBuiltin*}():
++    alloc_locals
+@@ -26,0 +28 @@ func bar{hash_ptr : HashBuiltin*}():
++    local hash_ptr : HashBuiltin* = hash_ptr
