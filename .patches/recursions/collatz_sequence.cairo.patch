@@ -1,0 +1,18 @@
+--- collatz_sequence.cairo	2022-05-31 11:36:29.555657000 +0400
++++ collatz_sequence_solution.cairo	2022-05-31 11:29:43.390728000 +0400
+@@ -18,0 +19,15 @@
++    if step == 0:
++        return (result=seed)
++    end
++
++    if seed == 1:
++        return (result=1)
++    end
++
++    let (even_or_odd) = bitwise_and(seed, 1)
++
++    if even_or_odd == 0:
++        let number : felt = collatz(seed=seed / 2, step=step - 1)
++    else:
++        let number : felt = collatz(seed=seed * 3 + 1, step=step - 1)
++    end
