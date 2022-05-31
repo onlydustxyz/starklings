@@ -16,7 +16,6 @@ from starkware.cairo.common.cairo_builtins import BitwiseBuiltin
 # HELP: number % 2 == 0 => bitwise_and(number, 1) == 0
 
 func collatz{bitwise_ptr : BitwiseBuiltin*}(seed : felt, step : felt) -> (result : felt):
-    
     return (result=number)
 end
 
