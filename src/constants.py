@@ -7,7 +7,7 @@ exercise_files_architecture = [
     ),
     (
         "exercises/recursions",
-        ["recursion01", "array01", "array02", "array03", "array04"],
+        ["recursion01", "array01", "array02", "array03", "array04", "struct01"],
     ),
     ("exercises/registers", ["registers00", "registers01", "registers02"]),
     ("exercises/hints", ["hints00"]),
