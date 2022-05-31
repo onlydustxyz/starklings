@@ -1,0 +1,8 @@
+--- exercises/storage/storage01.cairo	2022-05-31 15:29:04.000000000 -0400
++++ /tmp/storage/storage01.cairo	2022-05-31 15:27:25.000000000 -0400
+@@ -7,2 +7,3 @@
+-# TODO
+-# Create a storage named `bool` storing a single felt
++@storage_var
++func bool() -> (bool: felt):
++end

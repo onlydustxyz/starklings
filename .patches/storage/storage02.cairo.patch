@@ -1,0 +1,28 @@
+--- exercises/storage/storage02.cairo	2022-05-31 15:31:29.000000000 -0400
++++ /tmp/storage/storage02.cairo	2022-05-31 15:31:22.000000000 -0400
+@@ -7,4 +7,17 @@
+-# TODO
+-# Create a storage named wallet, mapping a felt to another
+-# Create a storage named height_map, mapping two felts to another
+-# Create a storage named id, mapping a felt to an Id
++@storage_var
++func wallet(address: felt) -> (amount: felt):
++end
++
++@storage_var
++func height_map(x: felt, y: felt) -> (z: felt):
++end
++
++struct Id:
++    member age: felt
++    member height: felt
++    member married: felt
++end
++
++@storage_var
++func id(account: felt) -> (id: Id):
++end
+@@ -53 +66 @@
+-end
+\ No newline at end of file
++end
