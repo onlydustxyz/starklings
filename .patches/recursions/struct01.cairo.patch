@@ -1,0 +1,11 @@
+--- exercises/recursions/struct01.cairo	2022-05-31 13:55:44.000000000 +0200
++++ exercises/recursions/struct01.sol.cairo	2022-05-31 13:53:49.000000000 +0200
+@@ -30 +30,7 @@
+-    # FILL ME
++    if struct_size == 0:
++        return (res=0)
++    end
++
++    let square = [struct_value] * [struct_value]
++    let (rest) = squared_magnitude(struct_value + 1, struct_size - 1)
++    return (res=square + rest)
