@@ -1,6 +1,7 @@
 exercise_files_architecture = [
     ("exercises/syntax", ["syntax01", "syntax02", "syntax03", "syntax04", "syntax05"]),
     ("exercises/strings", ["strings00", "strings01"]),
+    ("exercises/storage", ["storage01", "storage02", "storage03"]),
     (
         "exercises/implicit_arguments",
         ["implicit_arguments01", "implicit_arguments02", "implicit_arguments03"],
