@@ -12,10 +12,12 @@
 
 func modulo(x : felt, n : felt) -> (mod : felt):
     alloc_locals
-    local quotient : felt
-    local remainder : felt
-    # TODO: Compute the quotient and remainder inside the hint
+    local quotient
+    local remainder
     %{
+        # TODO: Compute the quotient and remainder inside the hint
+        print(ids.quotient)
+        print(ids.remainder)
     %}
     # TODO: verify the result is correct
 
@@ -26,6 +28,7 @@ end
 @external
 func test_modulo{syscall_ptr : felt*}():
     const NUM_TESTS = 19
+
     %{ import random %}
     tempvar count = NUM_TESTS
 
@@ -39,6 +42,7 @@ func test_modulo{syscall_ptr : felt*}():
     tempvar x = nondet %{ x %}
     tempvar n = nondet %{ n %}
     tempvar res = nondet %{ x % n %}
+
     let (mod) = modulo(x, n)
     assert res = mod
     tempvar count = count - 1
