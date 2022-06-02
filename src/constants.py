@@ -20,6 +20,6 @@ exercise_files_architecture = [
     ),
     ("exercises/registers", ["registers00", "registers01", "registers02"]),
     ("exercises/revoked_references", ["revoked_references01"]),
-    ("exercises/tricks", ["no_conditionals"]),
+    ("exercises/tricks", ["no_conditionals", "assert_bool"]),
     ("exercises/hints", ["hints00", "hints01"]),
 ]
