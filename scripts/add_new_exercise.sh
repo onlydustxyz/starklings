@@ -9,9 +9,9 @@ EXERCISE_PATCHES="$PWD/.patches"
 CONSTANTS="$PWD/src/constants.py"
 
 if [[ $(basename "$ROOT_DIR") != "starklings" ]]; then echo "Execute $0 at the root of the starklings project!"; exit; fi
-if ([ -z "$1" ] || [ ! -f "$1" ]); then echo "Please provide a valide path to the exercice!"; exit; fi
-if ([ -z "$2" ] || [ ! -f "$2" ]); then echo "Please provide a valide path to the exercice solution!"; exit; fi
-if [ -z "$3" ]; then echo "Please provide a valide name for the exercice folder!"; exit; fi
+if ([ -z "$1" ] || [ ! -f "$1" ]); then echo "Please provide a valide path to the exercise!"; exit; fi
+if ([ -z "$2" ] || [ ! -f "$2" ]); then echo "Please provide a valide path to the exercise solution!"; exit; fi
+if [ -z "$3" ]; then echo "Please provide a valide name for the exercise folder!"; exit; fi
 
 EXERCISE=$1
 EXERCISE_SOLUTION=$2
