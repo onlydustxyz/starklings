@@ -1,0 +1,15 @@
+--- a/exercises/tricks/assert_bool.cairo	2022-06-02 15:40:52.048123812 +0200
++++ b/exercises/tricks/assert_bool.cairo	2022-06-02 15:41:00.474738153 +0200
+@@ -10 +10 @@
+-    # FILL ME
++    assert 0 = (x - 1) * (y - 1)
+@@ -15 +15,2 @@
+-    # FILL ME
++    assert 2 = x + y
++    # assert 1 = x * y # works too
+@@ -20 +21 @@
+-    # FILL ME
++    assert 0 = x * y
+@@ -25 +26 @@
+-    # FILL ME
++    assert 1 = x + y
