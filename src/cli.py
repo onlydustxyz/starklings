@@ -1,5 +1,7 @@
 from pathlib import Path
+import configparser
 import sentry_sdk
+from git import Repo
 from .runner import Runner
 from .verify import ExerciseSeeker
 from .constants import exercise_files_architecture
@@ -22,9 +24,21 @@ def capture_solution_request(solution_path: str):
         sentry_sdk.capture_message("Solution requested", level="info")
 
 
+def try_set_user_email(script_root: Path):
+    repo = Repo.init(script_root)
+    reader = repo.config_reader()
+    try:
+        email = reader.get_value("user", "email")
+        sentry_sdk.set_user({"email": email})
+    except configparser.NoOptionError:
+        pass
+
+
 async def cli(args, script_root: Path):
     starklings_directory = StarklingsDirectory()
     version_manager = VersionManager(starklings_directory)
+
+    try_set_user_email(script_root)
 
     if args.version:
         version_manager.print_current_version()
