@@ -1,0 +1,12 @@
+--- a/exercises/tricks/no_conditionals.cairo	2022-06-02 14:49:04.224066616 +0200
++++ a/exercises/tricks/no_conditionals.cairo	2022-06-02 14:46:49.463087238 +0200
+@@ -28,2 +28,2 @@
+-    # FILL ME
+-    return (res)
++    let (not_zero) = is_not_zero((x - 1) * x)
++    return (res=1 - not_zero)
+@@ -37 +37,3 @@
+-    # FILL ME
++    let tmp = (x - 1337) * (x - 69420) * (x - 42)
++    let (s) = is_not_zero(tmp)
++    let res = s * 'meh' + (1 - s) * 'cool'
