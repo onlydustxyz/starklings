@@ -35,9 +35,8 @@ root_parser.add_argument(
 
 def is_valid_file(parser, arg):
     if not os.path.exists(arg):
-        parser.error(f"The file {arg} does not exist!")
-    else:
-        return Path(arg)
+        return parser.error(f"The file {arg} does not exist!")
+    return Path(arg)
 
 
 root_parser.add_argument(

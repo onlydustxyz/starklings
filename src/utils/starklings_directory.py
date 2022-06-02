@@ -8,16 +8,12 @@ from packaging.version import Version as PackagingVersion
 
 
 class StarklingsDirectory:
-    def __init__(self, binary_dir_path: Path):
-        self._binary_dir_path = binary_dir_path
+    def __init__(self):
+        self._binary_dir_path = Path(__file__).parents[2].resolve()
 
     @property
     def binary_dir_path(self) -> Path:
         return self._binary_dir_path
-
-    @property
-    def root_dir_path(self) -> Path:
-        return self._binary_dir_path / ".." / ".."
 
 
 class VersionManager:
@@ -29,16 +25,17 @@ class VersionManager:
         self._starklings_directory = starklings_directory
 
     @property
+    def _pyproject_toml_path(self) -> Path:
+        # When running from the built binary, the pyproject.toml file is under an "info" directory
+        info_directory = self._starklings_directory.binary_dir_path / "info"
+        if info_directory.exists():
+            return info_directory / "pyproject.toml"
+        return self._starklings_directory.binary_dir_path / "pyproject.toml"
+
+    @property
     def starklings_version(self) -> Optional[PackagingVersion]:
-        path = (
-            self._starklings_directory.root_dir_path
-            / "dist"
-            / "starklings"
-            / "info"
-            / "pyproject.toml"
-        )
         try:
-            with open(path, "r", encoding="UTF-8") as file:
+            with open(self._pyproject_toml_path, "r", encoding="UTF-8") as file:
                 version_s = tomli.loads(file.read())["tool"]["poetry"]["version"]
                 return VersionManager.parse(version_s)
         except FileNotFoundError:
@@ -47,15 +44,8 @@ class VersionManager:
 
     @property
     def cairo_version(self) -> Optional[PackagingVersion]:
-        path = (
-            self._starklings_directory.root_dir_path
-            / "dist"
-            / "starklings"
-            / "info"
-            / "pyproject.toml"
-        )
         try:
-            with open(path, "r", encoding="UTF-8") as file:
+            with open(self._pyproject_toml_path, "r", encoding="UTF-8") as file:
                 raw_version = tomli.loads(file.read())["tool"]["poetry"][
                     "dependencies"
                 ]["cairo-lang"]["url"]

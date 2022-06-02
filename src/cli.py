@@ -23,7 +23,7 @@ def capture_solution_request(solution_path: str):
 
 
 async def cli(args, script_root: Path):
-    starklings_directory = StarklingsDirectory(script_root)
+    starklings_directory = StarklingsDirectory()
     version_manager = VersionManager(starklings_directory)
 
     if args.version:
