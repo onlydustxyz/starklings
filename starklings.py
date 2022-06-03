@@ -5,6 +5,14 @@ from pathlib import Path
 from src import cli
 
 
+def is_valid_file(parser, arg):
+    if not os.path.exists(arg):
+        return parser.error(f"The file {arg} does not exist!")
+    return Path(arg)
+
+
+script_root = Path(os.getcwd())
+
 root_parser = ArgumentParser()
 
 root_parser.add_argument(
@@ -24,19 +32,19 @@ root_parser.add_argument(
 )
 
 root_parser.add_argument(
+    "--run",
+    "-r",
+    help="Runs/Tests a single exercise",
+    type=lambda x: is_valid_file(root_parser, x),
+)
+
+root_parser.add_argument(
     "--watch",
     "-w",
     default=False,
     help="Reruns `verify` when files were edited",
     action="store_true",
 )
-
-
-def is_valid_file(parser, arg):
-    if not os.path.exists(arg):
-        return parser.error(f"The file {arg} does not exist!")
-    return Path(arg)
-
 
 root_parser.add_argument(
     "-s",
