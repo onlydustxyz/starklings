@@ -4,6 +4,9 @@ from pathlib import Path
 import sys
 from threading import Lock
 from time import sleep
+
+import sentry_sdk
+
 from src.exercise_checker.checker import ExerciceFailed, check_exercise
 from src.file_watcher.watcher import FileWatcher
 from src import prompt
@@ -11,6 +14,12 @@ from src.verify import ExerciseSeeker
 from src.constants import exercise_files_architecture
 
 check_exercise_lock = Lock()
+
+
+def capture_exercise_solved(exercise_path: str):
+    with sentry_sdk.push_scope() as scope:
+        scope.set_tag("exercise_solved", str(exercise_path))
+        sentry_sdk.capture_message("Exercise solved", level="info")
 
 
 class Runner:
@@ -34,6 +43,7 @@ class Runner:
             prompt.on_exercise_check(next_exercise_path)
             try:
                 await check_exercise(str(next_exercise_path))
+                capture_exercise_solved(next_exercise_path)
                 prompt.on_exercise_success(next_exercise_path)
             except ExerciceFailed as error:
                 prompt.on_exercise_failure(next_exercise_path, error.message)
