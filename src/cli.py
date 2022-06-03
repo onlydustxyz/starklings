@@ -2,7 +2,7 @@ import sentry_sdk
 from rich.syntax import Syntax
 from rich.console import Console
 from src.repository.state_checker import check as check_repository_state
-from src.runner import Runner
+from src.runner import Runner, RunnerOneFile
 from src.exercises import exercises
 from src.exercises.seeker import ExerciseSeeker
 from src.utils.version_manager import VersionManager
@@ -67,4 +67,10 @@ async def cli(args):
             console.print(syntax)
         except FileNotFoundError:
             print("Solution not found")
+        return
+
+    if args.run:
+        sentry_sdk.capture_message("Verifying exercise")
+        runner = RunnerOneFile(args.run)
+        runner.run()
         return
