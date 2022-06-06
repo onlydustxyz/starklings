@@ -3,8 +3,8 @@ from src.runner import Runner
 from src.verify import ExerciseSeeker
 from src.constants import exercise_files_architecture
 from src.utils.starklings_directory import StarklingsDirectory, VersionManager
-from src.solution import SolutionPatcher
 from src.config import root_directory
+from src.solutions.repository import get_solution
 
 sentry_sdk.init(
     "https://73212d09152344fd8e351ef180b8fa75@o1254095.ingest.sentry.io/6421829",
@@ -45,9 +45,8 @@ async def cli(args):
 
     if args.solution:
         capture_solution_request(args.solution)
-        displayer = SolutionPatcher(args.solution, root_directory)
-        solution = displayer.get_solution()
-        if solution:
-            print(solution)
-        else:
-            print("Solution file not found")
+        exercise_path = root_directory / args.solution
+        try:
+            print(get_solution(exercise_path))
+        except FileNotFoundError:
+            print("Solution not found")
