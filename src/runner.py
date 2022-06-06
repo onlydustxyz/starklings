@@ -7,7 +7,7 @@ from time import sleep
 
 import sentry_sdk
 
-from src.exercise_checker.checker import ExerciceFailed, check_exercise
+from src.exercises.checker import ExerciceFailed, check_exercise
 from src.file_watcher.watcher import FileWatcher
 from src import prompt
 from src.exercises.seeker import ExerciseSeeker
