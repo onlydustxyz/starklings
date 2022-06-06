@@ -19,7 +19,7 @@ jobs:
           poetry install
       - name: Build binary
         run: |
-          poetry run pyinstaller starklings.spec
+          poetry run poe build
       - name: Run tests
         run: |
           poetry run pytest src
