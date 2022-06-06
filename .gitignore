@@ -10,3 +10,5 @@ build
 
 # Pyinstaller
 dist
+
+.solutions

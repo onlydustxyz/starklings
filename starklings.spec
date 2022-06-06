@@ -4,6 +4,7 @@ from PyInstaller.utils.hooks import collect_data_files, collect_submodules
 block_cipher = None
 extra_files = [
     ('pyproject.toml', 'info'),
+    ('.solutions/*', '.solutions')
 ] + collect_data_files('starkware')
 # Extra imports which are necessary for executing hints
 extra_imports = [
