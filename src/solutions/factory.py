@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import shutil
 from src.config import solutions_directory, exercises_directory, patches_directory
+from src.exercises import exercises
 
 
 def empty_directory(path: Path):
@@ -12,14 +13,20 @@ def empty_directory(path: Path):
 
 def create_solution(exercise_path: Path):
     exercise_relative_path = exercise_path.relative_to(exercises_directory)
-    solution_path = solutions_directory / exercise_relative_path
+    solution_path = (
+        solutions_directory / exercise_path.name
+    )  # Flatten the exercises tree in the solutions directory
     patch_path = patches_directory / f"{exercise_relative_path}.patch"
-    os.makedirs(solution_path.parent)
+    try:
+        os.makedirs(solution_path.parent)
+    except FileExistsError:
+        pass
     solution_path.touch()
     os.system(f"patch {exercise_path} -o {solution_path} < {patch_path}")
 
 
-class SolutionFactory:
-    def __init__(self):
-        empty_directory(solutions_directory)
-        create_solution(exercises_directory / "hints/hints00.cairo")
+def init(exercise_list=None):
+    exercise_list = exercise_list or list(exercises)
+    empty_directory(solutions_directory)
+    for exercise in exercise_list:
+        create_solution(exercise)
