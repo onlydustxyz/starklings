@@ -1,11 +1,10 @@
-from pathlib import Path
 import sentry_sdk
-from .runner import Runner
-from .verify import ExerciseSeeker
-from .constants import exercise_files_architecture
-from .utils.starklings_directory import StarklingsDirectory, VersionManager
-from .solution import SolutionPatcher
-
+from src.runner import Runner
+from src.verify import ExerciseSeeker
+from src.constants import exercise_files_architecture
+from src.utils.starklings_directory import StarklingsDirectory, VersionManager
+from src.solution import SolutionPatcher
+from src.config import root_directory
 
 sentry_sdk.init(
     "https://73212d09152344fd8e351ef180b8fa75@o1254095.ingest.sentry.io/6421829",
@@ -22,7 +21,7 @@ def capture_solution_request(solution_path: str):
         sentry_sdk.capture_message("Solution requested", level="info")
 
 
-async def cli(args, script_root: Path):
+async def cli(args):
     starklings_directory = StarklingsDirectory()
     version_manager = VersionManager(starklings_directory)
 
@@ -31,12 +30,12 @@ async def cli(args, script_root: Path):
 
     if args.watch:
         sentry_sdk.capture_message("Starting the watch mode")
-        runner = Runner(script_root)
+        runner = Runner(root_directory)
         runner.run()
 
     if args.verify:
         sentry_sdk.capture_message("Verifying all the exercises")
-        seeker = ExerciseSeeker(exercise_files_architecture, script_root)
+        seeker = ExerciseSeeker(exercise_files_architecture, root_directory)
         exercise_path = seeker.find_next_exercise()
 
         if not exercise_path:
@@ -46,7 +45,7 @@ async def cli(args, script_root: Path):
 
     if args.solution:
         capture_solution_request(args.solution)
-        displayer = SolutionPatcher(args.solution, script_root)
+        displayer = SolutionPatcher(args.solution, root_directory)
         solution = displayer.get_solution()
         if solution:
             print(solution)

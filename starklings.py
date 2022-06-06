@@ -5,7 +5,6 @@ from pathlib import Path
 from src import cli
 
 
-script_root = Path(os.getcwd())
 root_parser = ArgumentParser()
 
 root_parser.add_argument(
@@ -47,7 +46,7 @@ root_parser.add_argument(
 )
 
 try:
-    asyncio.run(cli(root_parser.parse_args(), script_root))
+    asyncio.run(cli(root_parser.parse_args()))
 except Exception as error:
     print(
         "Unexpected Starklings error. Report it here:\n"
