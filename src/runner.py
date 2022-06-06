@@ -10,8 +10,7 @@ import sentry_sdk
 from src.exercise_checker.checker import ExerciceFailed, check_exercise
 from src.file_watcher.watcher import FileWatcher
 from src import prompt
-from src.verify import ExerciseSeeker
-from src.constants import exercise_files_architecture
+from src.exercises.seeker import ExerciseSeeker
 
 check_exercise_lock = Lock()
 
@@ -23,11 +22,11 @@ def capture_exercise_solved(exercise_path: str):
 
 
 class Runner:
-    def __init__(self, root_path: Path):
+    def __init__(self, root_path: Path, exercise_seeker: ExerciseSeeker):
         self._file_watcher = FileWatcher(root_path)
-        self._exercise_seeker = ExerciseSeeker(exercise_files_architecture, root_path)
+        self._exercise_seeker = exercise_seeker
         try:
-            prompt.on_watch_start(self._exercise_seeker.find_next_exercise())
+            prompt.on_watch_start(self._exercise_seeker.get_next_undone())
         except FileNotFoundError:
             prompt.on_file_not_found()
             sys.exit(1)
@@ -39,7 +38,7 @@ class Runner:
         if check_exercise_lock.locked():
             return
         with check_exercise_lock:
-            next_exercise_path = self._exercise_seeker.find_next_exercise()
+            next_exercise_path = self._exercise_seeker.get_next_undone()
             prompt.on_exercise_check(next_exercise_path)
             try:
                 await check_exercise(str(next_exercise_path))
