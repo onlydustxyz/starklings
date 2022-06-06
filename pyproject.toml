@@ -10,7 +10,6 @@ black = "^22.3.0"
 cairo-lang = {url = "https://files.pythonhosted.org/packages/c0/f6/c850604895a2ce5ff3ef77cdb470b6b0ef50889645748a748e18a1c2269e/cairo-lang-0.8.1.post1.zip#sha256=b3c1a23078ba4e0c8ec45d2cd2ba4873ad70b6723dfba70f70c978c9723ff6eb"}
 colorama = "^0.4.4"
 openzeppelin-cairo-contracts = "^0.1.0"
-patch = "^1.16"
 pyinstaller = "ˆ5.0.1"
 pylint = "^2.13.8"
 pytest = "^7.1.2"
@@ -19,6 +18,7 @@ python = ">=3.8 <3.9"
 sentry-sdk = "^1.5.12"
 starklings-protostar = "^0.2.1"
 watchdog = "^2.1.7"
+rich = "^12.4.4"
 
 [tool.poetry.dev-dependencies]
 GitPython = "^3.1.27"
