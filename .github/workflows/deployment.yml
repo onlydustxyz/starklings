@@ -24,7 +24,7 @@ jobs:
           poetry install
       - name: Build binary
         run: |
-          poetry run pyinstaller starklings.spec
+          poetry run poe build
       - name: Run a smoke test with --help
         run: |
           ./dist/starklings/starklings --help
