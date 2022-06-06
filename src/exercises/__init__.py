@@ -32,6 +32,6 @@ exercise_list = [
     "hints/hints01",
 ]
 
-exercises = (
+exercises = [
     exercises_directory / f"{relative_path}.cairo" for relative_path in exercise_list
-)
+]

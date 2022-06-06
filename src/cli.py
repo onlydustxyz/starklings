@@ -1,7 +1,7 @@
 import sentry_sdk
 from src.runner import Runner
-from src.verify import ExerciseSeeker
-from src.constants import exercise_files_architecture
+from src.exercises import exercises
+from src.exercises.seeker import ExerciseSeeker
 from src.utils.starklings_directory import StarklingsDirectory, VersionManager
 from src.config import root_directory
 from src.solutions.repository import get_solution
@@ -24,22 +24,22 @@ def capture_solution_request(solution_path: str):
 async def cli(args):
     starklings_directory = StarklingsDirectory()
     version_manager = VersionManager(starklings_directory)
+    exercise_seeker = ExerciseSeeker(exercises)
+    runner = Runner(root_directory, exercise_seeker)
 
     if args.version:
         version_manager.print_current_version()
 
     if args.watch:
         sentry_sdk.capture_message("Starting the watch mode")
-        runner = Runner(root_directory)
         runner.run()
 
     if args.verify:
         sentry_sdk.capture_message("Verifying all the exercises")
-        seeker = ExerciseSeeker(exercise_files_architecture, root_directory)
-        exercise_path = seeker.find_next_exercise()
+        exercise_path = exercise_seeker.get_next_undone()
 
         if not exercise_path:
-            print("All exercises finished ! 🎉")
+            print("All exercises finished! 🎉")
         else:
             print(exercise_path)
 

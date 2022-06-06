@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import shutil
+from typing import List
 from src.config import solutions_directory, exercises_directory, patches_directory
 from src.exercises import exercises
 
@@ -25,8 +26,8 @@ def create_solution(exercise_path: Path):
     os.system(f"patch {exercise_path} -o {solution_path} < {patch_path}")
 
 
-def init(exercise_list=None):
-    exercise_list = exercise_list or list(exercises)
+def init(exercise_list: List[Path] = None):
+    exercise_list = exercise_list or exercises
     empty_directory(solutions_directory)
     for exercise in exercise_list:
         create_solution(exercise)
