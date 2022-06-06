@@ -1,4 +1,6 @@
 import sentry_sdk
+from rich.syntax import Syntax
+from rich.console import Console
 from src.runner import Runner
 from src.exercises import exercises
 from src.exercises.seeker import ExerciseSeeker
@@ -47,6 +49,12 @@ async def cli(args):
         capture_solution_request(args.solution)
         exercise_path = root_directory / args.solution
         try:
-            print(get_solution(exercise_path))
+            solution = get_solution(exercise_path)
+
+            console = Console()
+            syntax = Syntax(
+                solution, "python", line_numbers=True, background_color="default"
+            )
+            console.print(syntax)
         except FileNotFoundError:
             print("Solution not found")

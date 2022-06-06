@@ -25,11 +25,6 @@ class Runner:
     def __init__(self, root_path: Path, exercise_seeker: ExerciseSeeker):
         self._file_watcher = FileWatcher(root_path)
         self._exercise_seeker = exercise_seeker
-        try:
-            prompt.on_watch_start(self._exercise_seeker.get_next_undone())
-        except FileNotFoundError:
-            prompt.on_file_not_found()
-            sys.exit(1)
 
     def on_file_changed(self, _):
         asyncio.run(self._check_exercise())
@@ -49,9 +44,11 @@ class Runner:
 
     def run(self):
         try:
+            prompt.on_watch_start(self._exercise_seeker.get_next_undone())
             with contextlib.suppress(KeyboardInterrupt):
                 self._file_watcher.start(self.on_file_changed)
                 while True:
                     sleep(5)
         except FileNotFoundError:
             prompt.on_file_not_found()
+            sys.exit(1)
