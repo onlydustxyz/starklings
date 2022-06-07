@@ -1,4 +1,4 @@
-from src.utils.starklings_directory import StarklingsDirectory, VersionManager
+from src.utils.version_manager import StarklingsDirectory, VersionManager
 
 
 def test_version_manager():

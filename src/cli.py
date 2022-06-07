@@ -4,7 +4,7 @@ from rich.console import Console
 from src.runner import Runner
 from src.exercises import exercises
 from src.exercises.seeker import ExerciseSeeker
-from src.utils.starklings_directory import StarklingsDirectory, VersionManager
+from src.utils.version_manager import StarklingsDirectory, VersionManager
 from src.config import root_directory
 from src.solutions.repository import get_solution
 
