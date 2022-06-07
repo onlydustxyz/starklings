@@ -6,7 +6,7 @@ from src.runner import Runner
 from src.exercises import exercises
 from src.exercises.seeker import ExerciseSeeker
 from src.utils.version_manager import VersionManager
-from src.config import root_directory
+from src.config import root_directory, dev_mode
 from src.solutions.repository import get_solution
 
 sentry_sdk.init(
@@ -33,7 +33,7 @@ async def cli(args):
         version_manager.print_current_version()
         return
 
-    if not check_repository_state():
+    if not dev_mode and not check_repository_state():
         return
 
     if args.watch:
