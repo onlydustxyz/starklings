@@ -5,15 +5,7 @@ from typing import Optional
 import tomli
 from packaging import version
 from packaging.version import Version as PackagingVersion
-
-
-class StarklingsDirectory:
-    def __init__(self):
-        self._binary_dir_path = Path(__file__).parents[2].resolve()
-
-    @property
-    def binary_dir_path(self) -> Path:
-        return self._binary_dir_path
+from src.config import root_directory
 
 
 class VersionManager:
@@ -21,16 +13,13 @@ class VersionManager:
     def parse(version_str: str) -> PackagingVersion:
         return version.parse(version_str)
 
-    def __init__(self, starklings_directory: StarklingsDirectory) -> None:
-        self._starklings_directory = starklings_directory
-
     @property
     def _pyproject_toml_path(self) -> Path:
         # When running from the built binary, the pyproject.toml file is under an "info" directory
-        info_directory = self._starklings_directory.binary_dir_path / "info"
+        info_directory = root_directory / "info"
         if info_directory.exists():
             return info_directory / "pyproject.toml"
-        return self._starklings_directory.binary_dir_path / "pyproject.toml"
+        return root_directory / "pyproject.toml"
 
     @property
     def starklings_version(self) -> Optional[PackagingVersion]:
