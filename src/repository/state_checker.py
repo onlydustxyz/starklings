@@ -23,6 +23,15 @@ Please update starklings running `bash install.sh` and update the repository run
     return True
 
 
+def correct_branch(repo: Repo):
+    if repo.active_branch.name != "stable":
+        logger.error(
+            "You are not on the stable branch, please switch running `git checkout stable`"
+        )
+        return False
+    return True
+
+
 def check():
     # Check cwd is a repository
     try:
@@ -33,4 +42,4 @@ def check():
         )
         return False
 
-    return versions_match(repo)
+    return correct_branch(repo) and versions_match(repo)
