@@ -4,6 +4,12 @@
 
 # I AM NOT DONE
 
+struct Id:
+    member age : felt
+    member height : felt
+    member married : felt
+end
+
 # TODO
 # Create a storage named wallet, mapping a felt to another
 # Create a storage named height_map, mapping two felts to another
