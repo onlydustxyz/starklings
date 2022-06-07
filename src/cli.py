@@ -4,7 +4,7 @@ from rich.console import Console
 from src.runner import Runner
 from src.exercises import exercises
 from src.exercises.seeker import ExerciseSeeker
-from src.utils.version_manager import StarklingsDirectory, VersionManager
+from src.utils.version_manager import VersionManager
 from src.config import root_directory
 from src.solutions.repository import get_solution
 
@@ -24,8 +24,7 @@ def capture_solution_request(solution_path: str):
 
 
 async def cli(args):
-    starklings_directory = StarklingsDirectory()
-    version_manager = VersionManager(starklings_directory)
+    version_manager = VersionManager()
     exercise_seeker = ExerciseSeeker(exercises)
     runner = Runner(root_directory, exercise_seeker)
 
