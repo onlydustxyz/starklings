@@ -15,6 +15,7 @@ sentry_sdk.init(
     # of transactions for performance monitoring.
     # We recommend adjusting this value in production.
     traces_sample_rate=1.0,
+    environment="development" if dev_mode else "production",
 )
 
 
