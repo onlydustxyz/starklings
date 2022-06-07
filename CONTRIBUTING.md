@@ -1,12 +1,12 @@
-## Straklings contributing guide
+# Starklings contributing guide
 
 Thank you for investing your time in contributing to our project!
 
-In this guide you will find the necessary instructions to get up and running with developping Starklings new features or fixing some bugs.
+In this guide you will find the necessary instructions to get up and running with developing Starklings new features or fixing some bugs.
 
 ---
 
-## Dev environment installation
+## Setting up a development environment
 
 ### Requirements
 
@@ -24,5 +24,25 @@ In this guide you will find the necessary instructions to get up and running wit
 8. Install [Poetry](https://python-poetry.org/) — a dependency manager: `pip install poetry`
 9. Install project dependencies: `poetry install`
 
-> Troubleshooting: if you run on a Mac m1, you might encounter the following error: `fatal error: 'gmp.h' file not found`
-> See https://github.com/OpenZeppelin/nile/issues/22 for detailled solutions.
+> Troubleshooting: if you run on a Mac M1, you might encounter the following error: `fatal error: 'gmp.h' file not found`
+> See https://github.com/OpenZeppelin/nile/issues/22 for detailed solutions.
+
+## How can I contribute?
+
+### Report a bug or suggest an enhancement 
+
+If you spot a problem or have an idea for a cool feature, first make sure there is no related [existing issue](https://github.com/onlydustxyz/starklings/issues "Starklings GitHub Issues").
+If not, you can open a [new Issue](https://github.com/onlydustxyz/starklings/issues/new/choose "Open a new Issue") and add a description of your suggestions.
+
+### Submitting changes
+
+Please send a GitHub Pull Request with a list of what your changes accomplish.
+Make sure to follow the guidelines below.
+
+### Development guidelines
+
+See [StarkNet development guidelines](https://github.com/onlydustxyz/development-guidelines/blob/main/starknet/README.md).
+
+## Where can I ask a question?
+
+If you have a question, please ask it in [Discord](https://discord.gg/kutmDrKv "OnlyDust Discord").
