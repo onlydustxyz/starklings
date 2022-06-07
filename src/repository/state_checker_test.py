@@ -1,6 +1,6 @@
 from pathlib import Path
 from packaging.version import Version
-from src.repository.state_checker import check
+from src.repository.state_checker import check, versions_match
 
 
 def test_is_a_repo(mocker):
@@ -19,7 +19,7 @@ def test_is_a_repo(mocker):
     logger.error.assert_not_called()
 
 
-def test_is_up_to_date(mocker):
+def test_versions_match(mocker):
     logger = mocker.patch("src.repository.state_checker.logger")
     version_manager = mocker.patch(
         "src.repository.state_checker.VersionManager"
@@ -29,26 +29,26 @@ def test_is_up_to_date(mocker):
     # Repo is behing binary
     version_manager.starklings_version = Version("2.0.0")
     repo.tags.pop.return_value.name = "v1.0.0"
-    assert not check()
+    assert not versions_match(repo)
     logger.error.assert_called_once()
 
     # Repo is ahead of binary
     version_manager.starklings_version = Version("2.0.0")
     repo.tags.pop.return_value.name = "v3.0.0"
     logger.reset_mock()
-    assert not check()
+    assert not versions_match(repo)
     logger.error.assert_called_once()
 
     # Repo is up to date
     version_manager.starklings_version = Version("2.0.0")
     repo.tags.pop.return_value.name = "v2.0.0"
     logger.reset_mock()
-    assert check()
+    assert versions_match(repo)
     logger.error.assert_not_called()
 
     # Repo is ahead of binary but not breaking
     version_manager.starklings_version = Version("2.0.0")
     repo.tags.pop.return_value.name = "v2.4.0"
     logger.reset_mock()
-    assert check()
+    assert versions_match(repo)
     logger.error.assert_not_called()
