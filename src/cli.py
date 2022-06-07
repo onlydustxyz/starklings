@@ -1,6 +1,7 @@
 import sentry_sdk
 from rich.syntax import Syntax
 from rich.console import Console
+from src.repository.state_checker import check as check_repository_state
 from src.runner import Runner
 from src.exercises import exercises
 from src.exercises.seeker import ExerciseSeeker
@@ -30,10 +31,15 @@ async def cli(args):
 
     if args.version:
         version_manager.print_current_version()
+        return
+
+    if not check_repository_state():
+        return
 
     if args.watch:
         sentry_sdk.capture_message("Starting the watch mode")
         runner.run()
+        return
 
     if args.verify:
         sentry_sdk.capture_message("Verifying all the exercises")
@@ -43,6 +49,7 @@ async def cli(args):
             print("All exercises finished! 🎉")
         else:
             print(exercise_path)
+        return
 
     if args.solution:
         capture_solution_request(args.solution)
@@ -57,3 +64,4 @@ async def cli(args):
             console.print(syntax)
         except FileNotFoundError:
             print("Solution not found")
+        return
