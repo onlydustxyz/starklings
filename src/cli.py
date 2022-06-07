@@ -9,6 +9,8 @@ from src.utils.version_manager import VersionManager
 from src.config import root_directory, dev_mode
 from src.solutions.repository import get_solution
 
+version_manager = VersionManager()
+
 sentry_sdk.init(
     "https://73212d09152344fd8e351ef180b8fa75@o1254095.ingest.sentry.io/6421829",
     # Set traces_sample_rate to 1.0 to capture 100%
@@ -16,6 +18,7 @@ sentry_sdk.init(
     # We recommend adjusting this value in production.
     traces_sample_rate=1.0,
     environment="development" if dev_mode else "production",
+    release=str(version_manager.starklings_version),
 )
 
 
@@ -26,7 +29,6 @@ def capture_solution_request(solution_path: str):
 
 
 async def cli(args):
-    version_manager = VersionManager()
     exercise_seeker = ExerciseSeeker(exercises)
     runner = Runner(root_directory, exercise_seeker)
 
