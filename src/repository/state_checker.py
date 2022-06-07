@@ -8,16 +8,7 @@ from src.utils.version_manager import VersionManager
 logger = getLogger()
 
 
-def check():
-    # Check cwd is a repository
-    try:
-        repo = Repo(os.getcwd())
-    except InvalidGitRepositoryError:
-        logger.error(
-            "You are not running starklings in a git repository, make sure you run it in the cloned starklings repository"
-        )
-        return False
-
+def versions_match(repo: Repo):
     # Check there is no breaking change between the binary and the repository
     repo_version = Version(repo.tags.pop().name[1:])
     binary_version = VersionManager().starklings_version
@@ -30,3 +21,16 @@ Please update starklings running `bash install.sh` and update the repository run
         )
         return False
     return True
+
+
+def check():
+    # Check cwd is a repository
+    try:
+        repo = Repo(os.getcwd())
+    except InvalidGitRepositoryError:
+        logger.error(
+            "You are not running starklings in a git repository, make sure you run it in the cloned starklings repository"
+        )
+        return False
+
+    return versions_match(repo)
