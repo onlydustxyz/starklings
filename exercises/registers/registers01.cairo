@@ -2,7 +2,7 @@
 
 # I AM NOT DONE
 
-# Ressource
+# Resource
 # https://www.cairo-lang.org/docs/how_cairo_works/functions.html#function-arguments-and-return-values
 
 # TODO
