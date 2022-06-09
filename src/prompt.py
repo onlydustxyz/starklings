@@ -8,8 +8,11 @@ def on_watch_start(exercise_path):
     print(f"You can start to work on exercise {exercise_path}.\n")
 
 
-def on_exercise_success(exercise_path):
+def on_single_exercise_success(exercise_path):
     print(f"{Style.BRIGHT}{Fore.GREEN}🥳🥳🥳 Exercise {exercise_path} completed!")
+
+
+def on_watch_exercise_success():
     print("You can keep working on this exercise,")
     print("or move on to the next one by removing the `I AM NOT DONE` comment.\n")
 

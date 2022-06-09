@@ -15,7 +15,7 @@ from src.exercises.seeker import ExerciseSeeker
 check_exercise_lock = Lock()
 
 
-async def single_exercise_check(exercise_path: Path):
+async def single_exercise_check(exercise_path: Path, watch_mode=False):
     if check_exercise_lock.locked():
         return
     with check_exercise_lock:
@@ -23,7 +23,9 @@ async def single_exercise_check(exercise_path: Path):
         try:
             await check_exercise(str(exercise_path))
             capture_exercise_solved(exercise_path)
-            prompt.on_exercise_success(exercise_path)
+            prompt.on_single_exercise_success(exercise_path)
+            if watch_mode:
+                prompt.on_watch_exercise_success()
         except ExerciceFailed as error:
             prompt.on_exercise_failure(exercise_path, error.message)
 
@@ -41,7 +43,7 @@ class Runner:
 
     def on_file_changed(self, _):
         next_exercise_path = self._exercise_seeker.get_next_undone()
-        asyncio.run(single_exercise_check(next_exercise_path))
+        asyncio.run(single_exercise_check(next_exercise_path, True))
 
     def watch(self):
         try:
