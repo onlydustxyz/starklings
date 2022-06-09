@@ -37,16 +37,16 @@ cd PATH_TO_THE_CLONED_REPO
 starklings --watch
 ```
 
-To verify your solutions without running the watch mode run:
+To verify an exercise without the watch mode run:
 
 ```shell
-starklings --verify
+starklings --verify relative_path_to_the_exercise_file
 ```
 
 To display one solution to a given exercise run:
 
 ```shell
-starklings --solution path_to_the_exercise_file
+starklings --solution relative_path_to_the_exercise_file
 ```
 
 ## Update
