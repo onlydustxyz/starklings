@@ -1,4 +1,4 @@
-from src.config import exercises_directory
+from src.config import exercises_directory, current_working_exercises_directory
 
 
 exercise_list = [
@@ -34,4 +34,8 @@ exercise_list = [
 
 exercises = [
     exercises_directory / f"{relative_path}.cairo" for relative_path in exercise_list
+]
+current_working_exercises = [
+    current_working_exercises_directory / f"{relative_path}.cairo"
+    for relative_path in exercise_list
 ]

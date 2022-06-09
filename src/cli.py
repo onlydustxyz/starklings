@@ -3,7 +3,7 @@ import sentry_sdk
 from rich.syntax import Syntax
 from rich.console import Console
 from src.runner import Runner, single_exercise_check
-from src.exercises import exercises
+from src.exercises import current_working_exercises
 from src.exercises.seeker import ExerciseSeeker
 from src.utils.version_manager import VersionManager
 from src.config import root_directory, dev_mode
@@ -36,7 +36,7 @@ def capture_single_exercise_check(exercise_path: Path):
 
 
 async def cli(args):
-    exercise_seeker = ExerciseSeeker(exercises)
+    exercise_seeker = ExerciseSeeker(current_working_exercises)
     runner = Runner(root_directory, exercise_seeker)
 
     if args.version:
