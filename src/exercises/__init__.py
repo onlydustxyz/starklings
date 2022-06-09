@@ -25,6 +25,7 @@ exercise_list = [
     "registers/registers00",
     "registers/registers01",
     "registers/registers02",
+    "registers/registers03",
     "revoked_references/revoked_references01",
     "tricks/no_conditionals",
     "tricks/assert_bool",

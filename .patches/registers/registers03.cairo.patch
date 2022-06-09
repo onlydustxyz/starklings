@@ -1,0 +1,15 @@
+--- exercises/registers/registers03.cairo	2022-06-09 16:13:26.000000000 -0400
++++ ./registers03.cairo	2022-06-09 16:11:29.000000000 -0400
+@@ -16,3 +16,3 @@
+-    # [ap] = 42; ap++
+-    # [ap - 1] = 42
+-    # [ap - 1] = 21
++    tempvar x = 42
++    assert x = 42
++    assert x = 21
+@@ -26 +26 @@
+-    # assert number = 42
++    [fp - 3] = 42
+@@ -36,0 +37,2 @@
++    assert [p_number] = 42
++
