@@ -2,7 +2,6 @@ from pathlib import Path
 import sentry_sdk
 from rich.syntax import Syntax
 from rich.console import Console
-from src.repository.state_checker import check as check_repository_state
 from src.runner import Runner, single_exercise_check
 from src.exercises import exercises
 from src.exercises.seeker import ExerciseSeeker
@@ -42,9 +41,6 @@ async def cli(args):
 
     if args.version:
         version_manager.print_current_version()
-        return
-
-    if not dev_mode and not check_repository_state():
         return
 
     if args.watch:
