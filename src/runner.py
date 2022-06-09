@@ -15,6 +15,19 @@ from src.exercises.seeker import ExerciseSeeker
 check_exercise_lock = Lock()
 
 
+async def single_exercise_check(exercise_path: Path):
+    if check_exercise_lock.locked():
+        return
+    with check_exercise_lock:
+        prompt.on_exercise_check(exercise_path)
+        try:
+            await check_exercise(str(exercise_path))
+            capture_exercise_solved(exercise_path)
+            prompt.on_exercise_success(exercise_path)
+        except ExerciceFailed as error:
+            prompt.on_exercise_failure(exercise_path, error.message)
+
+
 def capture_exercise_solved(exercise_path: str):
     with sentry_sdk.push_scope() as scope:
         scope.set_tag("exercise_solved", str(exercise_path))
@@ -27,22 +40,10 @@ class Runner:
         self._exercise_seeker = exercise_seeker
 
     def on_file_changed(self, _):
-        asyncio.run(self._check_exercise())
+        next_exercise_path = self._exercise_seeker.get_next_undone()
+        asyncio.run(single_exercise_check(next_exercise_path))
 
-    async def _check_exercise(self):
-        if check_exercise_lock.locked():
-            return
-        with check_exercise_lock:
-            next_exercise_path = self._exercise_seeker.get_next_undone()
-            prompt.on_exercise_check(next_exercise_path)
-            try:
-                await check_exercise(str(next_exercise_path))
-                capture_exercise_solved(next_exercise_path)
-                prompt.on_exercise_success(next_exercise_path)
-            except ExerciceFailed as error:
-                prompt.on_exercise_failure(next_exercise_path, error.message)
-
-    def run(self):
+    def watch(self):
         try:
             prompt.on_watch_start(self._exercise_seeker.get_next_undone())
             with contextlib.suppress(KeyboardInterrupt):
@@ -52,38 +53,3 @@ class Runner:
         except FileNotFoundError:
             prompt.on_file_not_found()
             sys.exit(1)
-
-
-class RunnerOneFile:
-    def __init__(self, root_path: Path):
-        self._file_watcher = FileWatcher(root_path)
-        self.root_path = root_path
-
-        try:
-            prompt.on_watch_start(root_path)
-        except FileNotFoundError:
-            prompt.on_file_not_found()
-            sys.exit(1)
-
-    def on_file_changed(self, _):
-        asyncio.run(self._check_exercise())
-
-    async def _check_exercise(self):
-        if check_exercise_lock.locked():
-            return
-        with check_exercise_lock:
-            try:
-                await check_exercise(self.root_path)
-                capture_exercise_solved(self.root_path)
-                prompt.on_one_exercise_success(self.root_path)
-            except ExerciceFailed as error:
-                prompt.on_exercise_failure(self.root_path, error.message)
-
-    def run(self):
-        try:
-            with contextlib.suppress(KeyboardInterrupt):
-                self._file_watcher.start(self.on_file_changed)
-                while True:
-                    sleep(5)
-        except FileNotFoundError:
-            prompt.on_file_not_found()

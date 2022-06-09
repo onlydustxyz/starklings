@@ -1,8 +1,9 @@
+from pathlib import Path
 import sentry_sdk
 from rich.syntax import Syntax
 from rich.console import Console
 from src.repository.state_checker import check as check_repository_state
-from src.runner import Runner, RunnerOneFile
+from src.runner import Runner, single_exercise_check
 from src.exercises import exercises
 from src.exercises.seeker import ExerciseSeeker
 from src.utils.version_manager import VersionManager
@@ -28,6 +29,13 @@ def capture_solution_request(solution_path: str):
         sentry_sdk.capture_message("Solution requested", level="info")
 
 
+def capture_single_exercise_check(exercise_path: Path):
+    exercise_relative_path = exercise_path.relative_to(root_directory)
+    with sentry_sdk.push_scope() as scope:
+        scope.set_tag("exercise_to_check", str(exercise_relative_path))
+        sentry_sdk.capture_message("Single exercise check", level="info")
+
+
 async def cli(args):
     exercise_seeker = ExerciseSeeker(exercises)
     runner = Runner(root_directory, exercise_seeker)
@@ -41,17 +49,13 @@ async def cli(args):
 
     if args.watch:
         sentry_sdk.capture_message("Starting the watch mode")
-        runner.run()
+        runner.watch()
         return
 
     if args.verify:
-        sentry_sdk.capture_message("Verifying all the exercises")
-        exercise_path = exercise_seeker.get_next_undone()
-
-        if not exercise_path:
-            print("All exercises finished! 🎉")
-        else:
-            print(exercise_path)
+        exercise_path = args.verify
+        capture_single_exercise_check(exercise_path)
+        await single_exercise_check(exercise_path)
         return
 
     if args.solution:
@@ -67,10 +71,4 @@ async def cli(args):
             console.print(syntax)
         except FileNotFoundError:
             print("Solution not found")
-        return
-
-    if args.run:
-        sentry_sdk.capture_message("Verifying exercise")
-        runner = RunnerOneFile(args.run)
-        runner.run()
         return
