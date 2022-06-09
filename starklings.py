@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from rich.traceback import install
 from src import cli
-from src.config import root_directory
+from src.config import current_working_directory
 
 install(show_locals=True)
 
@@ -12,7 +12,7 @@ install(show_locals=True)
 def is_valid_file(parser, arg):
     file_path = Path(arg).resolve()
     if not file_path.exists():
-        file_path = root_directory / arg
+        file_path = current_working_directory / arg
     if not file_path.exists():
         return parser.error(f"The file {arg} does not exist!")
     return file_path

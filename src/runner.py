@@ -11,6 +11,7 @@ from src.exercises.checker import ExerciceFailed, check_exercise
 from src.file_watcher.watcher import FileWatcher
 from src import prompt
 from src.exercises.seeker import ExerciseSeeker
+from src.config import current_working_directory
 
 check_exercise_lock = Lock()
 
@@ -37,8 +38,8 @@ def capture_exercise_solved(exercise_path: str):
 
 
 class Runner:
-    def __init__(self, root_path: Path, exercise_seeker: ExerciseSeeker):
-        self._file_watcher = FileWatcher(root_path)
+    def __init__(self, exercise_seeker: ExerciseSeeker):
+        self._file_watcher = FileWatcher(current_working_directory)
         self._exercise_seeker = exercise_seeker
 
     def on_file_changed(self, _):

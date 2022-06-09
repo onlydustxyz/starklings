@@ -6,7 +6,7 @@ from src.runner import Runner, single_exercise_check
 from src.exercises import current_working_exercises
 from src.exercises.seeker import ExerciseSeeker
 from src.utils.version_manager import VersionManager
-from src.config import root_directory, dev_mode
+from src.config import root_directory, current_working_directory, dev_mode
 from src.solutions.repository import get_solution
 
 version_manager = VersionManager()
@@ -29,7 +29,7 @@ def capture_solution_request(solution_path: str):
 
 
 def capture_single_exercise_check(exercise_path: Path):
-    exercise_relative_path = exercise_path.relative_to(root_directory)
+    exercise_relative_path = exercise_path.relative_to(current_working_directory)
     with sentry_sdk.push_scope() as scope:
         scope.set_tag("exercise_to_check", str(exercise_relative_path))
         sentry_sdk.capture_message("Single exercise check", level="info")
@@ -37,7 +37,7 @@ def capture_single_exercise_check(exercise_path: Path):
 
 async def cli(args):
     exercise_seeker = ExerciseSeeker(current_working_exercises)
-    runner = Runner(root_directory, exercise_seeker)
+    runner = Runner(exercise_seeker)
 
     if args.version:
         version_manager.print_current_version()
