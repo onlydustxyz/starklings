@@ -69,17 +69,29 @@ end
 
 @external
 func test_assert_nor():
-    assert_nor(0, 1)
-    assert_nor(1, 0)
     assert_nor(0, 0)
     return ()
 end
 
 @external
-func test_assert_nor_ko():
+func test_assert_nor_ko1():
+    %{ expect_revert() %}
+    assert_nor(0, 1)
+    return () 
+end
+
+@external
+func test_assert_nor_ko2():
+    %{ expect_revert() %}
+    assert_nor(1, 0)
+    return () 
+end
+
+@external
+func test_assert_nor_ko3():
     %{ expect_revert() %}
     assert_nor(1, 1)
-    return ()
+    return () 
 end
 
 @external
