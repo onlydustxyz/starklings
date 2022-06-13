@@ -1,13 +1,13 @@
 from pathlib import Path
 import sentry_sdk
 from rich.syntax import Syntax
-from rich.console import Console
 from src.runner import Runner, single_exercise_check
 from src.exercises import current_working_exercises
 from src.exercises.seeker import ExerciseSeeker
 from src.utils.version_manager import VersionManager
 from src.config import root_directory, current_working_directory, dev_mode
 from src.solutions.repository import get_solution
+from src.console import console
 
 version_manager = VersionManager()
 
@@ -44,9 +44,10 @@ async def cli(args):
         return
 
     if args.watch:
-        sentry_sdk.capture_message("Starting the watch mode")
-        runner.watch()
-        return
+        with console.screen():
+            sentry_sdk.capture_message("Starting the watch mode")
+            runner.watch()
+            return
 
     if args.verify:
         exercise_path = args.verify
@@ -60,7 +61,6 @@ async def cli(args):
         try:
             solution = get_solution(exercise_path)
 
-            console = Console()
             syntax = Syntax(
                 solution, "python", line_numbers=True, background_color="default"
             )
