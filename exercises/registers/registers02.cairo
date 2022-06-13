@@ -3,13 +3,10 @@
 # I AM NOT DONE
 
 # Cairo memory is immutable.
-# Once a memory cell has been assigned its value CANNOT be changed.
+# Once a memory cell has been assigned, its value CANNOT be changed.
 # The program will crash if someone tries to assign a new, different, value to an already initialized memory cell.
 # However, trying to assign a memory cell twice, or more, **with the same value** won't cause any harm.
-#
 # This property can be used to assert the value of a cell.
-# By trying to give it a value to an already initialized memory cell, we can ensure that it already have this specific value,
-# if it does not, the call fail
 
 # TODO
 # Rewrite this function in a high level syntax, using tempvar and assert
