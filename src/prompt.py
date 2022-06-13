@@ -1,4 +1,5 @@
 from colorama import init, Fore, Style
+from src.console import console
 
 init(autoreset=True)
 
@@ -9,6 +10,7 @@ def on_watch_start(exercise_path):
 
 
 def on_single_exercise_success(exercise_path):
+    console.clear()
     print(f"{Style.BRIGHT}{Fore.GREEN}🥳🥳🥳 Exercise {exercise_path} completed!")
 
 
@@ -18,15 +20,18 @@ def on_watch_exercise_success():
 
 
 def on_exercise_failure(exercise_path, error_message):
+    console.clear()
     print(f"{Fore.RED}🚧 Exercise {exercise_path} failed. Please try again.")
     print(error_message)
 
 
 def on_exercise_check(exercise_path):
+    console.clear()
     print(f"{Style.DIM}👀 Checking exercise {exercise_path}...")
 
 
 def on_file_not_found():
+    console.clear()
     print(
         f"{Fore.RED}🧐 Creepy crap it looks that you are not running this script from the root directory of the repository."
     )
