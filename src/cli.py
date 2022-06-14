@@ -2,7 +2,7 @@ from pathlib import Path
 import sentry_sdk
 from rich.syntax import Syntax
 from src.runner import Runner, single_exercise_check
-from src.exercises import current_working_exercises
+from src.exercises import current_working_exercises, exercises
 from src.exercises.seeker import ExerciseSeeker
 from src.utils.version_manager import VersionManager
 from src.config import root_directory, current_working_directory, dev_mode
@@ -42,6 +42,9 @@ async def cli(args):
     if args.version:
         version_manager.print_current_version()
         return
+
+    if args.display_course:
+        exercises.print()
 
     if args.watch:
         with console.screen():
