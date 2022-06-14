@@ -1,40 +1,42 @@
-from colorama import init, Fore, Style
+from rich import print as rich_print
 from src.console import console
-
-init(autoreset=True)
 
 
 def on_watch_start(exercise_path):
-    print(f"{Style.BRIGHT}🤖🤖🤖 Watch mode started.")
-    print(f"You can start to work on exercise {exercise_path}.\n")
+    rich_print("[bold]:robot::robot::robot: Watch mode started.[/bold]")
+    rich_print(f"You can start to work on exercise {exercise_path}.\n")
 
 
 def on_single_exercise_success(exercise_path):
     console.clear()
-    print(f"{Style.BRIGHT}{Fore.GREEN}🥳🥳🥳 Exercise {exercise_path} completed!")
+    rich_print(
+        f"[bold green]:partying_face::partying_face::partying_face: Exercise {exercise_path} completed![/bold green]"
+    )
 
 
 def on_watch_exercise_success():
-    print("You can keep working on this exercise,")
-    print("or move on to the next one by removing the `I AM NOT DONE` comment.\n")
+    rich_print("You can keep working on this exercise,")
+    rich_print("or move on to the next one by removing the `I AM NOT DONE` comment.\n")
 
 
 def on_exercise_failure(exercise_path, error_message):
     console.clear()
-    print(f"{Fore.RED}🚧 Exercise {exercise_path} failed. Please try again.")
-    print(error_message)
+    rich_print(
+        f"[red]:construction: Exercise {exercise_path} failed. Please try again.[/red]"
+    )
+    rich_print(error_message)
 
 
 def on_exercise_check(exercise_path):
     console.clear()
-    print(f"{Style.DIM}👀 Checking exercise {exercise_path}...")
+    rich_print(f"[gray]:eyes: Checking exercise {exercise_path}...[/gray]")
 
 
 def on_file_not_found():
     console.clear()
-    print(
-        f"{Fore.RED}🧐 Creepy crap it looks that you are not running this script from the root directory of the repository."
+    rich_print(
+        "[red]:face_with_monocle: Creepy crap it looks that you are not running this script from the root directory of the repository.[/red]"
     )
-    print(
-        f"{Fore.RED}Please make sure you are running the CLI from the cloned Starklings repository."
+    rich_print(
+        "[red]Please make sure you are running the CLI from the cloned Starklings repository.[/red]"
     )
