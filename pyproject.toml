@@ -19,6 +19,7 @@ sentry-sdk = "^1.5.12"
 starklings-protostar = "^0.2.1"
 watchdog = "^2.1.7"
 rich = "^12.4.4"
+requests = "^2.28.0"
 
 [tool.poetry.dev-dependencies]
 GitPython = "^3.1.27"

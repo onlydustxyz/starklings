@@ -44,3 +44,14 @@ def on_file_not_found():
     rich_print(
         "[red]Please make sure you are running the CLI from the cloned Starklings repository.[/red]"
     )
+
+
+def on_user_verification(verification_uri: str, verification_code: str):
+    console.clear()
+    rich_print(
+        f"Please visit {verification_uri} to login and enter the following code: [bold]{verification_code}[/bold]"
+    )
+
+
+def waiting_for_user_login():
+    return console.status("Waiting for user login...")
