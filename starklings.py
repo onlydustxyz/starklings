@@ -38,7 +38,6 @@ root_parser.add_argument(
     type=lambda x: is_valid_file(root_parser, x),
 )
 
-
 root_parser.add_argument(
     "--watch",
     "-w",
@@ -48,11 +47,17 @@ root_parser.add_argument(
 )
 
 root_parser.add_argument(
-    "-s",
     "--solution",
+    "-s",
     metavar="relative_path_to_exercise",
     help="Provide a solution for an exercise",
     type=lambda x: is_valid_file(root_parser, x),
+)
+
+root_parser.add_argument(
+    "--display-course",
+    default=False,
+    action="store_true",
 )
 
 try:
