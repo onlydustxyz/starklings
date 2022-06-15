@@ -56,6 +56,7 @@ root_parser.add_argument(
 
 root_parser.add_argument(
     "--display-course",
+    "-d",
     default=False,
     action="store_true",
 )
