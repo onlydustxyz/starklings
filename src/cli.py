@@ -5,6 +5,7 @@ from src.exercises.model import Directory
 from src.runner import Runner, single_exercise_check
 from src.exercises import current_working_exercises, course
 from src.exercises.seeker import ExerciseSeeker
+from src.user.login import login
 from src.utils.version_manager import VersionManager
 from src.config import root_directory, current_working_directory, dev_mode
 from src.solutions.repository import get_solution
@@ -72,3 +73,8 @@ async def cli(args):
         except FileNotFoundError:
             print("Solution not found")
         return
+
+    if args.login:
+        with console.screen():
+            login()
+            return

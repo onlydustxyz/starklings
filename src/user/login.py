@@ -2,6 +2,7 @@ from time import sleep
 import requests
 from src.config import GITHUB_CLIENT_ID, GITHUB_GRANT_TYPE
 from src.prompt import on_user_verification, waiting_for_user_login
+from src.user.access_token import set_access_token
 
 
 def login():
@@ -27,7 +28,7 @@ def login():
         retry_count = 0
 
         poll_access_token = request_access_token(device_code)
-        while poll_access_token.status_code == 400:
+        while "error" in poll_access_token.json():
             if retry_count == total_retries:
                 raise Exception("Failed to get access token")
             retry_count += 1
@@ -35,7 +36,7 @@ def login():
             poll_access_token = request_access_token(device_code)
 
         access_token = poll_access_token.json()["access_token"]
-        return access_token
+        set_access_token(access_token)
 
 
 def request_access_token(device_code: str):
@@ -45,5 +46,8 @@ def request_access_token(device_code: str):
             "client_id": GITHUB_CLIENT_ID,
             "grant_type": GITHUB_GRANT_TYPE,
             "device_code": device_code,
+        },
+        headers={
+            "Accept": "application/json",
         },
     )

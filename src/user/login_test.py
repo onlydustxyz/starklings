@@ -5,6 +5,7 @@ from src.user.login import login
 @responses.activate
 def test_user_login(mocker):
     on_user_verification_mock = mocker.patch("src.user.login.on_user_verification")
+    set_access_token_mock = mocker.patch("src.user.login.set_access_token")
 
     verification_uri = "https://github.com/login/device"
     user_code = "user_code"
@@ -25,7 +26,6 @@ def test_user_login(mocker):
 
     authorization_pending_response = responses.Response(
         method="POST",
-        status=400,
         url="https://github.com/login/oauth/access_token",
         json={"error": "authorization_pending"},
     )
@@ -44,5 +44,7 @@ def test_user_login(mocker):
     responses.add(authorization_pending_response)
     responses.add(access_token_response)
 
-    assert login() == access_token
+    login()
+
     on_user_verification_mock.assert_called_with(verification_uri, user_code)
+    set_access_token_mock.assert_called_with(access_token)
