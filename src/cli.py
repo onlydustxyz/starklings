@@ -1,8 +1,9 @@
 from pathlib import Path
 import sentry_sdk
 from rich.syntax import Syntax
+from src.exercises.model import Directory
 from src.runner import Runner, single_exercise_check
-from src.exercises import current_working_exercises, exercises
+from src.exercises import current_working_exercises, course
 from src.exercises.seeker import ExerciseSeeker
 from src.utils.version_manager import VersionManager
 from src.config import root_directory, current_working_directory, dev_mode
@@ -44,7 +45,7 @@ async def cli(args):
         return
 
     if args.display_course:
-        exercises.print()
+        print(Directory("exercises", course), end="")
 
     if args.watch:
         with console.screen():
