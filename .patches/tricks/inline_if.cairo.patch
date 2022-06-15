@@ -1,0 +1,8 @@
+--- a/exercises/tricks/inline_if.cairo	2022-06-15 17:34:56.044139899 +0200
++++ b/exercises/tricks/inline_if.cairo	2022-06-15 17:34:47.677432930 +0200
+@@ -15 +15,4 @@
+-    # FILL ME
++    let is_boolean_helper = (cond - TRUE) * (cond - FALSE)
++    assert 0 = is_boolean_helper
++
++    let res = cond * val_true + (1 - cond) * val_false
