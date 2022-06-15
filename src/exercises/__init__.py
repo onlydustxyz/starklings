@@ -64,6 +64,12 @@ course = [
         ],
     ),
     Directory(
+        "builtins",
+        [
+            Exercise("bitwise"),
+        ],
+    ),
+    Directory(
         "tricks",
         [
             Exercise("no_conditionals"),
