@@ -74,6 +74,7 @@ course = [
         [
             Exercise("no_conditionals"),
             Exercise("assert_bool"),
+            Exercise("inline_if"),
         ],
     ),
     Directory(
