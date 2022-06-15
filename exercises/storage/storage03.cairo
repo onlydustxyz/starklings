@@ -9,7 +9,7 @@ func bool() -> (bool : felt):
 end
 
 @external
-func toggle{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+func toggle{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(input: felt):
     # TODO
     # Implement toggle external
 end
@@ -31,12 +31,12 @@ func test_toggle_and_view{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, rang
     let (x) = view_bool()
     assert x = 0
 
-    toggle()
+    toggle(1)
 
     let (x) = view_bool()
     assert x = 1
 
-    toggle()
+    toggle(0)
 
     let (x) = view_bool()
     assert x = 0
