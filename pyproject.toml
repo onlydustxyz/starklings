@@ -26,6 +26,7 @@ GitPython = "^3.1.27"
 packaging = "^21.3"
 poethepoet = "ˆ0.13.1"
 tomli = "<2.0.0"
+responses = "^0.21.0"
 
 [tool.poe.tasks]
 build = ["generate_solutions", "package"]
