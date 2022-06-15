@@ -16,18 +16,18 @@ class Directory(namedtuple("Directory", ["name", "children"])):
         return self
 
     def list_exercises(self) -> List[Path]:
-        return self.__inner_list_exercises__("")
+        return self.inner_list_exercises("")
 
-    def __inner_list_exercises__(self, prefix) -> List[Path]:
+    def inner_list_exercises(self, prefix) -> List[Path]:
         dir_prefix = f"{self.name}/"
 
         res = []
 
         for child in self.children:
             if isinstance(child, Exercise):
-                res.append(Path(f"{prefix}{dir_prefix}{child.name}.cairo"))
+                res.append(Path(prefix) / dir_prefix / f"{child.name}.cairo")
             elif isinstance(child, Directory):
-                res += child.__inner_list_exercises__(dir_prefix)
+                res += child.inner_list_exercises(dir_prefix)
             else:
                 raise Exception(
                     "directory children can only contain Exercises and Directory types"
@@ -36,15 +36,15 @@ class Directory(namedtuple("Directory", ["name", "children"])):
         return res
 
     def __str__(self):
-        return self.__inner_str__("")
+        return self.inner_str("")
 
-    def __inner_str__(self, parent_prefix):
+    def inner_str(self, parent_prefix):
         res = f"{parent_prefix}{self.name}/\n"
 
         for child in self.children:
             if isinstance(child, Exercise):
                 res += f"  {parent_prefix}- {child.name}\n"
             elif isinstance(child, Directory):
-                res += child.__inner_str__(parent_prefix + "    ")
+                res += child.inner_str(parent_prefix + "    ")
 
         return res
