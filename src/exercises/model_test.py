@@ -49,10 +49,7 @@ def test_list_exercise():
             ),
             Directory(
                 "string",
-                [
-                    Exercise("strings00"),
-                    Exercise("strings01"),
-                ],
+                [Exercise("strings00"), Exercise("strings01")],
             ),
         ],
     )
