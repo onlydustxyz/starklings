@@ -6,7 +6,7 @@ from src.runner import ExerciseSeeker, Runner, current_working_directory
 PATH = Path("tests/exercises/test_end_of_exercise_messages")
 
 
-def test_runner_on_file_changed(current_working_exercises):
+def runner_on_file_changed(current_working_exercises):
     exercise_seeker = ExerciseSeeker(current_working_exercises)
     runner = Runner(exercise_seeker)
     runner.on_file_changed(current_working_directory)
@@ -18,7 +18,7 @@ def test_runner_on_file_changed_with_next_exercises(mock_stdout):
         PATH / "with_next_exercises" / "syntax01.cairo",
         PATH / "with_next_exercises" / "syntax02.cairo",
     ]
-    test_runner_on_file_changed(current_working_exercises)
+    runner_on_file_changed(current_working_exercises)
     assert (
         mock_stdout.getvalue()
         != "Congratulations! You have completed all the exercises!\n"
@@ -31,12 +31,8 @@ def test_runner_on_file_changed_without_next_exercises(mock_stdout):
         PATH / "without_next_exercises" / "syntax01.cairo",
         PATH / "without_next_exercises" / "syntax02.cairo",
     ]
-    test_runner_on_file_changed(current_working_exercises)
+    runner_on_file_changed(current_working_exercises)
     assert (
         mock_stdout.getvalue()
         == "Congratulations! You have completed all the exercises!\n"
     )
-
-
-# test_runner_on_file_changed_with_next_exercises()
-# test_runner_on_file_changed_without_next_exercises()
