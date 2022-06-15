@@ -19,6 +19,10 @@ def on_watch_exercise_success():
     rich_print("or move on to the next one by removing the `I AM NOT DONE` comment.\n")
 
 
+def on_watch_no_next_exercise():
+    rich_print("Congratulations! You have completed all the exercises!")
+
+
 def on_exercise_failure(exercise_path, error_message):
     console.clear()
     rich_print(
