@@ -12,6 +12,8 @@ from src.file_watcher.watcher import FileWatcher
 from src import prompt
 from src.exercises.seeker import ExerciseSeeker
 from src.config import current_working_directory
+from src.certification.calls import register_exercise_success
+from src.user.access_token import get_access_token
 
 check_exercise_lock = Lock()
 
@@ -25,6 +27,9 @@ async def single_exercise_check(exercise_path: Path, watch_mode=False):
             await check_exercise(str(exercise_path))
             capture_exercise_solved(exercise_path)
             prompt.on_single_exercise_success(exercise_path)
+            access_token = get_access_token()
+            if access_token is not False:
+                register_exercise_success(exercise_path, access_token)
             if watch_mode:
                 prompt.on_watch_exercise_success()
         except ExerciceFailed as error:
