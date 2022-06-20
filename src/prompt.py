@@ -53,5 +53,13 @@ def on_user_verification(verification_uri: str, verification_code: str):
     )
 
 
+def on_nft_mint():
+    rich_print("Your NFT is being minted")
+
+
+def on_nft_mint_failed():
+    rich_print("Failed to mint your NFT")
+
+
 def waiting_for_user_login():
     return console.status("Waiting for user login...")
