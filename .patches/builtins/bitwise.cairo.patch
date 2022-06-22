@@ -13,11 +13,10 @@
 -    # FILL ME
 +    let (pow2n) = pow(2, n)
 +    let (res) = bitwise_xor(value, pow2n)
-@@ -55 +59,3 @@
+@@ -55 +59,2 @@
 -    # Assert op is correct
-+    let tmp_op_invalid = (op - 'get') * (op - 'set') * (op - 'toggle')
-+    let (is_op_invalid) = is_not_zero(tmp_op_invalid)
-+    assert 0 = is_op_invalid
++    # Product can only be zero if op in ['get', 'set', 'toggle']
++    assert 0 = (op - 'get') * (op - 'set') * (op - 'toggle')
 @@ -58 +64,2 @@
 -        # Assert n is within bounds
 +        assert_nn(n)
