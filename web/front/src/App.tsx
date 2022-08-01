@@ -1,8 +1,8 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import logo from './onlydust-logo.png';
+import './App.sass';
 
-function App() {
+export default function App() {
   return (
     <div className="App">
       <header className="App-header">
@@ -22,5 +22,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
