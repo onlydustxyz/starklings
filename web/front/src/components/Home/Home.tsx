@@ -9,7 +9,7 @@ interface HomeProps {}
 
 const Home: FC<HomeProps> = () => (
   <div className='page'>
-        <HeaderPage/>
+        <HeaderPage headerTitle='Get started with Starknet' subtitle='Use Starklings, an interactive tutorial to get you up and running with Starknet'/>
         <section className='section section-cairo'>
           <div className='explanations'>
             <h2 className='section-header'>Learn Cairo</h2>
@@ -22,7 +22,7 @@ const Home: FC<HomeProps> = () => (
         <div className='separator-button'>
           <ButtonConnectWallet buttonClass='button-secondary' buttonText='Start here'/>
           </div>
-        <section className='section section-ressources'>
+        <section className='section section-resources'>
           <div className='illustration'>
             <img className='section-image' alt='Magic Cards' src={resourcesImg}/>
           </div>

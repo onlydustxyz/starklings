@@ -1,8 +1,10 @@
 @use '_var.sass' as var
 
 //-- RESET + BASE --//
-html, body, div, span, p, ul, li, h2
+html 
   background: url('../assets/magic-verse.png') no-repeat center center fixed
+
+html, body, div, span, p, ul, li, h2
   background-size: 100%
   margin: 0
   padding: 0
@@ -53,10 +55,13 @@ h1
         margin-bottom: var.$gap-s
         text-transform: uppercase
 
+    //-- FOOTER --//
 .link 
     color: var.$footer-link-color
     font-size: var.$text-s
     text-transform: uppercase
+.footer-icon
+    color: var.$color-mid-blue
 
 // Buttons
 .button-primary,
