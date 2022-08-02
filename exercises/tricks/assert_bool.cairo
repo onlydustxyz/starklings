@@ -69,8 +69,7 @@ end
 
 @external
 func test_assert_nor():
-    assert_nor(0, 1)
-    assert_nor(1, 0)
+    
     assert_nor(0, 0)
     return ()
 end
