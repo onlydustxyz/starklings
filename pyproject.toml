@@ -2,7 +2,7 @@
 authors = ["OnlyDust"]
 description = "An interactive tutorial to get you up and running with Starknet"
 name = "starklings"
-version = "1.3.2"
+version = "1.4.0"
 
 [tool.poetry.dependencies]
 argparse = "^1.4.0"
