@@ -1,7 +1,7 @@
 @use '_var.sass' as var
 
 //-- RESET + BASE --//
-html, body, div, span, p, ul, li
+html, body, div, span, p, ul, li, h2
   background: url('../assets/magic-verse.png') no-repeat center center fixed
   background-size: 100%
   margin: 0
@@ -16,15 +16,7 @@ a
 
 .App
   color: var.$text-color
-
-
-//-- HEADINGS --//
-h1
-    font-family: var.$font-title
-    font-size: var.$h1-size
-
-.subtitle
-    font-size: var.$subtitle-size
+  padding: 60px 130px
 
 
 //-- NAV --//
@@ -36,27 +28,47 @@ h1
 .nav-logo
     width: 100px
 
+//-- HEADINGS --//
+h1
+    font-family: var.$font-title
+    font-size: var.$h1-size
 
-//-- BUTTONS --//
-.button-primary
-    background-color: var.$button-primary-color
-    border-radius: 5px
-    color: var.$button-primary-text-color
-    font-family: var.$font-button
-    padding: 15px 40px
-    text-transform: uppercase
+.subtitle
+    font-size: var.$subtitle-size
+    font-family: var.$font-subtitle
+
+//-- HEADERS --//
+.header
+    text-align: center
 
 
 // -- PAGE --//
 .section
     font-size: var.$text-size
+    text-align: justify
     h2
         color: var.$h2-color
         font-family: var.$font-title
         font-size: var.$h2-size
+        margin-bottom: var.$gap-s
         text-transform: uppercase
 
 .link 
     color: var.$footer-link-color
     font-size: var.$text-s
     text-transform: uppercase
+
+// Buttons
+.button-primary,
+.button-secondary
+    border-radius: 5px
+    font-family: var.$font-button
+    font-size: var.$button-text-size
+    padding: 15px 40px
+    text-transform: uppercase
+.button-primary
+    background-color: var.$button-primary-color
+    color: var.$button-primary-text-color
+.button-secondary
+    background-color: var.$button-secondary-color
+    color: var.$button-secondary-text-color

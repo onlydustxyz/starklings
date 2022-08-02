@@ -13,7 +13,7 @@ const NavBar: FC<NavBarProps> = () => (
         <p className='site-title'>Starklings</p>
       </div>
       <div className='user-login-button'>
-        <ButtonConnectWallet/>
+        <ButtonConnectWallet buttonClass='button-primary' buttonText='Connect Wallet'/>
       </div>
     </nav>
   </div>

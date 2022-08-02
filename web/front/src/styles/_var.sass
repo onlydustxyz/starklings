@@ -48,19 +48,36 @@ $color-snow: #F4F4F4
     font-style: normal
     font-display: swap
 
+@font-face
+    font-family: 'Oxanium Extra Light'
+    src: url(./fonts/Oxanium-ExtraLight.ttf) format('truetype')
+    font-weight: 100
+    font-style: light
+    font-display: swap
+
 $font-logo: 'Oxanium', sans-serif
 $font-button: 'Oxanium', sans-serif
+$font-subtitle: 'Oxanium Extra Light', sans-serif
 $font-title: 'Santi Rey', sans-serif
 $font-base: 'GT Walsheim Light', sans-serif
+$font-light: 'GT Walsheim Light Oblique', sans-serif
 
 // Font Sizes
 $logo-text-size: 3.75em
 $h1-size: 3.25em
-$h2-size: 2.5em
-$subtitle-size: 2em
-$text-size: 2em
+$h2-size: 2.25em
+$text-size: 1.75em
+$subtitle-size: 1.5em
 $text-s: 1.5em
-$button-text-size: $text-s
+$button-text-size: 1.25em
+
+// MARGINS, PADDINGS VARS
+$gap-xs: 20px
+$gap-s: 30px
+$gap-m: $gap-s * 2
+$gap-l: 100px
+$gap-xl: 150px
+$section-gap: $gap-xl
 
 
 //-- BASE DESIGN --//
@@ -73,3 +90,5 @@ $footer-link-color: $color-nickel
 // Buttons 
 $button-primary-color: $color-space-purple
 $button-primary-text-color: $color-off-white
+$button-secondary-color: $color-light-blue
+$button-secondary-text-color: $color-space-blue
