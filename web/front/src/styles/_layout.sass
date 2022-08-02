@@ -15,6 +15,8 @@
     .nav-logo
         display: inline-block
         vertical-align: middle
+.nav-logo 
+    margin-right: var.$gap-s
 
 //-- PAGE --/
 .header
@@ -29,7 +31,6 @@
             max-width: 650px
     .explanations
         flex-grow: 2
-        padding: 0 var.$gap-s + 10px
     .button-boxed
         float: right
         font-size: var.$button-text-size * 0.5
@@ -41,13 +42,15 @@
     margin: var.$gap-l 0 var.$gap-l 0
     text-align: center
 
-    
+
 //-- FOOTER --//
 .footer
     margin-top: var.$gap-xl * 1.25
     text-align: right
-.footer-links .link:first-child
-    margin-right: var.$gap-xs
+.footer-links 
+    padding-right: var.$gap-xs // align svg margin
+    .link:first-child
+        margin-right: var.$gap-xs
 .footer-links .link
     display: inline-block
     opacity: 70%
