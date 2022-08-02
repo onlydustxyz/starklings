@@ -1,4 +1,14 @@
 @use '_var.sass' as var
+@use '_animations.sass' as anim
+
+@include anim.animation-text-glow(loglow, var.$color-snow)
+@include anim.animation-box-glow(primaryglow, var.$button-primary-color)
+@include anim.animation-box-glow(secondaryglow, var.$button-secondary-color)
+@include anim.animation-color-text(footerlinks, var.$color-nickel, var.$color-light-blue)
+@include anim.animation-text-glow(linkglow, var.$color-light-blue)
+@include anim.animation-text-glow(buttonprimaryglow, var.$color-snow)
+@include anim.animation-text-glow(buttonsecondaryglow, var.$color-mid-blue)
+@include anim.animation-color-text(iconcolor, var.$color-mid-blue, var.$color-light-blue)
 
 //-- RESET + BASE --//
 html 
@@ -15,6 +25,8 @@ a
     text-decoration: none
     &:visited
         color: inherit
+button
+    border: none
 
 .App
   color: var.$text-color
@@ -26,6 +38,9 @@ a
     font-family: var.$font-logo
     font-size: var.$logo-text-size
     text-transform: uppercase
+    &:hover
+        animation: loglow 3s 10 backwards
+        
 
 .nav-logo
     width: 100px
@@ -60,8 +75,12 @@ h1
     color: var.$footer-link-color
     font-size: var.$text-s
     text-transform: uppercase
-.footer-icon
+    a:hover
+        animation: footerlinks 8s linear infinite alternate both, linkglow 8s 10 backwards
+.footer-icon a svg
     color: var.$color-mid-blue
+    &:hover
+        animation: iconcolor 5s linear infinite alternate both
 
 // Buttons
 .button-primary,
@@ -74,6 +93,11 @@ h1
 .button-primary
     background-color: var.$button-primary-color
     color: var.$button-primary-text-color
+    &:hover
+        animation: primaryglow 3s cubic-bezier(0.250, 0.460, 0.450, 0.940) infinite both, buttonprimaryglow 6s infinite backwards
 .button-secondary
     background-color: var.$button-secondary-color
     color: var.$button-secondary-text-color
+    font-size: var.$text-s
+    &:hover
+        animation: secondaryglow 3s cubic-bezier(0.250, 0.460, 0.450, 0.940) infinite both, buttonsecondaryglow 6s infinite backwards

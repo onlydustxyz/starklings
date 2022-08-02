@@ -1,4 +1,7 @@
 @use '_var.sass' as var
+@use '_animations.sass' as anim
+
+@include anim.animation-bg(smooth-color)
 
 // RESET
 .section.achievements
@@ -9,7 +12,6 @@
     align-items: stretch
     display: flex
     flex-flow: row wrap
-    //align-content: space-evenly
     gap: var.$gap-m var.$gap-m
     margin-top: var.$gap-l
 
@@ -45,5 +47,6 @@
         color: var.$color-nickel
         content: ''
     &:hover
-        background-color: var.$color-mid-blue
+        background-color: rgba(var.$color-mid-blue, 0.8)
         transform: rotate(-2deg)
+        animation: smooth-color 1s linear alternate both
