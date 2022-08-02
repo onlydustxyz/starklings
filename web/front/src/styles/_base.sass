@@ -1,26 +1,62 @@
 @use '_var.sass' as var
 
-@font-face 
-    font-family: 'GT Walsheim Light'
-    src: url(./fonts/GT-Walsheim-Light.ttf) format('truetype')
-    src: url(./fonts/GT-Walsheim-Light.woff) format('woff')
-    src: url(./fonts/GT-Walsheim-Light.woff2) format('woff2')
-    font-weight: 300
-    font-style: normal
-    font-display: swap
+//-- RESET + BASE --//
+html, body, div, span, p, ul, li
+  background: url('../assets/magic-verse.png') no-repeat center center fixed
+  background-size: 100%
+  margin: 0
+  padding: 0
+  font-family: var.$font-base
+  list-style: none
 
-@font-face
-    font-family: 'GT Walsheim Light Oblique'
-    src: url(./fonts/GT-Walsheim-Light-Oblique.woff2) format('woff2')
-    src: url(./fonts/GT-Walsheim-Light-Oblique.woff) format('woff')
-    src: url(./fonts/GT-Walsheim-Light-Oblique.ttf) format('truetype')
-    font-weight: 300
-    font-style: italic
-    font-display: swap
+a 
+    text-decoration: none
+    &:visited
+        color: inherit
 
-@font-face
-    font-family: 'Santi Rey'
-    src: url(./fonts/SantiRey-AlfredaBold.otf) format('opentype')
-    font-weight: 300
-    font-style: bold
-    font-display: swap
+.App
+  color: var.$text-color
+
+
+//-- HEADINGS --//
+h1
+    font-family: var.$font-title
+    font-size: var.$h1-size
+
+.subtitle
+    font-size: var.$subtitle-size
+
+
+//-- NAV --//
+.site-title
+    font-family: var.$font-logo
+    font-size: var.$logo-text-size
+    text-transform: uppercase
+
+.nav-logo
+    width: 100px
+
+
+//-- BUTTONS --//
+.button-primary
+    background-color: var.$button-primary-color
+    border-radius: 5px
+    color: var.$button-primary-text-color
+    font-family: var.$font-button
+    padding: 15px 40px
+    text-transform: uppercase
+
+
+// -- PAGE --//
+.section
+    font-size: var.$text-size
+    h2
+        color: var.$h2-color
+        font-family: var.$font-title
+        font-size: var.$h2-size
+        text-transform: uppercase
+
+.link 
+    color: var.$footer-link-color
+    font-size: var.$text-s
+    text-transform: uppercase

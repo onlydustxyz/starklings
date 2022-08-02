@@ -1,4 +1,5 @@
 //-- COLORS  --//
+
 // PRIMARY
 $color-space-blue: #0E0D2E
 $color-mid-blue: #0009BC
@@ -12,3 +13,63 @@ $color-space-purple: #AE00FF
 $color-black: #000
 $color-nickel: #666
 $color-snow: #F4F4F4
+
+
+//-- FONTS --//
+// Font Families
+@font-face 
+    font-family: 'GT Walsheim Light'
+    src: url(./fonts/GT-Walsheim-Light.ttf) format('truetype')
+    src: url(./fonts/GT-Walsheim-Light.woff) format('woff')
+    src: url(./fonts/GT-Walsheim-Light.woff2) format('woff2')
+    font-weight: 300
+    font-style: normal
+    font-display: swap
+@font-face
+    font-family: 'GT Walsheim Light Oblique'
+    src: url(./fonts/GT-Walsheim-Light-Oblique.woff2) format('woff2')
+    src: url(./fonts/GT-Walsheim-Light-Oblique.woff) format('woff')
+    src: url(./fonts/GT-Walsheim-Light-Oblique.ttf) format('truetype')
+    font-weight: 300
+    font-style: italic
+    font-display: swap
+
+@font-face
+    font-family: 'Santi Rey'
+    src: url(./fonts/SantiRey-AlfredaBold.otf) format('opentype')
+    font-weight: 300
+    font-style: bold
+    font-display: swap
+
+@font-face
+    font-family: 'Oxanium'
+    src: url(./fonts/Oxanium-VariableFont_wght.ttf) format('truetype')
+    font-weight: 300
+    font-style: normal
+    font-display: swap
+
+$font-logo: 'Oxanium', sans-serif
+$font-button: 'Oxanium', sans-serif
+$font-title: 'Santi Rey', sans-serif
+$font-base: 'GT Walsheim Light', sans-serif
+
+// Font Sizes
+$logo-text-size: 3.75em
+$h1-size: 3.25em
+$h2-size: 2.5em
+$subtitle-size: 2em
+$text-size: 2em
+$text-s: 1.5em
+$button-text-size: $text-s
+
+
+//-- BASE DESIGN --//
+$background-color: $color-space-blue
+$title-text-color: $color-light-purple
+$h2-color: $color-space-purple
+$text-color: $color-light-purple
+$footer-link-color: $color-nickel
+
+// Buttons 
+$button-primary-color: $color-space-purple
+$button-primary-text-color: $color-off-white
