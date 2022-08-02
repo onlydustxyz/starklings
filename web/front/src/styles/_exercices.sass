@@ -1,0 +1,49 @@
+@use '_var.sass' as var
+
+// RESET
+.section.achievements
+    display: block
+
+//-- CARDS --//
+.cards-wrapper
+    align-items: stretch
+    display: flex
+    flex-flow: row wrap
+    //align-content: space-evenly
+    gap: var.$gap-m var.$gap-m
+    margin-top: var.$gap-l
+
+.exercice-card
+    background-color: var.$card-background-color
+    flex-grow: 3
+    font-family: var.$font-button
+    font-size: 0.75em
+    padding: var.$gap-xs var.$gap-m
+
+.card-header
+    letter-spacing: var.$gap-xs / 2
+    text-transform: uppercase
+
+.exercice-card 
+    .card-header:after
+        content: "-"
+        height: var.$gap-s
+        margin-right: var.$gap-xs
+        margin-left: var.$gap-xs
+        position: absolute
+        vertical-align: middle
+        width: var.$gap-s
+    .card-header.success:after
+        background: url('../assets/icons/circle-success.svg')
+        color: var.$color-light-blue
+        content: ''
+    .card-header.wip:after
+        background: url('../assets/icons/circle-wip.svg')
+        content: ''
+    .card-header.not-started:after
+        background: url('../assets/icons/circle-fail.svg')
+        color: var.$color-nickel
+        content: ''
+    &:hover
+        background-color: var.$color-mid-blue
+        transform: rotate(-2deg)

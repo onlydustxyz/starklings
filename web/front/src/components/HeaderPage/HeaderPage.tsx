@@ -3,12 +3,15 @@ import '../../App.sass';
 
 
 
-interface HeaderPageProps {}
+interface HeaderPageProps {
+  headerTitle: string,
+  subtitle?: string;
+}
 
-const HeaderPage: FC<HeaderPageProps> = () => (
+const HeaderPage: FC<HeaderPageProps> = ({headerTitle, subtitle}) => (
   <header className='header'>
-    <h1>Get started with Starknet</h1>
-    <p className='subtitle'>Use Starklings, an interactive tutorial to get you up and running with Starknet</p>
+    <h1>{headerTitle}</h1>
+    <p className='subtitle'>{subtitle}</p>
   </header>
 );
 
