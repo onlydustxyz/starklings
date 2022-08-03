@@ -5,7 +5,7 @@ import ExerciceContent from '../ExerciceContent/ExerciceContent';
 interface ExerciceCardProps {
   name?: string,
   exerciceTitle?: string,
-  status?: string; // success, wip || not-started
+  status?: string; // success, wip, not-started
 }
 
 const ExerciceCard: FC<ExerciceCardProps> = ({exerciceTitle, status}) => {
@@ -20,7 +20,7 @@ const ExerciceCard: FC<ExerciceCardProps> = ({exerciceTitle, status}) => {
   return(
     <div className='exercice-card' onClick={cardHandler}>
       <h3 className={`card-header ${status}`}>{exerciceTitle}</h3>
-      {clickedCard !== '' ? <ExerciceContent listOfExercices={['Syntax00', 'Syntax01', 'Syntax02']} lastSuccessfulExercice={1}/> : null}
+      {clickedCard !== '' ? <ExerciceContent listOfExercices={['Syntax00', 'Syntax01', 'Syntax02']} lastSuccessfulExercice={1}/> : ''}
     </div>
   );
 }
