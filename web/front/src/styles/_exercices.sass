@@ -50,3 +50,41 @@
         background-color: rgba(var.$color-mid-blue, 0.8)
         transform: rotate(-2deg)
         animation: smooth-color 1s linear alternate both
+.exercices
+    margin-top: var.$gap-m
+.exercice
+    margin-top: var.$gap-xs
+    position: relative
+    &.success
+        color: var.$color-light-blue
+    &:last-child
+        margin-bottom: var.$gap-m
+    &:last-child:after
+        display: none
+    &:before
+        content:''
+        display: inline-block
+        height: var.$gap-xs
+        margin-right: var.$gap-xs
+        vertical-align: middle
+        width: var.$gap-xs
+    &:after
+        background-color: var.$color-mid-blue
+        content:''
+        height: var.$gap-xs + 3px
+        left: (var.$gap-xs)/ 2 - 1px
+        margin-top: var.$gap-xs + 3px
+        position: absolute
+        width: 3px
+    &.not-started:before
+        border: 3px solid var.$color-light-purple
+        border-radius: var.$gap-xs
+        height: var.$gap-xs - 3px // border width
+        width: var.$gap-xs - 3px // border width
+    &.not-started:after
+        background-color: var.$color-light-purple
+    &.success:before
+        background: url('../assets/icons/circle-success.svg')
+        background-size: contain
+    &.success:after
+        background-color: var.$color-light-blue
