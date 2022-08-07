@@ -16,7 +16,7 @@ course = [
     Directory(
         "operations",
         [
-            Exercise("felt01"),
+            Exercise("operations00"),
         ],
     ),
     Directory(
@@ -61,12 +61,7 @@ course = [
             Exercise("registers01"),
             Exercise("registers02"),
             Exercise("registers03"),
-        ],
-    ),
-    Directory(
-        "operations",
-        [
-            Exercise("felt02"),
+            Exercise("registers04"),
         ],
     ),
     Directory(
