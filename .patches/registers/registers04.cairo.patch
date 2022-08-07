@@ -1,5 +1,5 @@
---- ./exercises/operations/felt02.cairo	2022-08-07 14:50:40.505599191 +0200
-+++ ./.solutions/felt02.cairo	2022-08-07 14:39:03.902994827 +0200
+--- ./exercises/registers/registers04.cairo	2022-08-07 17:55:58.875865309 +0200
++++ ./.solutions/registers04.cairo	2022-08-07 17:55:48.967775665 +0200
 @@ -12,0 +13 @@
 +    let res = 67 + x * (45 + x * (23 + x))
 @@ -19,0 +21,6 @@
