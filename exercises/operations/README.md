@@ -1,4 +1,4 @@
-# felt operations
+# Felt operations
 
 A field element (aka felt), is a native type handling all the main number basics in Cairo.
 
