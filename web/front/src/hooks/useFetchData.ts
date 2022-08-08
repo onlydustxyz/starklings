@@ -15,33 +15,24 @@ export const useFetchData = (url: string): TDataResponse => {
     const [error, setError] = useState<any>()
     const [loading, setLoading] = useState(false)
 
-    const getData = async () => {
-        setLoading(true)
-        try {
-            const response = await fetch(url)
-            const json = await response.json()
-            setStatus(response.status)
-            setStatusText(response.statusText)
-            setData(json)
-        } catch (error) {
-            setError(error)
-        }
-        setLoading(false)
-    };
+    
 
     useEffect(() => {
+        const getData = async () => {
+            setLoading(true)
+            try {
+                const response = await fetch(url)
+                const json = await response.json()
+                setStatus(response.status)
+                setStatusText(response.statusText)
+                setData(json)
+            } catch (error) {
+                setError(error)
+            }
+            setLoading(false)
+        };
         getData()
     }, [])
 
     return { status, statusText, data, error, loading }
-/* export class useFetchData {
-    static getData(arg0: string) {
-      throw new Error('Method not implemented.');
-    }
-    
-    public async getData(url: string): Promise<any> {
-        const response = await fetch(url);
-        return await response.json();
-    }
-*/
 } 

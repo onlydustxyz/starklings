@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import ExerciceContent from '../ExerciceContent/ExerciceContent';
+import ExerciceContent from './ExerciceContent';
 
 
 interface ExerciceCardProps {
