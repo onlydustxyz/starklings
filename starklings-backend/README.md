@@ -43,3 +43,37 @@ APP_SETTINGS=config.ProdConfig python app.py
 ## API Documentation
 
 
+- `/exercise`
+Exercise Validation route
+
+1. Headers
+
+| Key  | Value          |
+| :--------------- |:---------------:|
+| Content-Type  |   application/json      |
+| Accept  |   application/json      |
+
+2. Data (JSON)
+
+| Key  | Value          |
+| :--------------- |:---------------:|
+| wallet_address  |   String: Wallet that wants to verify exercise     |
+| exercise  |   String: Concatenated path of the wanted exercise (e.g storage/storage01)      |
+| exercise_data  |   String: Cairo file as a string     |
+
+3. Return
+
+On Validation
+```
+{
+    "result": "Exercice Succeed"
+}
+```
+
+On Error
+```
+{
+    "error": "Cairo Error Msg"
+    "result": "Exercice Failed"
+}
+```
