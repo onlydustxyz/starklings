@@ -8,6 +8,7 @@ from starklings_backend.models.shared import db
 from starklings_backend.models.user import Starklingsuser
 from starklings_backend.exercise import verify_exercise
 from checker import ExerciceFailed
+import tempfile
 
 app_routes = Blueprint('app_routes', __name__)
 
@@ -71,19 +72,23 @@ async def starklings_exercise_checker():
     """
     Check exercise given a body and a user
     @TODO: Implement User DB for storing results
-    @TODO: Get solution file from API and temporarly store it File ? or Data
     """
     try:
         address = request.json.get('address', None) 
         exercise = request.json.get('exercise', 'storage/storage01')
-        exercise_data = request.json.get('exercise_data', None) 
+        exercise_data = request.json.get('exercise_data', None)   
         if not address:
-            return 'Missing Address', 400       
-        res = await verify_exercise(f"../exercises/{exercise}.cairo")
+            return 'Missing Address', 400
+        tmp = tempfile.NamedTemporaryFile()
+        with open(tmp.name, 'w') as temp_exercise:
+            temp_exercise.write(exercise_data)
+        res = await verify_exercise(tmp.name)
+        tmp.close()
         return {
             "result": "Exercice Succeed"
         }
     except ExerciceFailed as error:
+        print(error)
         return {
             "result": "Exercice Failed",
             "error": error.message
