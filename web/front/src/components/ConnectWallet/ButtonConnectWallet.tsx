@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { HashRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import { JsxEmit } from 'typescript';
-import ExercicesGroup from '../ExercicesGroup/ExercicesGroup';
+import ExercicesGroup from '../Exercices/ExercicesGroup';
 
 
 interface ButtonConnectWalletProps {
@@ -11,10 +11,11 @@ interface ButtonConnectWalletProps {
 }
 
 const ButtonConnectWallet: FC<ButtonConnectWalletProps> = ({buttonClass, buttonText}) => (
-  <Link to='/logged'>
     <button className={buttonClass}>
+      <Link to='/logged'>
       {buttonText? buttonText : 'Connect Wallet'}
+      </Link>
     </button>
-  </Link>
+  
 );
 export default ButtonConnectWallet;

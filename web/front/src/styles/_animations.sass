@@ -55,3 +55,14 @@
         fill: rgba($color2, 1)
     100%
         fill: rgba($color2, 0.5)
+
+@mixin opacity-increase($name)
+  @keyframes #{$name}
+    0%
+        opacity: 0.5
+    25%
+        opacity: 0.75
+    50%
+        opacity: 1
+    100%
+        opacity: 0.75

@@ -1,0 +1,62 @@
+@use '_var.sass' as var
+@use '_animations.sass' as anim
+
+@include anim.opacity-increase(opacity-increase)
+
+
+.instructions
+    flex-grow: 2
+.code-editor
+    flex-grow: 1
+
+//-- CODE EDITOR THEME --//
+.code-editor #container
+    .mtk1
+        color: var.$color-snow
+    .monaco-editor,
+    .monaco-editor-background,
+    .monaco-editor .inputarea.ime-input,
+    .monaco-editor .margin,
+    canvas.minimap-decorations-layer
+        background: var.$background-color
+    .monaco-editor .minimap-shadow-visible
+        box-shadow: none
+
+//-- UI --//
+.instructions
+    margin-right: var.$gap-m
+.validation 
+    background: rgba(var.$color-space-blue, 0.5)
+    padding: var.$gap-s
+    text-align: right
+.button-run-code
+    background: var.$color-light-blue
+    border-radius: var.$border-radius
+    font-family: var.$font-base
+    font-size: var.$text-size
+    margin-left: var.$gap-xs
+    padding: 15px var.$gap-m
+.icon-docs 
+    position: relative
+    &:hover:after
+        background: rgba(var.$color-black, 0.6)
+        border-radius: 5px
+        content: 'Go to documentation'
+        font-size: var.$text-s
+        height: var.$gap-s
+        left: -125px
+        line-height: var.$gap-s
+        position: absolute
+        text-align: center
+        top: -20px
+        width: 250px
+    svg
+        color: var.$color-space-purple
+        height: var.$icon-size
+        opacity: 0.5
+        margin-right: var.$gap-s
+        vertical-align: middle
+        &:hover
+            animation: opacity-increase 1s linear alternate both
+            opacity: 1
+        

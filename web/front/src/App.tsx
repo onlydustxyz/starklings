@@ -1,13 +1,14 @@
 import React from 'react';
 import { HashRouter as Router, Route, Link, Routes } from 'react-router-dom'
-import NavBar from './components/NavBar/NavBar';
-import BasicPage from './components/BasicPage/BasicPage';
-import Home from './components/Home/Home';
+import NavBar from './components/views/NavBar';
+import BasicPage from './components/views/BasicPage';
+import Home from './components/views/Home';
 import './App.sass';
-import HeaderPage from './components/HeaderPage/HeaderPage';
-import ButtonConnectWallet from './components/ButtonConnectWallet/ButtonConnectWallet';
-import Footer from './components/Footer/Footer';
-import ExercicesGroup from './components/ExercicesGroup/ExercicesGroup';
+import HeaderPage from './components/views/HeaderPage';
+import ButtonConnectWallet from './components/ConnectWallet/ButtonConnectWallet';
+import Footer from './components/views/Footer';
+import ExercicesGroup from './components/Exercices/ExercicesGroup';
+import PractisePage from './components/Exercices/PractisePage';
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
           <Routes>
             <Route path='/' element={<Home/>}/>
             <Route path='logged' element={<ExercicesGroup/>}/>
+            <Route path='exercice' element={<PractisePage/>}/>
             <Route path='terms-of-service' element={<BasicPage basicPageTitle='Terms of Service'/>}/>
             <Route path='privacy-policy' element={<BasicPage basicPageTitle='Privacy Policy'/>}/>
           </Routes>

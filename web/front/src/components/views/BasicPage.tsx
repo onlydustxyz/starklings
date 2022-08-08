@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { HashRouter as Router, Route, Link, Routes } from 'react-router-dom';
-import ExercicesGroup from '../ExercicesGroup/ExercicesGroup';
-import HeaderPage from '../HeaderPage/HeaderPage';
+import ExercicesGroup from '../Exercices/ExercicesGroup';
+import HeaderPage from './HeaderPage';
 
 interface BasicPageProps {
   basicPageTitle: string,

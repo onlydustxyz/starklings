@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import BasicPage from '../BasicPage/BasicPage';
+import BasicPage from './BasicPage';
 import { HashRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import footerLogo from '../../assets/od-footer-logo.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
