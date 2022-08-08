@@ -31,12 +31,12 @@ pip install -r requirements.txt
 
 - Development
 ```
-FLASK_ENV=development flask run
+APP_SETTINGS=config.DevConfig python app.py
 ```
 
 - Production
 ```
-FLASK_ENV=production flask run
+APP_SETTINGS=config.ProdConfig python app.py
 ```
 
 
