@@ -74,7 +74,7 @@ async def starklings_exercise_checker():
     @TODO: Implement User DB for storing results
     """
     try:
-        address = request.json.get('address', None) 
+        address = request.json.get('wallet_address', None) 
         exercise = request.json.get('exercise', 'storage/storage01')
         exercise_data = request.json.get('exercise_data', None)   
         if not address:
