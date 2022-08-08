@@ -1,6 +1,7 @@
 import os
 import pymysql
-
+from dotenv import load_dotenv
+load_dotenv()
 
 connection = pymysql.connect(
     host=os.environ.get('DATABASE_HOST', ''),
@@ -13,23 +14,23 @@ connection = pymysql.connect(
 
 cursor = connection.cursor()
 
-path_sql_query = """CREATE TABLE starklingsCompletedExercise (
+validated_sql_query = """CREATE TABLE validated_exercise (
     exercise_name varchar(255) NOT NULL,
-    user_id int NOT NULL,
-    validated_exercises
+    user_id int NOT NULL FOREIGN KEY
+    ...
 )
 """
 
 
-user_sql_query = """CREATE TABLE starklingsUser (
+user_sql_query = """CREATE TABLE starklings_user (
     user_id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    wallet_address varchar(255) NOT NULL UNIQUE,
     score int NOT NULL DEFAULT 0,
-    email varchar(255) NOT NULL UNIQUE,
-    password varchar(255) NOT NULL,
     username varchar(255) NOT NULL UNIQUE,
-    address varchar(255) NOT NULL UNIQUE
+    signature varchar(255) NOT NULL
 )
 """
 
+#cursor.execute(validated_sql_query)
 cursor.execute(user_sql_query)
 connection.close()

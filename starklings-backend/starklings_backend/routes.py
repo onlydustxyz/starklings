@@ -1,44 +1,39 @@
-from app import app, db
-from flask import request
+from flask import request, Blueprint
 import asyncio
 import bcrypt
 from sqlalchemy.exc import IntegrityError
+from flask_sqlalchemy import SQLAlchemy
 from starklings_backend.utils import verify_email
-from starklings_backend.models import Starklingsuser
+from starklings_backend.models.shared import db
+from starklings_backend.models.user import Starklingsuser
 from starklings_backend.exercise import verify_exercise
 from checker import ExerciceFailed
 
+app_routes = Blueprint('app_routes', __name__)
 
-@app.route('/', methods=['GET'])
+@app_routes.route('/', methods=['GET'])
 def landing():
     return 'Starklings API'
 
 #######################
 #     Users Routes    #
 #######################
-@app.route('/register', methods=['POST'])
+@app_routes.route('/registerUser', methods=['POST'])
 def register_user():
     """
     Inserts a new user in the Database
-    @TODO: Captcha Email Verification / Starknet ID / GitHub verification
+    @TODO: Starknet ID / Signature and implements model
     """
     try:
-        username = request.json.get('username', None)
-        email = request.json.get('email', None)
-        password = request.json.get('password', None)
-        wallet_address = request.json.get('address', None)
-        if None in [username, email, password]:
+        signature = request.json.get('signature', None)
+        wallet_address = request.json.get('wallet_address', None)
+        username = request.json.get('username', wallet_address)
+        if None in [wallet_address, signature]:
             return "Wrong form", 400 
-        if not verify_email(email):
-            return "Wrong email format", 400
-        if len(password) < 6:
-            return "Password too weak", 400
-
-        hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        user = Starklingsuser(email=email, password=hashed, username=username, address=wallet_address)
-        db.session.add(user)
+        #@TODO: Check Signature validity
+        
+        user = Starklingsuser(wallet_address=wallet_address, signature=signature, username=username)
         db.session.commit()
-
         return f'Welcome! {username}', 200
 
     except IntegrityError as e:
@@ -48,36 +43,30 @@ def register_user():
         return 'Provide an Email and Password in JSON format in the request body', 400
 
 
-@app.route('/login', methods=['POST'])
-def login_user():
+@app_routes.route('/fetchUserInfo', methods=['POST'])
+def fetch_user_info():
     """
     Authenticate a user
+    @TODO Implements Fetch User Information
     """
     try:
-        address = request.json.get('address', None)
-        password = request.json.get('password', None)
-        if not address:
+        wallet_address = request.json.get('wallet_address', None)
+        if not wallet_address:
             return 'Missing address', 400
-        if not password:
-            return 'Missing password', 400
-        
-        user = Starklingsuser.query.filter_by(address=address).first()
+        user = Starklingsuser.query.filter_by(wallet_address=wallet_address).first()
         if not user:
             return 'User Not Found!', 404
         
-        if bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
-            return f'Logged in, Welcome {user.username}!', 200
-        else:
-            return 'Invalid Login Info!', 400
+        return f'Logged in, Welcome {user.username}!', 200
     except AttributeError as e:
         print(e)
-        return 'Provide an Email and Password in JSON format in the request body', 400
+        return 'Provide the wallet address in JSON format in the request body', 400
 
 
 #######################
 #   Exercises Routes  #
 #######################
-@app.route('/exercise', methods=['POST'])
+@app_routes.route('/exercise', methods=['POST'])
 async def starklings_exercise_checker():
     """
     Check exercise given a body and a user
