@@ -57,8 +57,6 @@ export const useFetchData = (url: string): TDataResponse => {
         })();
       
         return () => {
-          // this now gets called when the component unmounts
-        console.log('test');
         };
       }, []); 
       return { status, statusText, data, error, loading }
