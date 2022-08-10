@@ -17,8 +17,7 @@ monaco.editor.defineTheme('starklings', {
 	inherit: true,
 	rules: [{
     token: '',
-    background: '#0E0D2E',
-    foreground: '#EBDDFF',}],
+    background: '#0E0D2E'}],
 	colors: {
 		'editorCursor.foreground': '#AE00FF',
 		'editorLineNumber.foreground': '#EBDDFF',
@@ -27,7 +26,7 @@ monaco.editor.defineTheme('starklings', {
 	}
 });
 
-registerCairoLanguageSupport(monaco)
+//registerCairoLanguageSupport(monaco)
 monaco.editor.setTheme('starklings');
 
 
@@ -41,12 +40,14 @@ function PractisePage() {
         <h2 className='section-header'>Instructions</h2>
         <p className='subtitle'>Make the text pass.</p>
       </div>
-      <div id='codeEditor' className='code-editor'>
+      <div id='codeEditor' className='code-editor-wrapper'>
         <Editor
           className-='code-editor'
           height='80vh'
-          defaultLanguage='cairo'
-          defaultValue='#place here the default code of the exercice'
+          defaultLanguage='python'
+          defaultValue='lang starknet \n
+          @storage_var func test () -> (test : felt):\n
+          end'
           theme='vs-dark'
           width='100%'
        />

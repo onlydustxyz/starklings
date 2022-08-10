@@ -10,23 +10,39 @@
     flex-grow: 1
 
 //-- CODE EDITOR THEME --//
-.code-editor #container
-    .mtk1
+// canvas.minimap-decorations-layer,
+// canvas.decorationsOverviewRuler,
+//.code-editor-wrapper
+//    background: rgba(var.$color-space-blue, 0.5)
+//div.monaco-scrollable-element >
+//     .scrollbar > .slider,
+//     &>.insible.fade,
+//     &>.visible.fade
+//         background: var.$color-mid-blue
+//         transform: none
+canvas.minimap-decorations-layer, 
+//canvas.decorationsOverviewRuler, 
+.code-editor-wrapper
+    background: var.$color-space-blue
+    transform: none
+    &:hover
+        background: var.$color-space-blue
+.code-editor-wrapper
+    width: 100%
+    .code-editor
+    .mtk7
         color: var.$color-snow
     .monaco-editor,
     .monaco-editor-background,
     .monaco-editor .inputarea.ime-input,
-    .monaco-editor .margin,
-    canvas.minimap-decorations-layer
-        background: var.$background-color
+    .monaco-editor .margin
+        background: transparent
     .monaco-editor .minimap-shadow-visible
         box-shadow: none
-
 //-- UI --//
 .instructions
     margin-right: var.$gap-m
 .validation 
-    background: rgba(var.$color-space-blue, 0.5)
     padding: var.$gap-s
     text-align: right
 .button-run-code

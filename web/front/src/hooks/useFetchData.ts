@@ -9,30 +9,59 @@ export type TDataResponse = {
 }
 
 export const useFetchData = (url: string): TDataResponse => {
+    console.log('use fetch data');
+    console.log(url)
     const [status, setStatus] = useState<Number>(0)
     const [statusText, setStatusText] = useState<String>('')
     const [data, setData] = useState<any>()
     const [error, setError] = useState<any>()
     const [loading, setLoading] = useState(false)
-
-    
+    console.log('after state')
+/* 
+    const getData = async () => {
+        setLoading(true)
+        try {
+            const response = await fetch(url)
+            const json = await response.json()
+            console.log(response)
+            console.log(json)
+            setStatus(response.status)
+            setStatusText(response.statusText)
+            setData(json)
+        } catch (error) {
+            setError(error)
+        }
+        setLoading(false)
+    };
 
     useEffect(() => {
-        const getData = async () => {
-            setLoading(true)
-            try {
-                const response = await fetch(url)
-                const json = await response.json()
-                setStatus(response.status)
-                setStatusText(response.statusText)
-                setData(json)
-            } catch (error) {
-                setError(error)
-            }
-            setLoading(false)
-        };
-        getData()
+        console.log('USEEFFECT')
+        //getData()
     }, [])
 
-    return { status, statusText, data, error, loading }
+    return { status, statusText, data, error, loading } */
+
+    useEffect(() => {
+        (async () => {
+                  setLoading(true)
+              try {
+                  const response = await fetch(url)
+                  const json = await response.json()
+                  setStatus(response.status)
+                  setStatusText(response.statusText)
+                  setData(json)
+              } catch (error) {
+                  setError(error)
+              }
+              setLoading(false)
+        })();
+      
+        return () => {
+          // this now gets called when the component unmounts
+        console.log('test');
+        };
+      }, []); 
+      return { status, statusText, data, error, loading }
+    
+      
 } 
