@@ -11,15 +11,11 @@ interface ExercicesGroupProps {}
 function ExercicesGroup() {
   const getExercicesData: TDataResponse = useFetchData('https://api.github.com/repos/onlydustxyz/starklings/contents/exercises')
   let cardList: any = []
-  console.log(getExercicesData)
   if(getExercicesData.data){
     getExercicesData.data.forEach((d: { name: any; }) => {
     cardList?.push(<ExerciceCard exerciceTitle={d.name} status='wip'/>)
     })
   }
-  //getExercicesData.data.forEach((d: { name: any; }) => {
-  //cardList?.push(<ExerciceCard exerciceTitle={d.name} status='wip'/>)
-  //})
   return (
       <div className='page'>
         <HeaderPage headerTitle='Hi'/>

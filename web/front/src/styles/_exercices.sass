@@ -20,13 +20,17 @@
     flex-grow: 3
     font-family: var.$font-button
     font-size: var.$text-size
+    max-height: 90px // this prevents flex box to auto size height of sibling
     padding: var.$gap-xs 0
+    text-align: center
+    &.show-content
+        max-height: 100%
 
 .card-header
     letter-spacing: var.$gap-xs / 2
     padding: 0 var.$gap-m*2 0 var.$gap-m
     text-transform: uppercase
-
+    
 .exercice-card 
     .card-header:after
         content: "-"
@@ -53,6 +57,7 @@
         animation: smooth-color 1s linear alternate both
 .exercices
     margin: (var.$gap-m / 1.5) 0 0 var.$gap-m
+    text-align: left
 .exercice
     font-size: var.$text-size
     margin-top: var.$gap-xs
@@ -73,9 +78,9 @@
     &:after
         background-color: var.$color-mid-blue
         content:''
-        height: var.$gap-xs + 3px
+        height: var.$gap-xs + 6px
         left: (var.$gap-xs)/ 2 - 1px
-        margin-top: var.$gap-xs + 3px
+        margin-top: var.$gap-xs + 6px // gap between icons
         position: absolute
         width: 3px
     &.not-started:before

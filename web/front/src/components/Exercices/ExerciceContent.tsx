@@ -12,8 +12,8 @@ const ExerciceContent: FC<ExerciceContentProps> = ({listOfExercices, lastSuccess
   <ul className='exercices'>
     {listOfExercices.map(
       (exercice, index)=> index < lastSuccessfulExercice ? 
-        <li className='exercice success'>{exercice}</li>: 
-        <li className='exercice not-started'>
+        <li key ={index} className='exercice success'>{exercice}</li>: 
+        <li key ={index} className='exercice not-started'>
           <Link to='../exercice'>{exercice}</Link>
           </li>
     )}
