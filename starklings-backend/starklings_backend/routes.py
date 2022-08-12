@@ -67,7 +67,7 @@ def fetch_user_info():
 #######################
 #   Exercises Routes  #
 #######################
-@app_routes.route('/exercise', methods=['POST'])
+@app_routes.route('/exercise/check', methods=['POST'])
 async def starklings_exercise_checker():
     """
     Check exercise given a body and a user
@@ -85,11 +85,11 @@ async def starklings_exercise_checker():
         res = await verify_exercise(tmp.name)
         tmp.close()
         return {
-            "result": "Exercice Succeed"
+            "result": "success"
         }
     except ExerciceFailed as error:
         print(error)
         return {
-            "result": "Exercice Failed",
+            "result": "failure",
             "error": error.message
-        }
+        }, 400
