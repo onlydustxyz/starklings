@@ -5,23 +5,19 @@
 
 
 .instructions
-    flex-grow: 2
-.code-editor
+    flex-grow: 1
+.practise-mode
     flex-grow: 1
 
+//-- FILE UPLOAD ZONE --//
+.file-upload-zone
+    border: 1px dashed var.$color-space-purple
+    border-radius: 5px
+    height: 100px
+    margin-bottom: var.$gap-s
+
 //-- CODE EDITOR THEME --//
-// canvas.minimap-decorations-layer,
-// canvas.decorationsOverviewRuler,
-//.code-editor-wrapper
-//    background: rgba(var.$color-space-blue, 0.5)
-//div.monaco-scrollable-element >
-//     .scrollbar > .slider,
-//     &>.insible.fade,
-//     &>.visible.fade
-//         background: var.$color-mid-blue
-//         transform: none
 canvas.minimap-decorations-layer, 
-//canvas.decorationsOverviewRuler, 
 .code-editor-wrapper
     background: var.$color-space-blue
     transform: none
@@ -39,18 +35,35 @@ canvas.minimap-decorations-layer,
         background: transparent
     .monaco-editor .minimap-shadow-visible
         box-shadow: none
+
 //-- UI --//
 .instructions
     margin-right: var.$gap-m
+    .subtitle
+        text-align: left
+.practise-mode
+    min-width: 50%
 .validation 
     padding: var.$gap-s
     text-align: right
 .button-run-code
     background: var.$color-light-blue
+    margin-left: var.$gap-xs
+.button-upload
+    background: var.$color-space-purple
+    margin-bottom: var.$gap-s
+.button-paste
+    background: var.$color-space-blue
+    border: var.$gap-xs
+    color: var.$color-snow
+    padding: 0 0 var.$gap-s 0
+    margin: 0
+.button-run-code,
+.button-upload,
+.button-paste
     border-radius: var.$border-radius
     font-family: var.$font-base
     font-size: var.$text-size
-    margin-left: var.$gap-xs
     padding: 15px var.$gap-m
 .icon-docs 
     position: relative

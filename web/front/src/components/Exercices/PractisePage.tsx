@@ -1,65 +1,63 @@
-import React, { FC } from 'react'
-import Editor from '@monaco-editor/react'
+import React, { FC, useState } from 'react'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { useFetchData, TDataResponse } from '../../hooks/useFetchData'
-import { registerCairoLanguageSupport } from 'monaco-language-cairo'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleInfo } from '@fortawesome/free-solid-svg-icons'
+
+
 import HeaderPage from '../views/HeaderPage'
+import { useLocation } from 'react-router-dom'
+import CodeEditor from './CodeEditor'
+import FileDrop from './FileDrop'
 
 
-interface PractisePageProps {}
+interface PractisePageProps {
+  exTitle: string;
+  code?: string;
+  instructions?: string;
+  from?: string;
+}
 
-// The editor colors can be customized through CSS or through JS
-
-monaco.editor.defineTheme('starklings', {
-	base: 'vs-dark',
-	inherit: true,
-	rules: [{
-    token: '',
-    background: '#0E0D2E'}],
-	colors: {
-		'editorCursor.foreground': '#AE00FF',
-		'editorLineNumber.foreground': '#EBDDFF',
-		'editor.selectionBackground': '#0009BC',
-    'editor.descriptionForeground': '#666'
-	}
-});
-
-//registerCairoLanguageSupport(monaco)
-monaco.editor.setTheme('starklings');
-
-
-function PractisePage() {
+const PractisePage: FC<PractisePageProps> = ({exTitle, code, instructions}) => {
   // call 
+  const { state } = useLocation();
+  const [open, setOpen] = useState(false)
+  const [upload, setUpload] = useState(false)
+
+  // EVENTS
+  const openCode = () => {
+    setOpen(!open)
+  }
+  const uploadFile = () => {
+    setUpload(!upload)
+  }
+  
+  // pass the title of the exercice to the editor
+  if(typeof(state) === 'string'){
+    exTitle = state;
+  }
   return (
     <div className='practise-page'>
-      <HeaderPage headerTitle='Practise' />
+      <HeaderPage headerTitle={exTitle} />
       <div className='section'>
       <div className='instructions'>
         <h2 className='section-header'>Instructions</h2>
-        <p className='subtitle'>Make the text pass.</p>
+        <p className='subtitle'>Paste your code in the editor or use the button to upload your Cairo file.</p>
       </div>
-      <div id='codeEditor' className='code-editor-wrapper'>
-        <Editor
-          className-='code-editor'
-          height='80vh'
-          defaultLanguage='python'
-          defaultValue='lang starknet \n
-          @storage_var func test () -> (test : felt):\n
-          end'
-          theme='vs-dark'
-          width='100%'
-       />
-       <div className='validation'>
-       <a className='icon-docs' href='https://www.cairo-lang.org/docs/how_cairo_works/index.html'>
-          <FontAwesomeIcon icon={faCircleInfo}/>
-        </a>
-        <button className='button-run-code'>Run</button>
-       </div>
-     </div>
+      <div className='practise-mode'>
+       <button className='button-upload'
+                onClick={() => {
+                  uploadFile()
+                }}>{upload? 'Drag and drop your Cairo file here': 'Upload'}</button>
+        <div className='file-upload-wrapper'>
+          {upload ? <FileDrop /> : ''}
+        </div>
+        <div className='button-paste'
+             onClick={() =>{
+              openCode()
+             }}>{open? 'Code': 'Paste your code'}</div>
+             {open? <CodeEditor title={exTitle}/> : ''}
+      </div>
     </div>
-    </div>
+  </div>
   );
  }
 

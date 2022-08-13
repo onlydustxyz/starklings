@@ -2,9 +2,8 @@ import React, { FC, useState } from 'react';
 import ExerciceContent from './ExerciceContent';
 import { useFetchData, TDataResponse } from '../../hooks/useFetchData';
 
-
 interface ExerciceCardProps {
-  name?: string,
+  exName?: string,
   exerciceTitle?: string,
   status?: string; // success, wip, not-started
 }
@@ -35,8 +34,7 @@ const ExerciceCard: FC<ExerciceCardProps> = ({exerciceTitle, status}) => {
           listEx.push(data[0])
         }
       }
-    }
-    )
+    })
   }
 
   // EVENTS
@@ -46,8 +44,6 @@ const ExerciceCard: FC<ExerciceCardProps> = ({exerciceTitle, status}) => {
   const cardOut = () => {
     setHide(hide)
   }
-
-  // TODO : fix css max-height 90px;
   return(
     <div className={hide? 'exercice-card show-content':'exercice-card'} 
          onClick={() => {setHide(hide); toggleHide()}}
