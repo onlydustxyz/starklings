@@ -6,9 +6,9 @@
 # I AM NOT DONE
 
 # TODO
-# Write this function body in a high level syntax
+# Return the solution of (x² + x - 2) / (x - 2)
 func poly(x : felt) -> (res : felt):
-    # return (x² + x - 1) / (x - 2) according to x
+    # FILL ME
     return (res=res)  # Do not change
 end
 

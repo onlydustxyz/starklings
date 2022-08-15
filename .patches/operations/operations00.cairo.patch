@@ -1,4 +1,5 @@
---- ./exercises/operations/operations00.cairo	2022-08-07 15:18:54.709680746 +0200
-+++ ./.solutions/operations00.cairo	2022-08-07 17:54:18.310955627 +0200
-@@ -11,0 +12 @@
+--- exercises/operations/operations00.cairo	2022-08-15 14:01:18.147439197 +0200
++++ ./.solutions/operations00.cairo	2022-08-15 14:02:33.348133149 +0200
+@@ -11 +11 @@
+-    # FILL ME
 +    let res = (x - 1) * (x + 2) / (x - 2)

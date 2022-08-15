@@ -10,7 +10,7 @@
 # Compute a number X which verify X + 1 < X using unsigned int
 @external
 func test_unsigned_integer():
-    let x = 0  # Change only this line to make the test pass
+    # FILL ME
     let z = x + 1
     %{ assert ids.z < ids.x, f'assert failed: {ids.z} >= {ids.x}' %}
     return ()
@@ -20,7 +20,7 @@ end
 # Compute a number Y which verify Y + 1 < Y using signed int
 @external
 func test_signed_integer():
-    const y = 0  # Change only this line to make the test pass
+    const y = 2 ** 250 + 17 * 2 ** 191
     const z = y + 1
     %{ assert ids.z < ids.y, f'assert failed: {ids.z} >= {ids.y}' %}
     return ()

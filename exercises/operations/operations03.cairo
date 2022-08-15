@@ -12,10 +12,11 @@ from starkware.cairo.common.math import assert_lt_felt
 # Set the value of x (in the hint) to verify the test
 func solve() -> (x : felt):
     tempvar x
-    %{ ids.x = 0 %}  # Change only this line to make the test pass
+    %{ ids.x = -1 %}  # Change only this line to make the test pass
     return (x=x)
 end
 
+# Do not change the test
 @external
 func test_solve{range_check_ptr}():
     let (x) = solve()

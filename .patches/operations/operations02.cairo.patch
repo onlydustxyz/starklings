@@ -1,5 +1,5 @@
---- exercises/operations/operations02.cairo	2022-08-15 13:37:46.518206010 +0200
-+++ ./.solutions/operations02.cairo	2022-08-15 13:37:37.602120670 +0200
+--- exercises/operations/operations02.cairo	2022-08-15 14:09:44.344120823 +0200
++++ ./.solutions/operations02.cairo	2022-08-15 14:09:18.319879674 +0200
 @@ -14 +14 @@
--    let x = 0  # Change only this line to make the test pass
+-    # TO FILL
 +    let x = 89  # works for all prime numbers in range [50 ; 100]
