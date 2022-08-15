@@ -17,6 +17,9 @@ course = [
         "operations",
         [
             Exercise("operations00"),
+            Exercise("operations01"),
+            Exercise("operations02"),
+            Exercise("operations03"),
         ],
     ),
     Directory(
