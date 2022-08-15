@@ -11,10 +11,11 @@ from starkware.cairo.common.math import assert_lt_felt, assert_not_zero
 # TODO
 # Find a number X which satisfy A / X > A with X in range ]0 ; 100]
 func solve(a : felt) -> (x : felt):
-    let x = 0  # Change only this line to make the test pass
+    # TO FILL
     return (x=x)
 end
 
+# Do not change the test
 @external
 func test_solve{range_check_ptr}():
     let a = 347092984475551631116800

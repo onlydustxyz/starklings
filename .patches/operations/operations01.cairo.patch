@@ -1,8 +1,5 @@
---- exercises/operations/operations01.cairo	2022-08-15 13:35:33.848931661 +0200
+--- exercises/operations/operations01.cairo	2022-08-15 14:01:50.023733263 +0200
 +++ ./.solutions/operations01.cairo	2022-08-15 13:31:21.670475341 +0200
 @@ -13 +13 @@
--    let x = 0  # Change only this line to make the test pass
+-    # FILL ME
 +    let x = 2 ** 251 + 17 * 2 ** 192
-@@ -23 +23 @@
--    const y = 0  # Change only this line to make the test pass
-+    const y = 2 ** 250 + 17 * 2 ** 191
