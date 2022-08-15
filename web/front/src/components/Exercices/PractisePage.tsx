@@ -1,8 +1,6 @@
 import React, { FC, useState } from 'react'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { useFetchData, TDataResponse } from '../../hooks/useFetchData'
-
-
 import HeaderPage from '../views/HeaderPage'
 import { useLocation } from 'react-router-dom'
 import CodeEditor from './CodeEditor'
@@ -43,7 +41,7 @@ const PractisePage: FC<PractisePageProps> = ({exTitle, code, instructions}) => {
         <p className='subtitle'>Paste your code in the editor or use the button to upload your Cairo file.</p>
       </div>
       <div className='practise-mode'>
-       <button className='button-upload'
+       <button className={upload? 'button-upload button-clicked' : 'button-upload'}
                 onClick={() => {
                   uploadFile()
                 }}>{upload? 'Drag and drop your Cairo file here': 'Upload'}</button>

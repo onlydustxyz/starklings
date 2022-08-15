@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
+import { faUpload } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
 function FileDrop() {
@@ -11,6 +13,7 @@ function FileDrop() {
   const { getRootProps, getInputProps } = useDropzone({ onDrop })
   return (
     <div className='file-upload-zone' {...getRootProps()}>
+        <FontAwesomeIcon className='upload-icon' icon={faUpload} />
       <input {...getInputProps()} />
     </div>
   )

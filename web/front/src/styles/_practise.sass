@@ -2,6 +2,8 @@
 @use '_animations.sass' as anim
 
 @include anim.opacity-increase(opacity-increase)
+@include anim.open-box(open-box)
+@include anim.text-fade-out(fade-out, var.$color-space-blue)
 
 
 .instructions
@@ -15,6 +17,15 @@
     border-radius: 5px
     height: 100px
     margin-bottom: var.$gap-s
+    text-align: center
+
+.upload-icon
+    color: var.$color-space-purple
+    font-size: 3rem
+    padding: 20px 0
+    &:hover
+        cursor: pointer
+        animation: upload-color 8s linear infinite alternate both
 
 //-- CODE EDITOR THEME --//
 canvas.minimap-decorations-layer, 
@@ -62,9 +73,12 @@ canvas.minimap-decorations-layer,
 .button-upload,
 .button-paste
     border-radius: var.$border-radius
+    cursor: pointer
     font-family: var.$font-base
     font-size: var.$text-size
     padding: 15px var.$gap-m
+.button-clicked
+    animation: open-box 0.4s cubic-bezier(0.230, 1.000, 0.320, 1.000) both, fade-out 0.2s ease-out both
 .icon-docs 
     position: relative
     &:hover:after

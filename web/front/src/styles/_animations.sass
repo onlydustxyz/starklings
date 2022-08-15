@@ -66,3 +66,19 @@
         opacity: 1
     100%
         opacity: 0.75
+
+@mixin open-box($name)
+  @keyframes #{$name}
+    0%
+        width: auto
+    100%
+        width: 100%
+    
+@mixin text-fade-out($name, $color)
+  @keyframes #{$name}
+    0%
+        color: rgba($color, 0)
+    50%
+        color: rgba($color, 0)
+    100%
+        color: rgba($color, 1)
