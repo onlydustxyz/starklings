@@ -20,7 +20,7 @@ end
 # Compute a number Y which verify Y + 1 < Y using signed int
 @external
 func test_signed_integer():
-    const y = 2 ** 250 + 17 * 2 ** 191
+    # FILL ME
     const z = y + 1
     %{ assert ids.z < ids.y, f'assert failed: {ids.z} >= {ids.y}' %}
     return ()
