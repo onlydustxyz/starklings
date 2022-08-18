@@ -1,14 +1,14 @@
 @use '_var.sass' as var
 
 // MIXIN ANIMATIONS
-@mixin animation-bg($name)
+@mixin bg-color($name)
   @keyframes #{$name}
     0%
         background: rgba(var.$card-background-color, 0.5)
     100%
         background: rgba(var.$card-background-color, 0.9)
 
-@mixin animation-color-text($name, $color1, $color2)
+@mixin color-text($name, $color1, $color2)
   @keyframes #{$name}
     0%
         color: rgba($color1, 1)
@@ -19,7 +19,7 @@
     100%
         color: rgba($color1, 1)
 
-@mixin animation-text-glow($name, $color)
+@mixin text-glow($name, $color)
   @keyframes #{$name}
     0%
         text-shadow: 0 0 0 rgba($color, 0)
@@ -28,7 +28,7 @@
     100%
         text-shadow: 0 0 18px rgba($color, 0)
 
-@mixin animation-box-glow($name, $color)
+@mixin box-glow($name, $color)
   @keyframes #{$name}
     0%
         box-shadow: 0 0 15px rgba($color, 0)
@@ -45,7 +45,7 @@
     100%
         box-shadow: 0 0 10px rgba($color, 0)
 
-@mixin animation-color-fill($name, $color1, $color2)
+@mixin color-fill($name, $color1, $color2)
   @keyframes #{$name}
     0%
         fill: rgba($color1, 1)

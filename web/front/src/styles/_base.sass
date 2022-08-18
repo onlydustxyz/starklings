@@ -1,14 +1,14 @@
 @use '_var.sass' as var
 @use '_animations.sass' as anim
 
-@include anim.animation-text-glow(loglow, var.$color-snow)
-@include anim.animation-box-glow(primaryglow, var.$button-primary-color)
-@include anim.animation-box-glow(secondaryglow, var.$button-secondary-color)
-@include anim.animation-color-text(footerlinks, var.$color-nickel, var.$color-space-purple)
-@include anim.animation-text-glow(linkglow, var.$color-space-purple)
-@include anim.animation-text-glow(buttonprimaryglow, var.$color-snow)
-@include anim.animation-text-glow(buttonsecondaryglow, var.$color-mid-blue)
-@include anim.animation-color-text(iconcolor, var.$color-mid-blue, var.$color-space-purple)
+@include anim.text-glow(loglow, var.$color-snow)
+@include anim.box-glow(primaryglow, var.$button-primary-color)
+@include anim.box-glow(secondaryglow, var.$button-secondary-color)
+@include anim.color-text(footerlinks, var.$color-nickel, var.$color-space-purple)
+@include anim.text-glow(linkglow, var.$color-space-purple)
+@include anim.text-glow(buttonprimaryglow, var.$color-snow)
+@include anim.text-glow(buttonsecondaryglow, var.$color-mid-blue)
+@include anim.color-text(iconcolor, var.$color-mid-blue, var.$color-space-purple)
 
 //-- RESET + BASE --//
 html 
