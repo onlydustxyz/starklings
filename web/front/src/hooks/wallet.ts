@@ -12,7 +12,7 @@ const getChainId = (providerUrl: string) => {
 
 export const getTypedMessage = (message: string, providerBaseUrl: string) => ({
   domain: {
-    name: 'StarkBoard',
+    name: 'Starklings',
     chainId: getChainId(providerBaseUrl),
     version: '0.0.1'
   },
