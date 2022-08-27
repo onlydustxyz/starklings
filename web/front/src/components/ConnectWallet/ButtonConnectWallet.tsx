@@ -29,4 +29,5 @@ const ButtonConnectWallet: FC<ButtonConnectWalletProps> = ({buttonClass, buttonT
     </button>
   );
 }
+
 export default ButtonConnectWallet;
