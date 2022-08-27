@@ -1,0 +1,105 @@
+@use '_var.sass' as var
+@use '_animations.sass' as anim
+
+@include anim.opacity-increase(opacity-increase)
+@include anim.open-box(open-box)
+@include anim.text-fade-out(fade-out, var.$color-space-blue)
+
+
+.instructions
+    flex-grow: 1
+.practise-mode
+    flex-grow: 1
+
+//-- FILE UPLOAD ZONE --//
+.file-upload-zone
+    border: 1px dashed var.$color-space-purple
+    border-radius: 5px
+    height: 100px
+    margin-bottom: var.$gap-s
+    text-align: center
+
+.upload-icon
+    color: var.$color-space-purple
+    font-size: 3rem
+    padding: 20px 0
+    &:hover
+        cursor: pointer
+        animation: upload-color 8s linear infinite alternate both
+
+//-- CODE EDITOR THEME --//
+canvas.minimap-decorations-layer, 
+.code-editor-wrapper
+    background: var.$color-space-blue
+    transform: none
+    &:hover
+        background: var.$color-space-blue
+.code-editor-wrapper
+    width: 100%
+    .code-editor
+    .mtk7
+        color: var.$color-snow
+    .monaco-editor,
+    .monaco-editor-background,
+    .monaco-editor .inputarea.ime-input,
+    .monaco-editor .margin
+        background: transparent
+    .monaco-editor .minimap-shadow-visible
+        box-shadow: none
+
+//-- UI --//
+.instructions
+    margin-right: var.$gap-m
+    .subtitle
+        text-align: left
+.practise-mode
+    min-width: 50%
+.validation 
+    padding: var.$gap-s
+    text-align: right
+.button-run-code
+    background: var.$color-light-blue
+    margin-left: var.$gap-xs
+.button-upload
+    background: var.$color-space-purple
+    margin-bottom: var.$gap-s
+.button-paste
+    background: var.$color-space-blue
+    border: var.$gap-xs
+    color: var.$color-snow
+    padding: 0 0 var.$gap-s 0
+    margin: 0
+.button-run-code,
+.button-upload,
+.button-paste
+    border-radius: var.$border-radius
+    cursor: pointer
+    font-family: var.$font-base
+    font-size: var.$text-size
+    padding: 15px var.$gap-m
+.button-clicked
+    animation: open-box 0.4s cubic-bezier(0.230, 1.000, 0.320, 1.000) both, fade-out 0.2s ease-out both
+.icon-docs 
+    position: relative
+    &:hover:after
+        background: rgba(var.$color-black, 0.6)
+        border-radius: 5px
+        content: 'Go to documentation'
+        font-size: var.$text-s
+        height: var.$gap-s
+        left: -125px
+        line-height: var.$gap-s
+        position: absolute
+        text-align: center
+        top: -20px
+        width: 250px
+    svg
+        color: var.$color-space-purple
+        height: var.$icon-size
+        opacity: 0.5
+        margin-right: var.$gap-s
+        vertical-align: middle
+        &:hover
+            animation: opacity-increase 1s linear alternate both
+            opacity: 1
+        

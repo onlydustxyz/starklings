@@ -1,0 +1,67 @@
+@use '_var.sass' as var
+
+// Layout file defines the positioning of the base elements
+
+//-- NAVBAR --//
+.navbar
+    align-items: center
+    display: flex
+    flex:
+        wrap: nowrap
+    margin-bottom: var.$section-gap
+
+.logo 
+    flex-grow: 2
+    .site-title,
+    .nav-logo
+        display: inline-block
+        vertical-align: middle
+.nav-logo 
+    margin-right: var.$gap-s
+
+//-- PAGE --/
+.header
+    margin-bottom: var.$section-gap
+
+.section
+    align-items: flex-start
+    display: flex
+    .illustration
+        flex-grow: 1
+        img
+            max-width: 650px
+    .explanations
+        flex-grow: 2
+    .button-boxed
+        float: right
+        font-size: var.$button-text-size * 0.5
+        margin-top: var.$gap-m
+        max-width: 350px
+
+
+.separator-button
+    margin: var.$gap-l 0 var.$gap-l 0
+    text-align: center
+
+
+//-- FOOTER --//
+.footer
+    margin-top: var.$gap-xl * 1.25
+    text-align: right
+.social-network-links
+    padding-right: var.$gap-xs // align svg margin
+    .footer-icon:first-child
+        margin-right: var.$gap-xs
+    .footer-icon:last-child
+        margin-left: var.$gap-xs
+.footer-icon
+    display: inline-block
+    svg 
+        height: var.$icon-size
+.footer-links 
+    padding-right: var.$gap-xs // align svg margin
+    .link:first-child
+        margin-right: var.$gap-xs
+.footer-links .link
+    display: inline-block
+    opacity: 70%

@@ -1,0 +1,84 @@
+@use '_var.sass' as var
+
+// MIXIN ANIMATIONS
+@mixin bg-color($name)
+  @keyframes #{$name}
+    0%
+        background: rgba(var.$card-background-color, 0.5)
+    100%
+        background: rgba(var.$card-background-color, 0.9)
+
+@mixin color-text($name, $color1, $color2)
+  @keyframes #{$name}
+    0%
+        color: rgba($color1, 1)
+    25%
+        color: rgba($color2, 1)
+    50%
+        color: rgba($color2, 1)
+    100%
+        color: rgba($color1, 1)
+
+@mixin text-glow($name, $color)
+  @keyframes #{$name}
+    0%
+        text-shadow: 0 0 0 rgba($color, 0)
+    50%
+        text-shadow: 2px -2px 10px rgba($color, 0.8)
+    100%
+        text-shadow: 0 0 18px rgba($color, 0)
+
+@mixin box-glow($name, $color)
+  @keyframes #{$name}
+    0%
+        box-shadow: 0 0 15px rgba($color, 0)
+    20%
+        box-shadow: 0 0 20px 0 rgba($color, 0.5)
+    35%
+        box-shadow: 0 0 25px 0 rgba($color, 0.8)
+    50%
+        box-shadow: 0 0 30px 0 rgba($color, 1)
+    75%
+        box-shadow: 0 0 25px 0 rgba($color, 0.8)
+    85%
+        box-shadow: 0 0 20px 0 rgba($color, 0.5)
+    100%
+        box-shadow: 0 0 10px rgba($color, 0)
+
+@mixin color-fill($name, $color1, $color2)
+  @keyframes #{$name}
+    0%
+        fill: rgba($color1, 1)
+    25%
+        fill: rgba($color2, 0.5)
+    50%
+        fill: rgba($color2, 1)
+    100%
+        fill: rgba($color2, 0.5)
+
+@mixin opacity-increase($name)
+  @keyframes #{$name}
+    0%
+        opacity: 0.5
+    25%
+        opacity: 0.75
+    50%
+        opacity: 1
+    100%
+        opacity: 0.75
+
+@mixin open-box($name)
+  @keyframes #{$name}
+    0%
+        width: auto
+    100%
+        width: 100%
+    
+@mixin text-fade-out($name, $color)
+  @keyframes #{$name}
+    0%
+        color: rgba($color, 0)
+    50%
+        color: rgba($color, 0)
+    100%
+        color: rgba($color, 1)

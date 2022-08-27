@@ -1,0 +1,110 @@
+@use '_var.sass' as var
+@use '_animations.sass' as anim
+
+@include anim.text-glow(loglow, var.$color-snow)
+@include anim.box-glow(primaryglow, var.$button-primary-color)
+@include anim.box-glow(secondaryglow, var.$button-secondary-color)
+@include anim.color-text(footerlinks, var.$color-nickel, var.$color-space-purple)
+@include anim.text-glow(linkglow, var.$color-space-purple)
+@include anim.text-glow(buttonprimaryglow, var.$color-snow)
+@include anim.text-glow(buttonsecondaryglow, var.$color-mid-blue)
+@include anim.color-text(iconcolor, var.$color-mid-blue, var.$color-space-purple)
+
+//-- RESET + BASE --//
+html 
+  background: url('../assets/magic-verse.png') no-repeat center center fixed
+  background-size: cover
+  -webkit-background-size: cover
+  -moz-background-size: cover
+  -o-background-size: cover
+  font-size: 16px
+html, body, div, p, ul, li, h2
+  background-size: 100%
+  margin: 0
+  padding: 0
+  font-family: var.$font-base
+  list-style: none
+
+a 
+    color: var.$color-snow
+    text-decoration: none
+    &:visited
+        color: inherit
+button
+    border: none
+
+.App
+  color: var.$text-color
+  padding: var.$gap-m var.$gap-m *2 var.$gap-s var.$gap-m * 2
+
+
+//-- NAV --//
+.site-title
+    color: var.$color-snow
+    font-family: var.$font-logo
+    font-size: var.$logo-text-size
+    text-transform: uppercase
+    &:hover
+        animation: loglow 3s 10 backwards
+
+.nav-logo
+    width: 100px
+
+//-- HEADINGS --//
+h1
+    font-family: var.$font-title
+    font-size: var.$h1-size
+
+.subtitle
+    font-size: var.$subtitle-size
+    font-family: var.$font-subtitle
+
+//-- HEADERS --//
+.header
+    text-align: center
+    h1
+        text-transform: capitalize
+
+
+// -- PAGE --//
+.section
+    font-size: var.$text-size
+    text-align: justify
+    h2
+        color: var.$h2-color
+        font-family: var.$font-title
+        font-size: var.$h2-size
+        margin-bottom: var.$gap-s
+        text-transform: uppercase
+
+    //-- FOOTER --//
+.link 
+    color: var.$footer-link-color
+    font-size: var.$text-s
+    text-transform: uppercase
+    a:hover
+        animation: footerlinks 8s linear infinite alternate both, linkglow 8s 10 backwards
+.footer-icon a svg
+    color: var.$color-mid-blue
+    &:hover
+        animation: iconcolor 5s linear infinite alternate both
+
+// Buttons
+.button-primary,
+.button-secondary
+    border-radius: 5px
+    font-family: var.$font-button
+    font-size: var.$button-text-size
+    padding: 15px 40px
+    text-transform: uppercase
+.button-primary
+    background-color: var.$button-primary-color
+    color: var.$button-primary-text-color
+    &:hover
+        animation: primaryglow 3s cubic-bezier(0.250, 0.460, 0.450, 0.940) infinite both, buttonprimaryglow 6s infinite backwards
+.button-secondary
+    background-color: var.$button-secondary-color
+    color: var.$button-secondary-text-color
+    font-size: var.$text-s
+    &:hover
+        animation: secondaryglow 3s cubic-bezier(0.250, 0.460, 0.450, 0.940) infinite both, buttonsecondaryglow 6s infinite backwards
