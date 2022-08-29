@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useConnectors, useStarknet } from '@starknet-react/core'
+import { useStarknet } from '@starknet-react/core'
 import ConnectWalletModal from './ConnectWalletModal'
 
 

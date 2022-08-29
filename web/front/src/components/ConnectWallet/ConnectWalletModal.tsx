@@ -1,6 +1,6 @@
-import React, { FC, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useConnectors, useStarknet } from '@starknet-react/core'
+import React, { FC, useEffect, useState } from 'react';
+import { useConnectors, useStarknet, useSignTypedData } from '@starknet-react/core'
+import { getTypedMessage } from '../../hooks/wallet'
 
 
 interface Props {
@@ -12,25 +12,43 @@ interface Props {
 const ConnectWalletModal: FC<Props> = ({ open, close, buttonClass }: Props) => {
     const { connect, disconnect, connectors } = useConnectors()
     const { account } = useStarknet();
-    const isConnected = (account !== undefined && account !== null && account.length > 0)
-  
+    const isWalletConnected = (account !== undefined && account !== null && account.length > 0)
+    const [signature, setSignature] = useState(null)
+
+    const { data, error, signTypedData, loading } = useSignTypedData(getTypedMessage(account, 'alpha4.starknet.io'))
+
     const handleConnect = ((connector: any) => {
-      if (isConnected) {
+      if (isWalletConnected) {
         disconnect()
         close()
       } else {
         connect(connector)
-        close()
       }
     })
-  
+
+    const signStarklings = () => {
+        //Implements Connexion logic : Check API if user exists, else, create account with signature
+        signTypedData()
+    }
+
+    useEffect(() => {
+        if (data && ~loading) {
+            close()
+        }
+    }, [loading, data, close])
+
     return (
         <div className="wallet-modal" style={{ display: open ? 'block' : 'none' }}>
             <div className="wallet-modal-content">
-                {isConnected ?
+                {isWalletConnected ?
+                    <>
+                    <button onClick={signStarklings} className={buttonClass}>
+                        {'Sign in Starklings'}
+                    </button>
                     <button onClick={() => handleConnect(null)} className={buttonClass}>
                         {'Disconnect'}
                     </button>
+                    </>
                 : connectors.map((connector) =>
                     connector.available() &&
                     (

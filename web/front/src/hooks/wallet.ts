@@ -1,5 +1,5 @@
-import { AccountInterface } from 'starknet'
-import { getMessageHash } from 'starknet/dist/utils/typedData'
+import { TypedData } from 'starknet/dist/utils/typedData'
+
 
 const getChainId = (providerUrl: string) => {
   if (providerUrl.includes('alpha-mainnet.starknet.io')) {
@@ -10,29 +10,24 @@ const getChainId = (providerUrl: string) => {
   return 'localhost'
 }
 
-export const getTypedMessage = (message: string, providerBaseUrl: string) => ({
+export const getTypedMessage = (wallet: string | undefined, providerBaseUrl: string): TypedData => ({
   domain: {
     name: 'Starklings',
     chainId: getChainId(providerBaseUrl),
-    version: '0.0.1'
+    version: '1'
   },
   types: {
-    StarkNetDomain: [
-      { name: 'name', type: 'felt' },
-      { name: 'chainId', type: 'felt' },
+    Starklings: [
+      { name: 'message', type: 'felt' },
+      { name: 'wallet', type: 'felt' },
       { name: 'version', type: 'felt' }
     ],
     Message: [{ name: 'message', type: 'felt' }]
   },
-  primaryType: 'Message',
+  primaryType: 'Starklings',
   message: {
-    message
+    message: 'Ok',
+    wallet: wallet,
+    version: 1
   }
 })
-
-export async function signMessage (account: AccountInterface, message: string, providerBaseUrl: string) {
-  const typedMessage = getTypedMessage(message, providerBaseUrl)
-  const hash = getMessageHash(typedMessage, account.address)
-  const signature = await account.signMessage(typedMessage)
-  return { hash, signature }
-}
