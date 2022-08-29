@@ -1,8 +1,7 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux'
-import { connectWallet, WalletState } from '../../store/reducers/wallet'
-import { RootState, useAppDispatch } from '../../store/store'
+import { useConnectors, useStarknet } from '@starknet-react/core'
+import ConnectWalletModal from './ConnectWalletModal'
 
 
 interface ButtonConnectWalletProps {
@@ -12,10 +11,11 @@ interface ButtonConnectWalletProps {
 }
 
 const ButtonConnectWallet: FC<ButtonConnectWalletProps> = ({buttonClass, buttonText}) => {
-  const { status, account } = useSelector<RootState, WalletState>(state => state.wallet)
-  const isConnected = status === 'connected'
-  const dispatch = useAppDispatch()
+  const { account } = useStarknet();
+  const isConnected = (account !== undefined && account !== null && account.length > 0)
   const navigate = useNavigate();
+
+  const [showModal, toggleModal] = useState(false)
 
   useEffect(() => {
     if (isConnected) {
@@ -24,9 +24,12 @@ const ButtonConnectWallet: FC<ButtonConnectWalletProps> = ({buttonClass, buttonT
   }, [isConnected, navigate])
 
   return (
-    <button onClick={() => dispatch(connectWallet())} className={buttonClass}>
-      {isConnected ?  `${account?.address.substring(0, 7)}...` : buttonText}
-    </button>
+    <>
+      <button onClick={() => toggleModal(true)} className={buttonClass}>
+            {isConnected ?  `${account.substring(0, 7)}...` : buttonText}
+      </button>
+      <ConnectWalletModal open={showModal} close={() => toggleModal(false)} buttonClass={buttonClass}/>
+    </>
   );
 }
 

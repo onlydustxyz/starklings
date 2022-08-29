@@ -1,13 +1,15 @@
 
+import React, { useEffect } from 'react';
 import { Navigate, Outlet } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { WalletState } from '../store/reducers/wallet'
-import { RootState } from '../store/store'
+import { useStarknet } from '@starknet-react/core'
 
 
 export const PrivateRoutes = () => {
-    const { status } = useSelector<RootState, WalletState>(state => state.wallet)
-    const isConnected = status === 'connected'
+    const { account } = useStarknet();
+    const isConnected = (account !== undefined && account !== null && account.length > 0)
+
+    useEffect(() => {
+    }, [isConnected])
 
     return (
         isConnected ? <Outlet/> : <Navigate to='/'/>
