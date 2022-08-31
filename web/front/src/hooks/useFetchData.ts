@@ -9,14 +9,11 @@ export type TDataResponse = {
 }
 
 export const useFetchData = (url: string): TDataResponse => {
-    console.log('use fetch data');
-    console.log(url)
     const [status, setStatus] = useState<Number>(0)
     const [statusText, setStatusText] = useState<String>('')
     const [data, setData] = useState<any>()
     const [error, setError] = useState<any>()
     const [loading, setLoading] = useState(false)
-    console.log('after state')
 /* 
     const getData = async () => {
         setLoading(true)
@@ -60,6 +57,4 @@ export const useFetchData = (url: string): TDataResponse => {
         };
       }, []); 
       return { status, statusText, data, error, loading }
-    
-      
 } 
