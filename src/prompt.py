@@ -1,35 +1,57 @@
-from colorama import init, Fore, Style
-
-init(autoreset=True)
+from rich import print as rich_print
+from src.console import console
 
 
 def on_watch_start(exercise_path):
-    print(f"{Style.BRIGHT}🤖🤖🤖 Watch mode started.")
-    print(f"You can start to work on exercise {exercise_path}.\n")
+    rich_print("[bold]:robot::robot::robot: Watch mode started.[/bold]")
+    rich_print(f"You can start to work on exercise {exercise_path}.\n")
 
 
 def on_single_exercise_success(exercise_path):
-    print(f"{Style.BRIGHT}{Fore.GREEN}🥳🥳🥳 Exercise {exercise_path} completed!")
+    console.clear()
+    rich_print(
+        f"[bold green]:partying_face::partying_face::partying_face: Exercise {exercise_path} completed![/bold green]"
+    )
 
 
 def on_watch_exercise_success():
-    print("You can keep working on this exercise,")
-    print("or move on to the next one by removing the `I AM NOT DONE` comment.\n")
+    rich_print("You can keep working on this exercise,")
+    rich_print("or move on to the next one by removing the `I AM NOT DONE` comment.\n")
+
+
+def on_watch_no_next_exercise():
+    rich_print("Congratulations! You have completed all the exercises!")
 
 
 def on_exercise_failure(exercise_path, error_message):
-    print(f"{Fore.RED}🚧 Exercise {exercise_path} failed. Please try again.")
-    print(error_message)
+    console.clear()
+    rich_print(
+        f"[red]:construction: Exercise {exercise_path} failed. Please try again.[/red]"
+    )
+    rich_print(error_message)
 
 
 def on_exercise_check(exercise_path):
-    print(f"{Style.DIM}👀 Checking exercise {exercise_path}...")
+    console.clear()
+    rich_print(f"[gray]:eyes: Checking exercise {exercise_path}...[/gray]")
 
 
 def on_file_not_found():
-    print(
-        f"{Fore.RED}🧐 Creepy crap it looks that you are not running this script from the root directory of the repository."
+    console.clear()
+    rich_print(
+        "[red]:face_with_monocle: Creepy crap it looks that you are not running this script from the root directory of the repository.[/red]"
     )
-    print(
-        f"{Fore.RED}Please make sure you are running the CLI from the cloned Starklings repository."
+    rich_print(
+        "[red]Please make sure you are running the CLI from the cloned Starklings repository.[/red]"
     )
+
+
+def on_user_verification(verification_uri: str, verification_code: str):
+    console.clear()
+    rich_print(
+        f"Please visit {verification_uri} to login and enter the following code: [bold]{verification_code}[/bold]"
+    )
+
+
+def waiting_for_user_login():
+    return console.status("Waiting for user login...")

@@ -25,7 +25,6 @@ root_parser = ArgumentParser()
 root_parser.add_argument(
     "--version",
     "-V",
-    default=False,
     help="Show version-related data",
     action="store_true",
 )
@@ -38,21 +37,33 @@ root_parser.add_argument(
     type=lambda x: is_valid_file(root_parser, x),
 )
 
-
 root_parser.add_argument(
     "--watch",
     "-w",
-    default=False,
     help="Watch edited files and verify them",
     action="store_true",
 )
 
 root_parser.add_argument(
-    "-s",
     "--solution",
+    "-s",
     metavar="relative_path_to_exercise",
     help="Provide a solution for an exercise",
     type=lambda x: is_valid_file(root_parser, x),
+)
+
+root_parser.add_argument(
+    "--display-course",
+    "-d",
+    action="store_true",
+    help="Display the course content",
+)
+
+root_parser.add_argument(
+    "--login",
+    "-l",
+    help="Login with Github",
+    action="store_true",
 )
 
 try:

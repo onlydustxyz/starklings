@@ -44,7 +44,10 @@ class Runner:
 
     def on_file_changed(self, _):
         next_exercise_path = self._exercise_seeker.get_next_undone()
-        asyncio.run(single_exercise_check(next_exercise_path, True))
+        if next_exercise_path is not None:
+            asyncio.run(single_exercise_check(next_exercise_path, True))
+        else:
+            prompt.on_watch_no_next_exercise()
 
     def watch(self):
         try:

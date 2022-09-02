@@ -1,0 +1,44 @@
+--- a/exercises/builtins/bitwise.cairo	2022-06-15 15:00:45.028637685 +0200
++++ b/exercises/builtins/bitwise.cairo	2022-06-15 15:00:24.931890268 +0200
+@@ -22 +22,3 @@
+-    # FILL ME
++    let (pow2n) = pow(2, n)
++    let (and_val) = bitwise_and(value, pow2n)
++    let (res) = is_not_zero(and_val)
+@@ -29 +31,2 @@
+-    # FILL ME
++    let (pow2n) = pow(2, n)
++    let (res) = bitwise_or(value, pow2n)
+@@ -36 +39,2 @@
+-    # FILL ME
++    let (pow2n) = pow(2, n)
++    let (res) = bitwise_xor(value, pow2n)
+@@ -55 +59,2 @@
+-    # Assert op is correct
++    # Product can only be zero if op in ['get', 'set', 'toggle']
++    assert 0 = (op - 'get') * (op - 'set') * (op - 'toggle')
+@@ -58 +64,2 @@
+-        # Assert n is within bounds
++        assert_nn(n)
++        assert_le(n, 250)
+@@ -61,2 +68,18 @@
+-    # Compute the operation
+-    # Don't forget to advance bitwise_ptr
++    let (pow2n) = pow(2, n)
++    assert bitwise_ptr.x = value
++    assert bitwise_ptr.y = pow2n
++
++    local res
++    if op == 'get':
++        let (tmp) = is_not_zero(bitwise_ptr.x_and_y)
++        assert res = tmp
++    else:
++        if op == 'set':
++            assert res = bitwise_ptr.x_or_y
++        else:
++            # op == 'toggle'
++            assert res = bitwise_ptr.x_xor_y
++        end
++    end
++
++    let bitwise_ptr = bitwise_ptr + BitwiseBuiltin.SIZE

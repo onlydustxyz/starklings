@@ -12,3 +12,4 @@ build
 dist
 
 .solutions
+starklings.db

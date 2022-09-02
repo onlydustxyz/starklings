@@ -1,48 +1,46 @@
 %lang starknet
-from starkware.cairo.common.math_cmp import is_le
 
 # I AM NOT DONE
 
+# Cairo memory is immutable.
+# Once a memory cell has been assigned, its value CANNOT be changed.
+# The program will crash if someone tries to assign a new, different, value to an already initialized memory cell.
+# However, trying to assign a memory cell twice, or more, **with the same value** won't cause any harm.
+# This property can be used to assert the value of a cell.
+
 # TODO
-# Rewrite those functions with a high level syntax
-@external
-func sum_array(array_len : felt, array : felt*) -> (sum : felt):
-    # [ap] = [fp - 4]; ap++
-    # [ap] = [fp - 3]; ap++
-    # [ap] = 0; ap++
-    # call rec_sum_array
-    # ret
-end
+# Rewrite this function in a high level syntax, using tempvar and assert
+func crash():
+    # [ap] = 42; ap++
+    # [ap - 1] = 42
+    # [ap - 1] = 21
 
-func rec_sum_array(array_len : felt, array : felt*, sum : felt) -> (sum : felt):
-    # jmp continue if [fp - 5] != 0
-
-    # stop:
-    # [ap] = [fp - 3]; ap++
-    # jmp done
-
-    # continue:
-    # [ap] = [[fp - 4]]; ap++
-    # [ap] = [fp - 5] - 1; ap++
-    # [ap] = [fp - 4] + 1; ap++
-    # [ap] = [ap - 3] + [fp - 3]; ap++
-    # call rec_sum_array
-
-    # done:
-    # ret
+    ret
 end
 
 # TODO
-# Rewrite this function with a low level syntax
-# It's possible to do it with only registers, labels and conditional jump. No reference or localvar
-@external
-func max{range_check_ptr}(a : felt, b : felt) -> (max : felt):
-    # let (res) = is_le(a, b)
-    # if res == 1:
-    #     return (b)
-    # else:
-    #     return (a)
-    # end
+# Rewrite this funtion in a low level syntax
+func assert_42(number : felt):
+    # assert number = 42
+
+    return ()
+end
+
+# TODO
+# Write this function body so:
+# if the memory cell pointed by `p_number` is not initialized, set it to 42
+# else, if the value is initialized and different from 42, crash
+# else, do nothing and return
+func assert_pointer_42(p_number : felt*):
+    return ()
+end
+
+# TODO
+# Write this function body so:
+# if the memory cell pointed by `p_number` is set to 42, do nothing and return
+# else crash
+func assert_pointer_42_no_set(p_number : felt*):
+    return ()
 end
 
 #########
@@ -52,30 +50,82 @@ end
 from starkware.cairo.common.alloc import alloc
 
 @external
-func test_max{range_check_ptr}():
-    let (m) = max(21, 42)
-    assert m = 42
-    let (m) = max(42, 21)
-    assert m = 42
+func test_crash():
+    %{ expect_revert() %}
+    crash()
+
     return ()
 end
 
 @external
-func test_sum():
-    let (array) = alloc()
-    assert array[0] = 1
-    assert array[1] = 2
-    assert array[2] = 3
-    assert array[3] = 4
-    assert array[4] = 5
-    assert array[5] = 6
-    assert array[6] = 7
-    assert array[7] = 8
-    assert array[8] = 9
-    assert array[9] = 10
+func test_assert_42():
+    assert_42(42)
 
-    let (s) = sum_array(10, array)
-    assert s = 55
+    %{ expect_revert() %}
+    assert_42(21)
+
+    return ()
+end
+
+@external
+func test_assert_pointer_42_initialized():
+    let (mem_zone : felt*) = alloc()
+    assert mem_zone[0] = 42
+    assert mem_zone[1] = 21
+
+    assert_pointer_42(mem_zone)
+
+    %{ expect_revert() %}
+    assert_pointer_42(mem_zone + 1)
+
+    return ()
+end
+
+@external
+func test_assert_pointer_42_not_initialized_ok():
+    let (mem_zone : felt*) = alloc()
+    assert mem_zone[0] = 42
+    assert_pointer_42(mem_zone)
+
+    assert_pointer_42(mem_zone + 1)
+    assert mem_zone[1] = 42
+
+    return ()
+end
+
+@external
+func test_assert_pointer_42_not_initialized_revert():
+    let (mem_zone : felt*) = alloc()
+    assert mem_zone[0] = 42
+    assert_pointer_42(mem_zone)
+
+    assert_pointer_42(mem_zone + 1)
+    %{ expect_revert() %}
+    assert mem_zone[1] = 21
+
+    return ()
+end
+
+@external
+func test_assert_pointer_42_no_set():
+    let (mem_zone : felt*) = alloc()
+    assert mem_zone[0] = 42
+    assert mem_zone[1] = 21
+
+    assert_pointer_42_no_set(mem_zone)
+
+    %{ expect_revert() %}
+    assert_pointer_42_no_set(mem_zone + 1)
+
+    return ()
+end
+
+@external
+func test_assert_pointer_42_no_set_crash():
+    let (mem_zone : felt*) = alloc()
+
+    %{ expect_revert() %}
+    assert_pointer_42_no_set(mem_zone)
 
     return ()
 end

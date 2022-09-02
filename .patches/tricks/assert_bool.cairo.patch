@@ -9,7 +9,7 @@
 +    # assert 1 = x * y # works too
 @@ -20 +21 @@
 -    # FILL ME
-+    assert 0 = x * y
++    assert 0 = x + y
 @@ -25 +26 @@
 -    # FILL ME
 +    assert 1 = x + y

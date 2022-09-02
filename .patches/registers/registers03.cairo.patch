@@ -1,0 +1,78 @@
+--- exercises/registers/registers03.cairo	2022-05-18 12:53:44.000000000 -0400
++++ .tmp_solution/registers03.cairo	2022-05-18 11:40:22.000000000 -0400
+@@ -3,0 +4 @@
++
+@@ -9,6 +10,2 @@
+-func sum_array(array_len : felt, array : felt*) -> (sum : felt):
+-    # [ap] = [fp - 4]; ap++
+-    # [ap] = [fp - 3]; ap++
+-    # [ap] = 0; ap++
+-    # call rec_sum_array
+-    # ret
++func sum_array(array_len: felt, array: felt*) -> (sum: felt):
++    return rec_sum_array(array_len, array, 0)
+@@ -17,16 +14,6 @@
+-func rec_sum_array(array_len : felt, array : felt*, sum : felt) -> (sum : felt):
+-    # jmp continue if [fp - 5] != 0
+-
+-    # stop:
+-    # [ap] = [fp - 3]; ap++
+-    # jmp done
+-
+-    # continue:
+-    # [ap] = [[fp - 4]]; ap++
+-    # [ap] = [fp - 5] - 1; ap++
+-    # [ap] = [fp - 4] + 1; ap++
+-    # [ap] = [ap - 3] + [fp - 3]; ap++
+-    # call rec_sum_array
+-
+-    # done:
+-    # ret
++func rec_sum_array(array_len: felt, array: felt*, sum: felt) -> (sum: felt):
++    if array_len == 0:
++        return (sum)
++    end
++    
++    return rec_sum_array(array_len - 1, array + 1, sum + array[0])
+@@ -39,7 +26,31 @@
+-func max{range_check_ptr}(a : felt, b : felt) -> (max : felt):
+-    # let (res) = is_le(a, b)
+-    # if res == 1:
+-    #     return (b)
+-    # else:
+-    #     return (a)
+-    # end
++func max{range_check_ptr}(a: felt, b: felt) -> (max: felt):
++    # Push arguments to the stack
++    [ap] = [fp - 5]; ap++ # range_check_ptr
++    [ap] = [fp - 4]; ap++ # a
++    [ap] = [fp - 3]; ap++ # b
++    
++    # This call will return two values
++    # 1) the updated range_check_ptr
++    # 2) 0 or 1 depending on which of a and b is greater
++    call is_le
++    
++    # Push return values to the stack
++    # There is two of them to push: range_check_ptr and max
++
++    # Push the first one, the updated range_check_ptr, onto the stack
++    [ap] = [ap - 2]; ap++
++
++    # Conditional jump
++    # The following blocks are an assembly level equivalent of the if/else pattern
++    jmp b_is_more if [ap - 2] !=0 # here [ap-2] is the second value returned by is_le, our boolean
++    
++    # Push either a or b to the stack 
++    a_is_more:
++    [ap] = [fp - 4]; ap++
++    jmp done
++    
++    b_is_more:
++    [ap] = [fp -3]; ap++
++    
++    done:
++    ret
+@@ -79 +90 @@
+-
++    
