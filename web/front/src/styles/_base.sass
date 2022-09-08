@@ -11,13 +11,13 @@
 @include anim.color-text(iconcolor, var.$color-mid-blue, var.$color-space-purple)
 
 //-- RESET + BASE --//
-html 
-  background: url('../assets/magic-verse.png') no-repeat center center fixed
-  background-size: cover
-  -webkit-background-size: cover
-  -moz-background-size: cover
-  -o-background-size: cover
-  font-size: 16px
+html, .background
+    background: url('../assets/magic-verse.png') no-repeat center center fixed
+    background-size: cover
+    font-size: 16px
+    -webkit-background-size: cover
+    -moz-background-size: cover
+    -o-background-size: cover
 html, body, div, p, ul, li, h2
   background-size: 100%
   margin: 0
@@ -32,11 +32,9 @@ a
         color: inherit
 button
     border: none
-
 .App
-  color: var.$text-color
-  padding: var.$gap-m var.$gap-m *2 var.$gap-s var.$gap-m * 2
-
+    color: var.$text-color
+    padding: var.$gap-m var.$gap-m *2 var.$gap-s var.$gap-m * 2
 
 //-- NAV --//
 .site-title
@@ -46,7 +44,6 @@ button
     text-transform: uppercase
     &:hover
         animation: loglow 3s 10 backwards
-
 .nav-logo
     width: 100px
 
@@ -54,7 +51,6 @@ button
 h1
     font-family: var.$font-title
     font-size: var.$h1-size
-
 .subtitle
     font-size: var.$subtitle-size
     font-family: var.$font-subtitle
@@ -64,7 +60,6 @@ h1
     text-align: center
     h1
         text-transform: capitalize
-
 
 // -- PAGE --//
 .section
@@ -77,7 +72,7 @@ h1
         margin-bottom: var.$gap-s
         text-transform: uppercase
 
-    //-- FOOTER --//
+//-- FOOTER --//
 .link 
     color: var.$footer-link-color
     font-size: var.$text-s
@@ -89,7 +84,7 @@ h1
     &:hover
         animation: iconcolor 5s linear infinite alternate both
 
-// Buttons
+//-- BUTTONS --//
 .button-primary,
 .button-secondary
     border-radius: 5px

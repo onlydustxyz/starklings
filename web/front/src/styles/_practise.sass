@@ -5,7 +5,6 @@
 @include anim.open-box(open-box)
 @include anim.text-fade-out(fade-out, var.$color-space-blue)
 
-
 .instructions
     flex-grow: 1
 .practise-mode
@@ -24,8 +23,8 @@
     font-size: 3rem
     padding: 20px 0
     &:hover
-        cursor: pointer
         animation: upload-color 8s linear infinite alternate both
+        cursor: pointer
 
 //-- CODE EDITOR THEME --//
 canvas.minimap-decorations-layer, 
@@ -67,8 +66,8 @@ canvas.minimap-decorations-layer,
     background: var.$color-space-blue
     border: var.$gap-xs
     color: var.$color-snow
-    padding: 0 0 var.$gap-s 0
     margin: 0
+    padding: 0 0 var.$gap-s 0
 .button-run-code,
 .button-upload,
 .button-paste
@@ -96,8 +95,8 @@ canvas.minimap-decorations-layer,
     svg
         color: var.$color-space-purple
         height: var.$icon-size
-        opacity: 0.5
         margin-right: var.$gap-s
+        opacity: 0.5
         vertical-align: middle
         &:hover
             animation: opacity-increase 1s linear alternate both

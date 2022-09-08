@@ -1,0 +1,94 @@
+@use '_var.sass' as var
+
+@media (max-width: 1080px) 
+    .App
+        padding: var.$gap-s
+        .navbar
+            margin-bottom: var.$gap-l
+            flex-wrap: wrap
+            .logo
+                align-items: center
+                display: flex
+                .nav-logo 
+                    margin-right: 10px
+                    width: 70px
+                .site-title
+                    margin-right: var.$gap-xs/2
+                    font-size: var.$code
+                    vertical-align: baseline
+    .page
+        .section 
+            flex-direction: column
+            text-align: unset
+            .explanations
+                padding-right: 0
+                padding-left: 0
+                .section-header
+                    font-size: var.$subtitle-size
+                .button-boxed
+                    text-align: center
+                    float: none
+                    max-width: 1080px
+                .section-description 
+                    margin-bottom: var.$gap-s
+        
+            .illustration
+                max-width: 1080px
+                margin: 0 auto
+                .section-image 
+                    width: 100%
+
+                .section-header
+                    font-size: var.$subtitle-size
+                .button-boxed
+                    text-align: center
+                    float: none
+                    max-width: 1080px
+             
+        .separator-button 
+            margin: var.$gap-m 0 var.$gap-m 0
+
+    .footer
+        text-align: center
+        margin-top: var.$gap-l
+  
+@media (max-width: 480px)
+  .App
+    .navbar
+        .logo
+            .nav-logo 
+                width: 50px
+                margin-right: 5px
+            .site-title
+                font-size: var.$button-text-size
+                vertical-align: baseline
+                margin-right: var.$gap-xs/2
+
+    .button-primary 
+        margin-top: 10px
+        font-size: .75rem
+        padding: 15px var.$gap-xs/2
+
+    .page
+        .header
+            margin-bottom: var.$gap-l
+            h1
+                font-size: var.$subtitle-size
+            .subtitle
+                font-size: var.$text-size
+    
+        .section 
+            flex-direction: column
+            text-align: unset
+            .explanations
+                .section-header
+                    font-size: var.$subtitle-size
+                .button-boxed
+                    max-width: 480px
+        
+            .illustration
+                max-width: 480px
+        
+    .footer
+        text-align: center
+        margin-top: var.$gap-l
