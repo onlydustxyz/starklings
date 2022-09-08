@@ -4,8 +4,8 @@
     .App
         padding: var.$gap-s
         .navbar
-            margin-bottom: var.$gap-l
             flex-wrap: wrap
+            margin-bottom: var.$gap-l
             .logo
                 align-items: center
                 display: flex
@@ -13,8 +13,8 @@
                     margin-right: 10px
                     width: 70px
                 .site-title
-                    margin-right: var.$gap-xs/2
                     font-size: var.$code
+                    margin-right: var.$gap-xs/2
                     vertical-align: baseline
     .page
         .section 
@@ -26,9 +26,9 @@
                 .section-header
                     font-size: var.$subtitle-size
                 .button-boxed
-                    text-align: center
                     float: none
                     max-width: 1080px
+                    text-align: center
                 .section-description 
                     margin-bottom: var.$gap-s
         
@@ -41,32 +41,32 @@
                 .section-header
                     font-size: var.$subtitle-size
                 .button-boxed
-                    text-align: center
                     float: none
                     max-width: 1080px
+                    text-align: center
              
         .separator-button 
             margin: var.$gap-m 0 var.$gap-m 0
 
     .footer
-        text-align: center
         margin-top: var.$gap-l
-  
+        text-align: center
+  // MOBILE ////S
 @media (max-width: 480px)
   .App
     .navbar
         .logo
             .nav-logo 
-                width: 50px
                 margin-right: 5px
+                width: 50px
             .site-title
                 font-size: var.$button-text-size
-                vertical-align: baseline
                 margin-right: var.$gap-xs/2
+                vertical-align: baseline
 
     .button-primary 
-        margin-top: 10px
         font-size: .75rem
+        margin-top: 10px
         padding: 15px var.$gap-xs/2
 
     .page
@@ -90,5 +90,5 @@
                 max-width: 480px
         
     .footer
-        text-align: center
         margin-top: var.$gap-l
+        text-align: center
