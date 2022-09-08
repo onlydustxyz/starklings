@@ -1,13 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { HashRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import BasicPage from '../views/BasicPage';
 import ExerciceCard from './ExerciceCard';
 import HeaderPage from '../views/HeaderPage';
 import { useFetchData, TDataResponse } from '../../hooks/useFetchData';
 
-
 interface ExercicesGroupProps {}
-
 function ExercicesGroup() {
   const getExercicesData: TDataResponse = useFetchData('https://api.github.com/repos/onlydustxyz/starklings/contents/exercises')
   let cardList: any = []
