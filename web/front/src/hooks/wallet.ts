@@ -1,6 +1,5 @@
 import { TypedData } from 'starknet/dist/utils/typedData'
 
-
 const getChainId = (providerUrl: string) => {
   if (providerUrl.includes('alpha-mainnet.starknet.io')) {
     return 'SN_MAIN'
@@ -20,7 +19,6 @@ export const getTypedMessage = (wallet: string | undefined, providerBaseUrl: str
     Starklings: [
       { name: 'message', type: 'felt' },
       { name: 'wallet', type: 'felt' },
-      { name: 'version', type: 'felt' }
     ],
     Message: [{ name: 'message', type: 'felt' }]
   },

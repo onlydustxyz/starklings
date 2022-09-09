@@ -9,7 +9,6 @@ import ExercicesGroup from './components/Exercices/ExercicesGroup';
 import PractisePage from './components/Exercices/PractisePage';
 import { PrivateRoutes } from './components/PrivateRoutes'
 
-
 // TODO : Make sure there is unity into routing, 
 // configuring routing using useNavigate is necessary 
 // before delivery

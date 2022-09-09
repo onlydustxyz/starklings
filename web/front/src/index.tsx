@@ -5,7 +5,6 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { StarknetProvider, getInstalledInjectedConnectors } from '@starknet-react/core'
 
-
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
