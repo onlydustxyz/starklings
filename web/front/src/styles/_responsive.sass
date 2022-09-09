@@ -1,0 +1,125 @@
+@use '_var.sass' as var
+
+//-- PC SMALL SCREEN --//    
+@media (max-width: var.$pc-s)
+    .section .explanations
+        flex-grow: 0
+        width: 60%
+    .section .illustration
+        align-self: self-end
+        img
+            width: 100%
+    .section .button-boxed
+        float: none
+//-- TABLET --//
+@media (max-width: var.$tablet-m) 
+    .App
+        padding: var.$gap-s
+        .navbar
+            flex-wrap: wrap
+            margin-bottom: var.$gap-l
+            .logo
+                align-items: center
+                display: flex
+            .nav-logo 
+                margin-right: 10px
+                width: 70px
+            .site-title
+                font-size: var.$code
+                margin-right: var.$gap-xs/2
+                vertical-align: baseline
+    .section-cairo, .section-resources, .achievements, .instructions
+        .section-header
+            text-align: center
+        .illustration
+            text-align: center
+        .explanations, .illustration
+            padding: 0
+            width: 100%
+        .subtitle
+            margin-bottom: var.$gap-s
+    .practise-mode
+        margin: 0 auto
+        text-align: center
+        width: 100%
+    .separator-button 
+        margin: var.$gap-m 0 var.$gap-m 0
+    .section 
+        flex-direction: column
+        text-align: unset
+        .button-boxed
+            float: none
+            margin: 0 auto
+            text-align: center
+            width: 100%
+        .section-description 
+            margin-bottom: var.$gap-s
+    .footer
+        margin-top: var.$gap-l
+        text-align: center
+
+//-- MOBILE --//
+@media (max-width: var.$smartphone-l)
+    .subtitle
+        font-size: var.$subtitle-size/1.5
+    .button-primary
+        font-size: var.$text-s
+        padding: var.$gap-xs var.$gap-xs/1.5
+    .header
+        margin-bottom: var.$gap-m
+        h1
+            font-size: var.$h1-size/1.5
+    .exercice-card
+        min-width: 300px
+        h3
+            font-size: var.$text-s
+        .card-header
+            padding: 0 var.$gap-xs/1.5 0 var.$gap-xs/1.5
+            &.succes:after,
+            &.wip:after,
+            &.not-started:after
+                background-size: cover
+                height: 15px
+                width: 15px
+
+@media (max-width: var.$smartphone-m)
+  .App
+    .navbar
+        .logo
+            .nav-logo 
+                margin-right: 5px
+                width: 50px
+            .site-title
+                font-size: var.$button-text-size
+                margin-right: var.$gap-xs/2
+                vertical-align: baseline
+    .exercice-card 
+        h3
+            margin-right: var.$gap-xs/2
+            overflow: hidden
+            text-overflow: ellipsis
+            white-space: nowrap
+            width: 280px
+        .card-header:after
+            right: 30px
+    .button-primary 
+        font-size: .75rem
+        margin-top: 10px
+        padding: 15px var.$gap-xs/2
+
+    .page
+        .header
+            margin-bottom: var.$gap-l
+            h1
+                font-size: var.$subtitle-size
+            .subtitle
+                font-size: var.$text-size
+        .section 
+            flex-direction: column
+            text-align: unset
+            .explanations
+                .section-header
+                    font-size: var.$subtitle-size
+    .footer
+        margin-top: var.$gap-l
+        text-align: center

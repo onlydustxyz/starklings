@@ -1,8 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { HashRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import { JsxEmit } from 'typescript';
 import ExercicesGroup from '../Exercices/ExercicesGroup';
-
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux'
+import { connectWallet, WalletState } from '../../store/reducers/wallet'
+import { RootState, useAppDispatch } from '../../store/store'
 
 interface ButtonConnectWalletProps {
   buttonClass: string,
@@ -10,12 +13,22 @@ interface ButtonConnectWalletProps {
   link?: string
 }
 
-const ButtonConnectWallet: FC<ButtonConnectWalletProps> = ({buttonClass, buttonText}) => (
-    <button className={buttonClass}>
-      <Link to='/logged'>
-      {buttonText? buttonText : 'Connect Wallet'}
-      </Link>
+const ButtonConnectWallet: FC<ButtonConnectWalletProps> = ({buttonClass, buttonText}) => {
+  const { status, account } = useSelector<RootState, WalletState>(state => state.wallet)
+  const isConnected = status === 'connected'
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isConnected) {
+      return navigate("/logged");
+    }
+  }, [isConnected, navigate])
+
+  return (
+    <button onClick={() => dispatch(connectWallet())} className={buttonClass}>
+      {isConnected ?  `${account?.address.substring(0, 7)}...` : buttonText}
     </button>
-  
-);
+  );
+}
 export default ButtonConnectWallet;
