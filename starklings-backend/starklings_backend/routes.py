@@ -31,11 +31,12 @@ def register_user():
         signature = request.json.get('signature', None)
         wallet_address = request.json.get('wallet_address', None)
         username = request.json.get('username', wallet_address)
-        if None in [wallet_address, signature]:
+        github = request.json.get('github', None)
+        if None in [wallet_address, signature, github]:
             return "Wrong form", 400 
         #@TODO: Check Signature validity
         
-        user = StarklingsUser(wallet_address=wallet_address, signature=signature, username=username)
+        user = StarklingsUser(wallet_address=wallet_address, signature=signature, username=username, github=github)
         session.commit()
         return f'Welcome! {username}', 200
 
