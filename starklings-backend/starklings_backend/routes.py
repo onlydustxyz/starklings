@@ -4,13 +4,16 @@ import bcrypt
 from sqlalchemy.exc import IntegrityError
 from flask_sqlalchemy import SQLAlchemy
 from starklings_backend.utils import verify_email
-from starklings_backend.models.shared import db
+# from starklings_backend.models.shared import db
 from starklings_backend.models.user import Starklingsuser
 from starklings_backend.exercise import verify_exercise
 from checker import ExerciceFailed
 import tempfile
+from starklings_backend.db import Session
 
 app_routes = Blueprint('app_routes', __name__)
+
+db = Session()
 
 @app_routes.route('/', methods=['GET'])
 def landing():
@@ -34,11 +37,11 @@ def register_user():
         #@TODO: Check Signature validity
         
         user = Starklingsuser(wallet_address=wallet_address, signature=signature, username=username)
-        db.session.commit()
+        session.commit()
         return f'Welcome! {username}', 200
 
     except IntegrityError as e:
-        db.session.rollback()
+        session.rollback()
         return 'User Already Exists', 400
     except AttributeError:
         return 'Provide an Email and Password in JSON format in the request body', 400
