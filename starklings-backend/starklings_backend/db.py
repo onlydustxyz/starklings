@@ -5,8 +5,12 @@ from sqlalchemy import create_engine
 from dotenv import load_dotenv
 load_dotenv()
 
+host=os.environ.get('DATABASE_HOST', '')
+database=os.environ.get('DATABASE_NAME', '')
+user=os.environ.get('DATABASE_USER', '')
+password=os.environ.get('DATABASE_PWD', '')
 
-engine = create_engine('mysql+pymysql://root:dazzura1@localhost/wtf', echo=True)
+engine = create_engine(f'mysql+pymysql://{user}:{password}@{host}/{database}', echo=True)
 
 Base = declarative_base()
 
