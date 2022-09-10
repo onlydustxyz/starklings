@@ -1,7 +1,8 @@
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
-from sqlalchemy.orm import sessionmaker, relationship
-from db import Base
+from sqlalchemy.orm import sessionmaker, relationship, declarative_base
+# from db import Base
 
+Base = declarative_base()
 
 class StarklingsUser(Base):
     __tablename__ = "starklings_user"
@@ -39,3 +40,4 @@ class ValidatedExercise(Base):
     wallet_address = Column(
         String(42), ForeignKey("starklings_user.wallet_address"), nullable=False
     )
+

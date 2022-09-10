@@ -1,6 +1,7 @@
 import os
 import pymysql
 from sqlalchemy.orm import declarative_base, sessionmaker
+from models import StarklingsUser,Path,Exercise,ValidatedExercise, Base
 from sqlalchemy import create_engine
 from dotenv import load_dotenv
 load_dotenv()
@@ -12,6 +13,5 @@ password=os.environ.get('DATABASE_PWD', '')
 
 engine = create_engine(f'mysql+pymysql://{user}:{password}@{host}/{database}', echo=True)
 
-Base = declarative_base()
-
 Session = sessionmaker(bind=engine)
+Base.metadata.create_all(engine)
