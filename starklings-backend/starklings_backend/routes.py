@@ -4,8 +4,7 @@ import bcrypt
 from sqlalchemy.exc import IntegrityError
 from flask_sqlalchemy import SQLAlchemy
 from starklings_backend.utils import verify_email
-# from starklings_backend.models.shared import db
-from starklings_backend.models.user import Starklingsuser
+from starklings_backend.models import StarklingsUser, Path, Exercise, ValidatedExercise, Base
 from starklings_backend.exercise import verify_exercise
 from checker import ExerciceFailed
 import tempfile
@@ -36,7 +35,7 @@ def register_user():
             return "Wrong form", 400 
         #@TODO: Check Signature validity
         
-        user = Starklingsuser(wallet_address=wallet_address, signature=signature, username=username)
+        user = StarklingsUser(wallet_address=wallet_address, signature=signature, username=username)
         session.commit()
         return f'Welcome! {username}', 200
 
@@ -57,7 +56,7 @@ def fetch_user_info():
         wallet_address = request.json.get('wallet_address', None)
         if not wallet_address:
             return 'Missing address', 400
-        user = Starklingsuser.query.filter_by(wallet_address=wallet_address).first()
+        user = StarklingsUser.query.filter_by(wallet_address=wallet_address).first()
         if not user:
             return 'User Not Found!', 404
         
