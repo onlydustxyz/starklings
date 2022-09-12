@@ -22,3 +22,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 package-lock.json
+
+# For PR
+package.json
+generate-react-cli.json
+robots.txt
+yarn.lock
