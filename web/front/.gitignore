@@ -28,3 +28,4 @@ package.json
 generate-react-cli.json
 robots.txt
 yarn.lock
+src/styles/fonts
