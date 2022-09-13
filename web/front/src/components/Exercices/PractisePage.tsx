@@ -18,14 +18,6 @@ const PractisePage: FC<PractisePageProps> = ({exTitle, code, instructions}) => {
   const [open, setOpen] = useState(false)
   const [upload, setUpload] = useState(false)
 
-  // EVENTS
-  const openCode = () => {
-    setOpen(!open)
-  }
-  const uploadFile = () => {
-    setUpload(!upload)
-  }
-  
   // pass the title of the exercice to the editor
   if(typeof(state) === 'string'){
     exTitle = state;
@@ -40,16 +32,13 @@ const PractisePage: FC<PractisePageProps> = ({exTitle, code, instructions}) => {
       </div>
       <div className='practise-mode'>
        <button className={upload? 'button-upload button-clicked' : 'button-upload'}
-                onClick={() => {
-                  uploadFile()
-                }}>{upload? 'Drag and drop your Cairo file here': 'Upload'}</button>
+                onClick={() => {upload? setUpload(false) : setUpload(true)}}>
+                {upload? 'Drag and drop your Cairo file here': 'Upload'}</button>
         <div className='file-upload-wrapper'>
           {upload ? <FileDrop /> : ''}
         </div>
         <div className='button-paste'
-             onClick={() =>{
-              openCode()
-             }}>{open? 'Code': 'Paste your code'}</div>
+             onClick={() =>{open? setOpen(false): setOpen(true)}}>{open? 'Code': 'Paste your code'}</div>
              {open? <CodeEditor title={exTitle}/> : ''}
       </div>
     </div>
