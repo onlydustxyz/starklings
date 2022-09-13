@@ -9,8 +9,10 @@ const NavBar: FC<NavBarProps> = () => (
   <div className='app'>
     <nav className='navbar'>
       <div className='logo'>
-        <Link to='/'><img className='nav-logo' alt='Only Dust logo' src={logo}/></Link>
-        <Link to='/' className='site-title'>Starklings</Link>
+        <Link to='/'>
+          <img className='nav-logo' alt='Only Dust logo' src={logo}/>
+          <h1 className='site-title'>Starklings</h1>
+        </Link>
       </div>
       <div className='user-login-button'>
         <ButtonConnectWallet buttonClass='button-primary' buttonText='Connect Wallet'/>
