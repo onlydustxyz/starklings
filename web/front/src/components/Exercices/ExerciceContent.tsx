@@ -1,6 +1,4 @@
-import { stat } from 'fs';
-import React, { FC } from 'react';
-import { HashRouter as Router, Route, Link, Routes } from 'react-router-dom';
+import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface ExerciceContentProps {

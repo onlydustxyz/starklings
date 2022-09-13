@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
-import ButtonConnectWallet from '../ConnectWallet/ButtonConnectWallet';
-import logo from '../../assets/onlydust-logo.png';
+import ButtonConnectWallet from 'components/ConnectWallet/ButtonConnectWallet';
+import logo from 'assets/onlydust-logo.png';
 
 interface NavBarProps {}
 

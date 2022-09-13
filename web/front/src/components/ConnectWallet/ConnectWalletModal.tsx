@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useConnectors, useStarknet, useSignTypedData } from '@starknet-react/core'
-import { getTypedMessage } from '../../hooks/wallet'
+import { getTypedMessage } from 'hooks/wallet'
 
 
 interface Props {
@@ -61,5 +61,4 @@ const ConnectWalletModal: FC<Props> = ({ open, close, buttonClass }: Props) => {
         </div>
     );
   }
-  
   export default ConnectWalletModal;

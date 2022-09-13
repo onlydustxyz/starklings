@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import '../../App.sass';
+import 'App.sass';
 
 
 

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { HashRouter as Router, Route, Link, Routes } from 'react-router-dom';
-import ExercicesGroup from '../Exercices/ExercicesGroup';
+import ExercicesGroup from 'components/Exercices/ExercicesGroup';
 import HeaderPage from './HeaderPage';
 
 interface BasicPageProps {

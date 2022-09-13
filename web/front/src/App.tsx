@@ -1,13 +1,13 @@
 import React from 'react';
 import { HashRouter as Router, Route, Link, Routes } from 'react-router-dom'
-import NavBar from './components/views/NavBar';
-import BasicPage from './components/views/BasicPage';
-import Home from './components/views/Home';
-import './App.sass';
-import Footer from './components/views/Footer';
-import ExercicesGroup from './components/Exercices/ExercicesGroup';
-import PractisePage from './components/Exercices/PractisePage';
-import { PrivateRoutes } from './components/PrivateRoutes'
+import NavBar from 'components/views/NavBar';
+import BasicPage from 'components/views/BasicPage';
+import Home from 'components/views/Home';
+import 'App.sass';
+import Footer from 'components/views/Footer';
+import PractisePage from 'components/Exercices/PractisePage';
+import { PrivateRoutes } from 'components/PrivateRoutes'
+import ExercicesGroup from 'components/Exercices/ExercicesGroup';
 
 // TODO : Make sure there is unity into routing, 
 // configuring routing using useNavigate is necessary 

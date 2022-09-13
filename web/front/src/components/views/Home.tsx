@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import ButtonConnectWallet from '../ConnectWallet/ButtonConnectWallet';
+import ButtonConnectWallet from 'components/ConnectWallet/ButtonConnectWallet';
 import HeaderPage from './HeaderPage';
-import cairoImg from '../../assets/code-cairo.png';
-import resourcesImg from '../../assets/resources-img.png';
+import cairoImg from 'assets/code-cairo.png';
+import resourcesImg from 'assets/resources-img.png';
 
 
 interface HomeProps {}

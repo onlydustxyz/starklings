@@ -1,9 +1,8 @@
-import React, { FC } from 'react';
-import BasicPage from './BasicPage';
-import { HashRouter as Router, Route, Link, Routes } from 'react-router-dom';
+import { FC } from 'react';
+import { HashRouter as Route, Link } from 'react-router-dom'; // Route is used for "to"
 import footerLogo from '../../assets/od-footer-logo.svg';
-  import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-  import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
 
 
 interface FooterProps {}
