@@ -24,6 +24,6 @@ export const useFetchData = <T>(url: string) => {
       
         return () => {
         };
-      }, []); 
+      }, [url]); 
       return { status, statusText, data, error, loading }
 } 
