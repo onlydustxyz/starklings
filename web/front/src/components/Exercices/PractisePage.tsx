@@ -22,6 +22,8 @@ const PractisePage: FC<PractisePageProps> = ({exTitle, code, instructions}) => {
   if(typeof(state) === 'string'){
     exTitle = state;
   }
+  // TODO : After Exo PR Merge see if upload + code is fine this way or
+  // if it is necessary to set it to a boolean
   return (
     <div className='practise-page'>
       <HeaderPage headerTitle={exTitle} />
