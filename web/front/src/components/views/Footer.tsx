@@ -17,11 +17,6 @@ const Footer: FC<FooterProps> = () => (
         <li className='footer-icon github'><a href='https://github.com/onlydustxyz/starklings'><FontAwesomeIcon icon={faGithub} /></a></li>
       </ul>
     </div>
-    <ul className='footer-links'>
-      <li className='link'><Link to='terms-of-service'>Terms of Service</Link></li>
-      <li className='link'><Link to='privacy-policy'>Privacy Policy</Link></li>
-    </ul>
-
   </footer>
 );
 

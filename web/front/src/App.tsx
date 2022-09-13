@@ -1,7 +1,5 @@
-import React from 'react';
 import { HashRouter as Router, Route, Link, Routes } from 'react-router-dom'
 import NavBar from 'components/views/NavBar';
-import BasicPage from 'components/views/BasicPage';
 import Home from 'components/views/Home';
 import 'App.sass';
 import Footer from 'components/views/Footer';
@@ -21,8 +19,6 @@ export default function App() {
           <NavBar/>
           <Routes>
             <Route path='/' element={<Home/>}/>
-            <Route path='terms-of-service' element={<BasicPage basicPageTitle='Terms of Service'/>}/>
-            <Route path='privacy-policy' element={<BasicPage basicPageTitle='Privacy Policy'/>}/>
             <Route element={<PrivateRoutes/>}>
               <Route path='logged' element={<ExercicesGroup/>}/>
               <Route path='exercice/' element={<PractisePage exTitle={exTitle}/>}/>
