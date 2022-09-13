@@ -40,18 +40,10 @@ const ExerciceCard: FC<ExerciceCardProps> = ({exerciceTitle, status}) => {
     setListEx(tmpList)
     }
   }, [exerciceTitle]);
-
-  // EVENTS
-  const toggleHide = () => {
-    setHide(!hide)
-  }
-  const cardOut = () => {
-    setHide(hide)
-  }
+  
   return(
     <div className={hide? 'exercice-card show-content':'exercice-card'} 
-         onClick={() => {setHide(hide); toggleHide()}}
-         onMouseOut={() => cardOut()}>
+         onClick={() => {hide ? setHide(false): setHide(true)}}>
       <h3 className={`card-header ${status}`}>{exerciceTitle}</h3>
         <div className='content'>
           {hide? <ExerciceContent listOfExercices={listEx} lastSuccessfulExercice={1}/> : ''}
