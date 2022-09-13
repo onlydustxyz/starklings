@@ -1,6 +1,7 @@
 import { FC, useState } from 'react';
 import ExerciceContent from './ExerciceContent';
-import { useFetchData, TDataResponse } from 'hooks/useFetchData';
+import { useFetchData } from 'hooks/useFetchData';
+import { TDataResponse } from 'utils/TDataResponse';
 
 interface ExerciceCardProps {
   exName?: string,
@@ -17,7 +18,7 @@ const ExerciceCard: FC<ExerciceCardProps> = ({exerciceTitle, status}) => {
   let listEx: any[] = []
   const getListOfExercices: TDataResponse = useFetchData('https://api.github.com/repos/onlydustxyz/starklings/contents/exercises/' + exerciceTitle)
   if(getListOfExercices.data) {
-    getListOfExercices.data.forEach((d: { name: any; }) => {
+    getListOfExercices.data.forEach((d: { name: string; }) => {
       // if data is .cairo add to list without extension
       let data = d.name.split('.')
       if(data[1] === 'cairo') {

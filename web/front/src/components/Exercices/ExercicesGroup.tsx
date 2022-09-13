@@ -1,6 +1,7 @@
 import ExerciceCard from './ExerciceCard';
 import HeaderPage from 'components/views/HeaderPage';
-import { useFetchData, TDataResponse } from 'hooks/useFetchData';
+import { useFetchData } from 'hooks/useFetchData';
+import { TDataResponse } from 'utils/TDataResponse';
 
 function ExercicesGroup() {
   const getExercicesData: TDataResponse = useFetchData('https://api.github.com/repos/onlydustxyz/starklings/contents/exercises')
