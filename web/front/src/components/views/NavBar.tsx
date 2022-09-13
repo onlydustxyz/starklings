@@ -18,4 +18,5 @@ const NavBar: FC<NavBarProps> = () => (
     </nav>
   </div>
 );
+
 export default NavBar;

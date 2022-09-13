@@ -57,6 +57,4 @@ const PractisePage: FC<PractisePageProps> = ({exTitle, code, instructions}) => {
   );
  }
 
-
-
 export default PractisePage;

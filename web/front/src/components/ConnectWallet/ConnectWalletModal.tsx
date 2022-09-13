@@ -61,4 +61,5 @@ const ConnectWalletModal: FC<Props> = ({ open, close, buttonClass }: Props) => {
         </div>
     );
   }
+  
   export default ConnectWalletModal;
