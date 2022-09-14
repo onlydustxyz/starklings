@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import ButtonConnectWallet from 'components/ConnectWallet/ButtonConnectWallet';
 import HeaderPage from './HeaderPage';
 import cairoImg from 'assets/code-cairo.png';

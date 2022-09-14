@@ -1,4 +1,4 @@
-import { HashRouter as Router, Route, Link, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom'
 import NavBar from 'components/views/NavBar';
 import Home from 'components/views/Home';
 import 'App.sass';
@@ -20,8 +20,8 @@ export default function App() {
           <Routes>
             <Route path='/' element={<Home/>}/>
             <Route element={<PrivateRoutes/>}>
-              <Route path='logged' element={<ExercicesGroup/>}/>
-              <Route path='exercice/' element={<PractisePage exTitle={exTitle}/>}/>
+              <Route path='/logged' element={<ExercicesGroup/>}/>
+              <Route path='/exercice' element={<PractisePage exTitle={exTitle}/>}/>
             </Route>
           </Routes>
           <Footer />
