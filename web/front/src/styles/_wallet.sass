@@ -1,0 +1,19 @@
+@use '_var.sass' as var
+
+.wallet-modal
+  background-color: rgba(var.$color-space-blue, 0.8)
+  height: 100%
+  left: 0
+  position: fixed
+  top: 0
+  width: 100%
+  z-index: 1
+  overflow: auto
+
+.wallet-modal-content
+  display: flex
+  flex-direction: column
+  margin: 15% auto
+  width: 40%
+  .button-primary
+    margin-bottom: var.$gap-xs
