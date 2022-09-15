@@ -3,12 +3,14 @@ import asyncio
 import bcrypt
 from sqlalchemy.exc import IntegrityError
 from flask_sqlalchemy import SQLAlchemy
-from starklings_backend.utils import verify_email
+from starklings_backend.utils import verify_email, VerifySignature
 from starklings_backend.models import StarklingsUser, Path, Exercise, ValidatedExercise, Base
 from starklings_backend.exercise import verify_exercise
 from checker import ExerciceFailed
 import tempfile
 from starklings_backend.db import Session
+ 
+
 
 app_routes = Blueprint('app_routes', __name__)
 
@@ -32,13 +34,19 @@ def register_user():
         wallet_address = request.json.get('wallet_address', None)
         username = request.json.get('username', wallet_address)
         github = request.json.get('github', None)
+        message_hash = request.json.get('message_hash', '')
+        network = request.json.get('network', 'testnet')
         if None in [wallet_address, signature, github]:
             return "Wrong form", 400 
-        #@TODO: Check Signature validity
-        
-        user = StarklingsUser(wallet_address=wallet_address, signature=signature, username=username, github=github)
-        session.commit()
-        return f'Welcome! {username}', 200
+        # verify signature
+        verify_signature = VerifySignature(abi, network, wallet_address)
+        is_valid, error = verify_signature.verify_signature(message_hash, signature)
+        if error is None:
+            user = StarklingsUser(wallet_address=wallet_address, signature=signature, github=github, username=username)
+            db.add(user)
+            db.commit()
+            return f'Welcome! {username}', 200
+        return 'Signature invalid', 400
 
     except IntegrityError as e:
         session.rollback()
