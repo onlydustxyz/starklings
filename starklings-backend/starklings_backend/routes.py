@@ -31,6 +31,8 @@ def register_user():
     """
     try:
         signature = request.json.get('signature', None)
+        # convert string to tuple
+        signature = eval(signature)
         wallet_address = request.json.get('wallet_address', None)
         username = request.json.get('username', wallet_address)
         github = request.json.get('github', None)
