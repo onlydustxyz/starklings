@@ -38,7 +38,7 @@ def register_user():
         github = request.json.get('github', None)
         message_hash = request.json.get('message_hash', '')
         network = request.json.get('network', 'testnet')
-        if None in [wallet_address, signature, github]:
+        if None in [wallet_address, signature]:
             return "Wrong form", 400 
         # verify signature
         verify_signature = VerifySignature(abi, network, wallet_address)

@@ -8,7 +8,7 @@ class StarklingsUser(Base):
     __tablename__ = "starklings_user"
     wallet_address = Column(String(42), primary_key=True)
     signature = Column(String(255), nullable=False)
-    github = Column(String(255), nullable=False)
+    github = Column(String(255), nullable=True)
     username = Column(String(255), nullable=False)
     score = Column(Integer, nullable=False, default=0)
     starklings_user = relationship("ValidatedExercise")
