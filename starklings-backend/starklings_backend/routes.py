@@ -51,7 +51,7 @@ def register_user():
         return 'Signature invalid', 400
 
     except IntegrityError as e:
-        session.rollback()
+        db.rollback()
         return 'User Already Exists', 400
     except AttributeError:
         return 'Provide an Email and Password in JSON format in the request body', 400
