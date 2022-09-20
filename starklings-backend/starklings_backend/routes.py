@@ -40,8 +40,6 @@ def register_user():
     """
     try:
         signature = request.json.get("signature", None)
-        # convert string to tuple
-        signature = eval(signature)
         wallet_address = request.json.get("wallet_address", None)
         username = request.json.get("username", wallet_address)
         github = request.json.get("github", None)
@@ -52,7 +50,7 @@ def register_user():
         # verify signature
         abi = Path.cwd() / "abi" / "account.json"
         verify_signature = VerifySignature(abi, network, wallet_address)
-        is_valid, error = verify_signature(message_hash, signature)
+        is_valid, error = verify_signature(message_hash, eval(signature))
         if error is None:
             user = StarklingsUser(
                 wallet_address=wallet_address,
