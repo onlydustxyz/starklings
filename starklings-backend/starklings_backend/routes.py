@@ -82,7 +82,7 @@ def fetch_user_info():
         wallet_address = request.json.get("wallet_address", None)
         if not wallet_address:
             return "Missing address", 400
-        user = StarklingsUser.query.filter_by(wallet_address=wallet_address).first()
+        user = db.query(StarklingsUser).filter_by(wallet_address=wallet_address).first()
         if not user:
             return "User Not Found!", 404
 
