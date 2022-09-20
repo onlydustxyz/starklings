@@ -50,9 +50,9 @@ def register_user():
         if None in [wallet_address, signature]:
             return "Wrong form", 400
         # verify signature
-        abi = Path.cwd().parent / "abi" / "account.json"
+        abi = Path.cwd() / "abi" / "account.json"
         verify_signature = VerifySignature(abi, network, wallet_address)
-        is_valid, error = verify_signature.verify_signature(message_hash, signature)
+        is_valid, error = verify_signature(message_hash, signature)
         if error is None:
             user = StarklingsUser(
                 wallet_address=wallet_address,
