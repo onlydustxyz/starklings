@@ -1,3 +1,4 @@
+# import pdb; pdb.set_trace()
 from flask import request, Blueprint
 import asyncio
 import bcrypt
@@ -11,10 +12,10 @@ from starklings_backend.models import (
     ValidatedExercise,
     Base,
 )
-from starklings_backend.exercise import verify_exercise
-from checker import ExerciceFailed
+# from starklings_backend.exercise import verify_exercise
+# from checker import ExerciceFailed
 import tempfile
-from starklings_backend.db import Session
+from db import Session
 from pathlib import Path
 
 
