@@ -4,9 +4,9 @@ import os
 import sys
 sys.path.append('../src/exercises')
 from starklings_backend.routes import app_routes
-from starklings_backend.models.shared import db
+from flask_sqlalchemy import SQLAlchemy
 
-
+db = SQLAlchemy()
 app = Flask(__name__)
 CORS(app)
 env_config = os.getenv("APP_SETTINGS", "config.DevConfig")
@@ -14,7 +14,6 @@ app.config.from_object('config.DevConfig')
 
 db.init_app(app)
 app.register_blueprint(app_routes)
-
 
 
 if __name__ == '__main__':
