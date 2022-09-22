@@ -84,7 +84,7 @@ class VerifySignature:
 
             asyncio.run(
                 self.contract.functions["is_valid_signature"].call(
-                    message_hash, (eval(signature[0]), eval(signature[1]))
+                    message_hash, (signature[0], signature[1])
                 )
             )
             return "Valid Signature", None
