@@ -86,12 +86,18 @@ def update_user():
             return "Missing address", 400
         if not signature:
             return "Missing signature", 400
-        user = db.query(StarklingsUser).filter_by(wallet_address=wallet_address, signature=str(signature))
-        if user is None:
-            return "Invalid wallet and signature pair", 400
-        user.update(update_parameter, synchronize_session="fetch")
-        db.commit()
-        return f"Update successful", 200 
+        # verify signature
+        abi = Path.cwd() / "abi" / "account.json"
+        verify_signature = VerifySignature(abi, network, wallet_address)
+        is_valid, error = verify_signature(message_hash, signature)
+        if error is None:
+            user = db.query(StarklingsUser).filter_by(wallet_address=wallet_address, signature=str(signature))
+            if user is None:
+                return "Invalid wallet and signature pair", 400
+            user.update(update_parameter, synchronize_session="fetch")
+            db.commit()
+            return f"Update successful", 200 
+        return "Signature invalid", 400
     except AttributeError as e:
         print(e)
         return "Provide the wallet address in JSON format in the request body", 400
