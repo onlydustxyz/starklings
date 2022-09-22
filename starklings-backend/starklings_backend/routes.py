@@ -50,7 +50,7 @@ def register_user():
         # verify signature
         abi = Path.cwd() / "abi" / "account.json"
         verify_signature = VerifySignature(abi, network, wallet_address)
-        is_valid, error = verify_signature(message_hash, eval(signature))
+        is_valid, error = verify_signature(message_hash, signature)
         if error is None:
             user = StarklingsUser(
                 wallet_address=wallet_address,
