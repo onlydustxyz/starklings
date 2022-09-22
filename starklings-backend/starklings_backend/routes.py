@@ -37,7 +37,6 @@ def landing():
 def register_user():
     """
     Inserts a new user in the Database
-    @TODO: Starknet ID / Signature and implements model
     """
     try:
         signature = request.json.get("signature", None)
@@ -52,6 +51,7 @@ def register_user():
         abi = Path.cwd() / "abi" / "account.json"
         verify_signature = VerifySignature(abi, network, wallet_address)
         is_valid, error = verify_signature(message_hash, signature)
+        # import pdb; pdb.set_trace()
         if error is None:
             user = StarklingsUser(
                 wallet_address=wallet_address,
@@ -69,6 +69,33 @@ def register_user():
         return "User Already Exists", 400
     except AttributeError:
         return "Provide an Email and Password in JSON format in the request body", 400
+
+@app_routes.route("/updateUser", methods=["POST"])
+def update_user():
+    try:
+        update_parameter = request.json.get("update_parameter", None)
+        if update_parameter is None:
+            return "Missing update parameter", 400
+        for k, v in update_parameter.items():
+            if k not in ['username', 'github']:
+                return f"Incorrect payload {k}", 400
+
+        wallet_address = request.json.get("wallet_address", None)
+        signature = request.json.get("signature", None)
+        if not wallet_address:
+            return "Missing address", 400
+        if not signature:
+            return "Missing signature", 400
+        user = db.query(StarklingsUser).filter_by(wallet_address=wallet_address, signature=str(signature))
+        if user is None:
+            return "Invalid wallet and signature pair", 400
+        user.update(update_parameter, synchronize_session="fetch")
+        db.commit()
+        return f"Update successful", 200 
+    except AttributeError as e:
+        print(e)
+        return "Provide the wallet address in JSON format in the request body", 400
+    
 
 
 @app_routes.route("/fetchUserInfo", methods=["POST"])
