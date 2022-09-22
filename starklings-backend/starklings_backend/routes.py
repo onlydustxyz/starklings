@@ -17,6 +17,7 @@ from starklings_backend.models import (
 import tempfile
 from db import Session
 from pathlib import Path
+import json
 
 
 app_routes = Blueprint("app_routes", __name__)
@@ -54,7 +55,7 @@ def register_user():
         if error is None:
             user = StarklingsUser(
                 wallet_address=wallet_address,
-                signature=signature,
+                signature=json.dumps(signature),
                 github=github,
                 username=username,
             )
