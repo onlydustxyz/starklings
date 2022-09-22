@@ -30,7 +30,7 @@ class Exercise(Base):
 
 class ValidatedExercise(Base):
     __tablename__ = "validated_exercise"
-    validated_exercise_id = Column(String(42), primary_key=True)
+    validated_exercise_id = Column(String(64), primary_key=True)
     exercise_name = Column(
         String(255),
         ForeignKey("exercise.exercise_name"),
