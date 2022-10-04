@@ -37,10 +37,8 @@ class VersionManager:
             with open(self._pyproject_toml_path, "r", encoding="UTF-8") as file:
                 raw_version = tomli.loads(file.read())["tool"]["poetry"][
                     "dependencies"
-                ]["cairo-lang"]["url"]
-                version_regex = re.compile(r".*cairo-lang-(.+)\.zip.*")
-                version_match = version_regex.match(raw_version)
-                return VersionManager.parse(version_match[1])
+                ]["cairo-lang"]
+                return VersionManager.parse(raw_version[1:])
         except FileNotFoundError:
             getLogger().warning("Couldn't read cairo-lang version")
             return None
