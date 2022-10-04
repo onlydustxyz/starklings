@@ -12,7 +12,7 @@ def finished_exercise_fixture(mocker):
 @pytest.fixture(name="unfinished_exercise")
 def unfinished_exercise_fixture(mocker):
     mock = mocker.patch("src.exercises.seeker.Path").return_value
-    mock.read_text.return_value = "Yolo\n# I AM NOT DONE\nNext"
+    mock.read_text.return_value = "Yolo\n// I AM NOT DONE\nNext"
     return mock
 
 
