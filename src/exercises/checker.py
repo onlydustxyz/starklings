@@ -1,11 +1,8 @@
-import asyncio
-from queue import Queue
-from pathlib import Path
 from threading import Lock
-from protostar.commands.test.runner import TestRunner
-from protostar.commands.test.reporter import Reporter
-from protostar.commands.test.cases import PassedCase
-from protostar.commands.test.test_collector import TestCollector
+from protostar.testing import TestCollector
+from protostar.utils.compiler.pass_managers import StarknetPassManagerFactory
+from protostar.utils.starknet_compilation import CompilerConfig, StarknetCompiler
+from ..config import current_working_directory
 
 lock = Lock()
 
@@ -22,17 +19,23 @@ class ExerciceFailed(Exception):
 
 async def check_exercise(exercise_path):
     try:
-        test_subjects = TestCollector(
-            target=Path(exercise_path),
-        ).collect()
-        queue = Queue()
-        reporter = Reporter(queue)
-        runner = TestRunner(reporter=reporter, include_paths=[])
-        await asyncio.gather(
-            *[runner.run_test_subject(subject) for subject in test_subjects]
+        include_paths = []
+        factory = StarknetPassManagerFactory
+
+        result = TestCollector(
+            StarknetCompiler(
+                config=CompilerConfig(
+                    disable_hint_validation=True, include_paths=include_paths
+                ),
+                pass_manager_factory=factory,
+            ),
+            config=TestCollector.Config(safe_collecting=True),
+        ).collect(
+            targets=[exercise_path],
+            ignored_targets=None,
+            default_test_suite_glob=str(current_working_directory),
         )
     except Exception as error:
         raise ExerciceFailed(str(error)) from error
-    for test_case_result in reporter.test_case_results:
-        if not isinstance(test_case_result, PassedCase):
-            raise ExerciceFailed(str(test_case_result))
+    if len(result.broken_test_suites) > 0:
+        raise ExerciceFailed(str("Broken test suite"))
