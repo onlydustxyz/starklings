@@ -2,10 +2,10 @@ import asyncio
 from queue import Queue
 from pathlib import Path
 from threading import Lock
-from starklings_protostar.commands.test.runner import TestRunner
-from starklings_protostar.commands.test.reporter import Reporter
-from starklings_protostar.commands.test.cases import PassedCase
-from starklings_protostar.commands.test.test_collector import TestCollector
+from protostar.commands.test.runner import TestRunner
+from protostar.commands.test.reporter import Reporter
+from protostar.commands.test.cases import PassedCase
+from protostar.commands.test.test_collector import TestCollector
 
 lock = Lock()
 

@@ -7,32 +7,32 @@ version = "1.4.0"
 [tool.poetry.dependencies]
 argparse = "^1.4.0"
 black = "^22.3.0"
-cairo-lang = {url = "https://files.pythonhosted.org/packages/c0/f6/c850604895a2ce5ff3ef77cdb470b6b0ef50889645748a748e18a1c2269e/cairo-lang-0.8.1.post1.zip#sha256=b3c1a23078ba4e0c8ec45d2cd2ba4873ad70b6723dfba70f70c978c9723ff6eb"}
+cairo-lang = "^0.10.0"
 colorama = "^0.4.4"
 openzeppelin-cairo-contracts = "^0.1.0"
-pyinstaller = "ˆ5.0.1"
+pickleDB = "^0.9.2"
+protostar = {git = "https://github.com/software-mansion/protostar.git", rev = "faa8c671eb6afc7d73df62ace40183cd7496eebe"}
+pyinstaller = "^5.0.1"
 pylint = "^2.13.8"
 pytest = "^7.1.2"
 pytest-mock = "^3.7.0"
-python = ">=3.8 <3.9"
-sentry-sdk = "^1.5.12"
-starklings-protostar = "^0.2.1"
-watchdog = "^2.1.7"
-rich = "^12.4.4"
+python = ">=3.9.14 <3.10"
 requests = "^2.28.0"
-pickleDB = "^0.9.2"
+rich = "^12.4.4"
+sentry-sdk = "^1.5.12"
+watchdog = "^2.1.7"
 
 [tool.poetry.dev-dependencies]
 GitPython = "^3.1.27"
 packaging = "^21.3"
-poethepoet = "ˆ0.13.1"
-tomli = "<2.0.0"
+poethepoet = "^0.13.1"
 responses = "^0.21.0"
+tomli = "<2.0.0"
 
 [tool.poe.tasks]
 build = ["generate_solutions", "package"]
 deploy = "python deploy.py"
-generate_solutions = {"script" = "src.solutions.factory:init"}
+generate_solutions = {script = "src.solutions.factory:init"}
 package = "pyinstaller starklings.spec --noconfirm"
 test = "pytest src"
 
