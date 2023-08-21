@@ -1,15 +1,32 @@
 <div align="center">
   <h1 align="center">Starklings</h1>
-  <p align="center">
-    <a href="https://discord.gg/onlydust">
-        <img src="https://img.shields.io/badge/Discord-6666FF?style=for-the-badge&logo=discord&logoColor=white">
-    </a>
-    <a href="https://twitter.com/intent/follow?screen_name=onlydust_xyz">
-        <img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white">
-    </a>       
   </p>
-  
+
+<a href="https://discord.gg/onlydust">
+<img src="https://img.shields.io/badge/Discord-6666ff?logo=discord&logoColor=fff" />
+</a>
+
+<a href="https://twitter.com/intent/follow?screen_name=onlydust_xyz">
+<img src="https://img.shields.io/twitter/follow/onlydust_xyz?label=Follow&style=social" />
+</a>
+
+<a href="https://t.me/+wu8frxmrbeliZWI1">
+<img src="https://img.shields.io/static/v1?label=Telegram&message=Starklings Dev&color=eee&logo=telegram&style=social" />
+</a>
   <h3 align="center">An interactive tutorial to get you up and running with Starknet</h3>
+</div>
+
+<div align="center">
+<img src="resources/assets/warning.png" width="50px"/>
+<img src="resources/assets/warning.png" width="50px"/>
+<img src="resources/assets/warning.png" width="50px"/>
+<div>
+<h3 style="color: orangered"> This repository is no more maintained and has been moved to : </h3>
+<a style="font-size: 20px" href="https://github.com/shramee/starklings-cairo1">starklings-cairo1</a>
+</div>
+<img style="margin-top: 20px" src="resources/assets/warning.png" width="50px"/>
+<img src="resources/assets/warning.png" width="50px"/>
+<img src="resources/assets/warning.png" width="50px"/>
 </div>
 
 ---
@@ -60,8 +77,10 @@ bash install.sh
 
 ## Inspiration
 
-- [Protostar](https://github.com/software-mansion/protostar) for all the project tooling and setup, deployment, packaging
-- [Rustlings](https://github.com/rust-lang/rustlings) for the amazing pedagogy and brilliant concept of progressive and interactive tutorial
+- [Protostar](https://github.com/software-mansion/protostar) for all the project tooling and setup, deployment,
+  packaging
+- [Rustlings](https://github.com/rust-lang/rustlings) for the amazing pedagogy and brilliant concept of progressive and
+  interactive tutorial
 
 ## Contributing
 
