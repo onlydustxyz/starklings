@@ -3,7 +3,7 @@ from typing import List
 
 
 def _is_exercise_not_done(exercise: Path) -> bool:
-    return "\n# I AM NOT DONE\n" in exercise.read_text()
+    return "\n// I AM NOT DONE\n" in exercise.read_text()
 
 
 class ExerciseSeeker:

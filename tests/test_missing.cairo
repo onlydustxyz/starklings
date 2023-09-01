@@ -1,4 +1,4 @@
 @external
-func test_ok():
-    return ()
-end
+func test_ok() {
+    return ();
+}

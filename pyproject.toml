@@ -10,7 +10,7 @@ black = "^22.3.0"
 cairo-lang = {url = "https://files.pythonhosted.org/packages/c0/f6/c850604895a2ce5ff3ef77cdb470b6b0ef50889645748a748e18a1c2269e/cairo-lang-0.8.1.post1.zip#sha256=b3c1a23078ba4e0c8ec45d2cd2ba4873ad70b6723dfba70f70c978c9723ff6eb"}
 colorama = "^0.4.4"
 openzeppelin-cairo-contracts = "^0.1.0"
-pyinstaller = "ˆ5.0.1"
+pyinstaller = "^5.0.1"
 pylint = "^2.13.8"
 pytest = "^7.1.2"
 pytest-mock = "^3.7.0"
@@ -25,7 +25,7 @@ pickleDB = "^0.9.2"
 [tool.poetry.dev-dependencies]
 GitPython = "^3.1.27"
 packaging = "^21.3"
-poethepoet = "ˆ0.13.1"
+poethepoet = "^0.13.1"
 tomli = "<2.0.0"
 responses = "^0.21.0"
 
