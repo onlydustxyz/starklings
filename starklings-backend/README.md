@@ -29,6 +29,9 @@ pip install -r requirements.txt
 
 ## Launch API
 
+### Add ENV variables
+create .env file in the same directory as this with the fields defined in .env.DEFAULT
+
 - Development
 ```
 APP_SETTINGS=config.DevConfig python app.py
