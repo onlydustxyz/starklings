@@ -29,7 +29,7 @@ In this guide you will find the necessary instructions to get up and running wit
 
 ## How can I contribute?
 
-### Report a bug or suggest an enhancement 
+### Report a bug or suggest an enhancement
 
 If you spot a problem or have an idea for a cool feature, first make sure there is no related [existing issue](https://github.com/onlydustxyz/starklings/issues "Starklings GitHub Issues").
 If not, you can open a [new Issue](https://github.com/onlydustxyz/starklings/issues/new/choose "Open a new Issue") and add a description of your suggestions.
@@ -45,4 +45,4 @@ See [StarkNet development guidelines](https://github.com/onlydustxyz/development
 
 ## Where can I ask a question?
 
-If you have a question, please ask it in [Discord](https://discord.gg/kutmDrKv "OnlyDust Discord").
+If you have a question, please ask it in [Discord](https://discord.gg/z9SQ5VWY "OnlyDust Discord").
